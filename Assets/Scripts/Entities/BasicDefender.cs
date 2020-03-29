@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BasicDefender : FriendlyAgent
 {
-    public override void AssignNewTarget()
+    public override void Attack()
     {
         throw new System.NotImplementedException();
     }

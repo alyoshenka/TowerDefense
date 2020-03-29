@@ -9,6 +9,7 @@ public class Debugger : MonoBehaviour
     public bool StateChangeMessages;
     public bool StateTransitionWarnings;
     public bool TileMessages;
+    public bool AgentMessages;
 
     void Start() { Instance = this; }
 }

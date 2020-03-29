@@ -11,6 +11,7 @@ public class PlaceState : GamePlayState
     public bool GoalPlaced { get => currentLevel.Board.GoalAssigned; }
     public GameBoard Board { get => currentLevel.Board; } // bas design!!
 
+    public Transform tileParent;
     public Button playButton;
     public TilePlacement tilePlacement;
 
@@ -38,20 +39,10 @@ public class PlaceState : GamePlayState
         Level newLevel = Level.CreateLevel(newNumber);
         currentLevel = newLevel; 
         GameBoard newBoard = MapGenerator.GenerateBoard(newNumber, 
-            Vector2.one * (newNumber + 5), transform);
+            Vector2.one * (newNumber + 5), tileParent);
         currentLevel.AssignBoard(newBoard);
 
         SetLevel(CurrentLevel);
-
-        /*
-        List<TileAllotment> alot = new List<TileAllotment>();
-        foreach(DisplayTile dt in FindObjectsOfType<DisplayTile>())
-        {
-            if (null != dt.Allottment.tile) { alot.Add(dt.Allottment); }
-        }
-
-        tilePlacement.GiveTiles(alot);
-        */
     }
 
     public override void OnExit()
@@ -62,6 +53,7 @@ public class PlaceState : GamePlayState
 
     public override bool CanTransition()
     {
+        if (!currentLevel.Board.GoalAssigned) { Debug.Log("goal not assigned"); }
         if (Debugger.Instance.StateTransitionWarnings) { Debug.LogWarning("place transition condition"); }
         return currentLevel.Board.GoalAssigned;
     }

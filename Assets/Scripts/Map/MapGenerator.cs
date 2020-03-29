@@ -162,6 +162,22 @@ public class MapGenerator : MonoBehaviour
         return tileMap;
     }
 
+    public static SaveMap ExtractData(GameBoard gameBoard)
+    {
+        SaveMap map = new SaveMap();
+
+        map.size = new Vector2_S(gameBoard.nodeMap.Size);
+
+        List<TileData> tiles = new List<TileData>();
+        foreach(PathNode node in gameBoard.nodeMap.Nodes)
+        {
+            tiles.Add(node.Data);
+        }
+        map.tileData = tiles;
+
+        return map;
+    }
+
     public static GameObject FindAssociatedObject(TileType type)
     {
         return staticTileToTypeMap.Find(obj => obj.type == type).tile;
@@ -170,12 +186,7 @@ public class MapGenerator : MonoBehaviour
     // basic, needs filename/randomness
     public static GameBoard GenerateBoard(int level, Vector2 size, Transform parent)
     {
-        // make board
-
-        List<TileData> tileData = new List<TileData>();
-        for(int i = 0; i < size.x * size.y; i++) { tileData.Add(TileData.Basic); }
-
-        NodeMap nodeMap = GenerateNodeMap(tileData, size);
+        NodeMap nodeMap =  MapEditor.LoadNodeMap(level.ToString());
         TileMap tileMap = GenerateTileMap(nodeMap, parent);
         return new GameBoard(nodeMap, tileMap);
     }

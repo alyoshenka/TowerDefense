@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 8760186591928140990}
   - component: {fileID: 5869692765816005302}
   - component: {fileID: 6712161317112774025}
-  - component: {fileID: 3650070891777405519}
-  - component: {fileID: 3016371316264642543}
+  - component: {fileID: 8236905536589452012}
+  - component: {fileID: 1396720300631903825}
   m_Layer: 0
   m_Name: EnemyTile
   m_TagString: Untagged
@@ -95,7 +95,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3650070891777405519
+--- !u!114 &8236905536589452012
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,7 +104,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4170006953480210871}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ad85c143de450e48a225295eda3f9bb, type: 3}
+  m_Script: {fileID: 11500000, guid: dc5ad7600efca284da12d15b25547314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueData:
@@ -112,12 +112,12 @@ MonoBehaviour:
     buildCost: 0
     index: -1
     traversalCost: 0
-  canBeChanged: 0
+  canBeChanged: 1
   displayImage: {fileID: 0}
-  showConnections: 1
+  showConnections: 0
   tileStatus: 0
   placedByPlayer: 0
---- !u!114 &3016371316264642543
+--- !u!114 &1396720300631903825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,7 +126,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4170006953480210871}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b1822250480f30498a639c888720212, type: 3}
+  m_Script: {fileID: 11500000, guid: af5337afb3286c44baf090861c555567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 5257106510279269766, guid: d3e6d1aca97e2264ba9c995d64857b42, type: 3}
+  enemyToSpawn: {fileID: 5257106510279269766, guid: d3e6d1aca97e2264ba9c995d64857b42,
+    type: 3}
+  associatedTile: {fileID: 8236905536589452012}
+  count: 1
+  spawnResetTime: 3
+  spawnElapsedTime: 0

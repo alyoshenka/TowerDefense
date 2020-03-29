@@ -7,34 +7,45 @@ using UnityEngine;
 /// </summary>
 public abstract class AIAgent : MonoBehaviour
 {
+
+    protected virtual void Update()
+    {
+        stateMachine.Update(this);
+        stateMachine.RunTree(this);
+    }
+
     public DecisionTree stateMachine;
 }
 
 /// <summary>
 /// An agent that can move and die
 /// </summary>
-public abstract class OrganicAgent : AIAgent, IDamageable
+public abstract class OrganicAgent : AIAgent, IDamageable // every agent should be damageable! (maybe???)
 {
-    public FoundPath path;
+    protected FoundPath foundPath;
+    protected int targetIdx;
 
     [SerializeField] private int maxHealth = 10;
-    public int MaxHealth { get { return maxHealth; } private set { } }
+    public int MaxHealth { get => maxHealth; }
 
     [SerializeField] protected int currentHealth;
 
-    public int CurrentHealth { get { return currentHealth; } protected set { } }
+    public int CurrentHealth { get => currentHealth; }
     public static float targetEps = 0.1f;
     protected MapTile target;
-    public MapTile Target { get { return target; } set { target = value; } } // maybe encapsulate?
     public bool ReachedTarget
     {
-        get => Vector3.Distance(transform.position, target.transform.position) < targetEps;
+        get => null == target ||
+            Vector3.Distance(transform.position, target.transform.position) < targetEps;
     }
+    
 
     [Tooltip("How long until it can move again")]
     public float moveCooldown;
     protected float restedTime;
     public bool ShouldRest { get => restedTime < moveCooldown; }
+
+    // public float attackCooldown;
 
     public float moveSpeed;
 
@@ -69,22 +80,41 @@ public abstract class OrganicAgent : AIAgent, IDamageable
         restedTime += Time.deltaTime;
     }
 
-    protected void Update()
+    public void AssignNextTarget()
     {
-        if (null != target && ReachedTarget)
+        targetIdx++;
+        restedTime = 0;
+
+        if (targetIdx >= foundPath.path.Count)
         {
-            AssignNewTarget();
+            target = null;
+            Debug.Log(name + " reached goal");
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            target = PlaceState.Instance.Board.FindAssociatedTile(
+            foundPath.path[targetIdx]);
         }
     }
 
+    public void AssignPath(FoundPath path)
+    {
+        foundPath = path;
+        targetIdx = -1;
+        AssignNextTarget();
+    }
 
-    public abstract void AssignNewTarget();
+    public abstract void Attack();
 }
 
 public abstract class HostileAgent : OrganicAgent
 {
-    [Tooltip("how long the spawner must wait before it can spawn")]
-    [SerializeField] private int spawnRechargeTime;
+    public Projectile weapon;
+    public int points;
+    public float attackRange;
+
+    public bool withinRangeOfGoal;
 
     public override abstract void OnDeath();
    

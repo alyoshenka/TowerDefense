@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Pathfinder
 {
+
+    // weight paths that are closer to as-the-crow-flies paths
+
+
     public static FoundPath DjikstrasPath(PathNode _start, PathNode _goal, NodeMap nodeMap)
     {
         return RunDjikstras(_start, _goal, nodeMap);
@@ -32,8 +36,7 @@ public class Pathfinder
                         neighbor.calculatedCost = newCost;
                         neighbor.previousNode = currentNode;
                     }
-                }
-                
+                }               
             }
 
             // next current
@@ -47,7 +50,7 @@ public class Pathfinder
             }
         }
 
-        List<PathNode> _path = GeneratePath(_start, _goal);
+        List<PathNode> _path = GeneratePath(_start, _goal, false);
         FoundPath toReturn = new FoundPath
         {
             start = _start,
@@ -63,7 +66,7 @@ public class Pathfinder
 
     static List<PathNode> GeneratePath(PathNode _start, PathNode _goal, bool addStart = true)
     {
-        PathNode currentNode = _start; // check
+        PathNode currentNode = _goal; // check
 
         List<PathNode> path = new List<PathNode>();
         do

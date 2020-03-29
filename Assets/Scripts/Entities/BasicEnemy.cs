@@ -2,43 +2,79 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Goal: Attack Base
-/// </summary>
+// Goal: Attack Base
+[RequireComponent(typeof(BasicEnemyBubble))]
 public class BasicEnemy : HostileAgent
 {
     protected new void Start()
     {
         base.Start();
        
-        stateMachine = new BasicEnemyDecisionTree(this);
+        stateMachine = new BasicEnemyBrain(this);
     }
 
-    protected new void Update()
+    protected override void Update()
     {
-        base.Update();
-
-         stateMachine.Update(this); // needed?
-        // run state machine
+        stateMachine.Update(this);
         stateMachine.RunTree(this);
-    }
-
-    public override void AssignNewTarget()
-    {
-        /*
-        target?.IndicateNone();
-        int idx = path.path.IndexOf(target.Node) + 1;
-        if (idx >= path.path.Count) { target = null; }
-        else { target = path.path[idx].Tile; } // good fucking gawd
-        target?.IndicateCurrent();
-
-        restedTime = 0;
-        */
-        throw new System.NotImplementedException();
     }
 
     public override void OnDeath()
     {
         throw new System.NotImplementedException();
+    }
+
+    public override void Attack()
+    {
+        if (ShouldRest) { Rest(); }
+        else
+        {
+            Instantiate(weapon, transform.position, transform.rotation, transform);
+            restedTime = 0;
+        }
+    }
+}
+
+public class BasicEnemyBrain : DecisionTree
+{
+    BooleanDecision isTired;
+    BooleanDecision atTarget;
+    BooleanDecision withinRange;
+
+    Action advance;
+    Action rest;
+    Action assignNextTarget;
+    Action attack;
+
+    public BasicEnemyBrain(BasicEnemy agent)
+    {
+        advance = new Advance(agent);
+        rest = new Rest(agent);
+        assignNextTarget = new AssignNextTarget(agent);
+        attack = new Attack(agent);
+
+        atTarget = new BooleanDecision(assignNextTarget, advance);
+        withinRange = new BooleanDecision(attack, atTarget);
+        isTired = new BooleanDecision(rest, withinRange);
+
+        start = isTired;
+    }
+
+    public override void Update(AIAgent agent)
+    {
+        isTired.Value = ((OrganicAgent)agent).ShouldRest;
+        atTarget.Value = ((OrganicAgent)agent).ReachedTarget;
+        withinRange.Value = ((HostileAgent)agent).withinRangeOfGoal;
+    }
+}
+
+public class AssignNextTarget : Action
+{
+    public AssignNextTarget(OrganicAgent agent) : base(agent) { }
+
+    public override IDecision MakeDecision()
+    {
+        ((OrganicAgent)agent).AssignNextTarget();
+        return null;
     }
 }

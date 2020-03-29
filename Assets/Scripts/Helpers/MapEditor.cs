@@ -80,7 +80,7 @@ public class MapEditor : MonoBehaviour
         if (save)
         {
             Debug.Log("save to " + fileName);
-            SaveCurrentData(fileName);
+            SaveBoard(gameBoard, fileName);
             save = false;
         }
 
@@ -93,32 +93,35 @@ public class MapEditor : MonoBehaviour
         
     }
 
-    public void SaveCurrentData(string fileName)
+    public static void SaveBoard(GameBoard board, string fileName)
     {
-        Debug.Assert(gameBoard.GoalAssigned);
+        Debug.Assert(board.GoalAssigned);
+        SaveMap toSave = MapGenerator.ExtractData(board);
 
         fileName = "Assets/Maps/" + fileName + ".txt";
         IFormatter formatter = new BinaryFormatter();
         Stream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-        formatter.Serialize(stream, gameBoard.nodeMap);
+        formatter.Serialize(stream, toSave);
         stream.Close();
     }
 
-    private NodeMap LoadFrom(string fileName)
+    public static NodeMap LoadNodeMap(string fileName)
     {
         fileName = "Assets/Maps/" + fileName + ".txt";
         IFormatter formatter = new BinaryFormatter();
         Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-        NodeMap readMap = (NodeMap)formatter.Deserialize(stream);
+        SaveMap readData = (SaveMap)formatter.Deserialize(stream);
         stream.Close();
 
-        return readMap;
+        NodeMap nodeMap = MapGenerator.GenerateNodeMap(readData.tileData, readData.size.ToVec2());
+
+        return nodeMap;
     }
 
     private void LoadNewData(string fileName)
     {
         gameBoard.Destroy();
-        NodeMap newNodes = LoadFrom(fileName);
+        NodeMap newNodes = LoadNodeMap(fileName);
         TileMap newTiles = MapGenerator.GenerateTileMap(newNodes, transform);
         gameBoard = new GameBoard(newNodes, newTiles);
     }
@@ -237,4 +240,11 @@ public struct TileData
         AssertPresetsInitialized();
         return presets.Find(tile => tile.type == _type);
     }
+}
+
+[System.Serializable]
+public class SaveMap
+{
+    public List<TileData> tileData;
+    public Vector2_S size;
 }

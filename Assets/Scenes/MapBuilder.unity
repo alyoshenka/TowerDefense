@@ -307,6 +307,7 @@ GameObject:
   - component: {fileID: 637797211}
   - component: {fileID: 637797210}
   - component: {fileID: 637797212}
+  - component: {fileID: 637797213}
   m_Layer: 0
   m_Name: MapBuilder
   m_TagString: Untagged
@@ -369,12 +370,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultTile: {fileID: 4170006953480210871, guid: 7a0f06a1bab5bc24198edb1771230694,
     type: 3}
-  fileName: testRead
-  defaultGridSize: {x: 7, y: 7}
+  fileName: big
+  defaultGridSize: {x: 5, y: 5}
   visualizeGrid: 1
   tiles:
   - type: 0
-    cost: 0
+    buildCost: 0
     index: 0
+    traversalCost: 0
   save: 0
   load: 0
+--- !u!114 &637797213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 637797209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c9b92f96c58e4741b27ccc135d0eae6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StateChangeMessages: 0
+  StateTransitionWarnings: 0
+  TileMessages: 0

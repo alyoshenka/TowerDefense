@@ -6,14 +6,14 @@ using UnityEngine;
 public class Level
 {
     [SerializeField] private int number;
-    public int Number { get { return number; } private set { } }
+    public int Number { get => number; }
 
     [SerializeField] private List<TileAllotment> allottedTiles;
-    public List<TileAllotment> AllottedTiles { get { return allottedTiles; } private set { } }
+    public List<TileAllotment> AllottedTiles { get => allottedTiles; }
     [SerializeField] private List<EnemyPack> enemyHorde;
-    public List<EnemyPack> EnemyHorde { get { return enemyHorde; } private set { } }
+    public List<EnemyPack> EnemyHorde { get => enemyHorde; }
     [SerializeField] private GameBoard board;
-    public GameBoard Board { get { return board; } private set { } }
+    public GameBoard Board { get => board; }
 
     // public void InitializeLevel(int level) {} ??
     // where to put algorithm???
@@ -71,8 +71,9 @@ public class EnemyPack
 [System.Serializable]
 public class GameBoard
 {
-    public PathNode goalNode;
-    public bool GoalAssigned { get { return null != goalNode; } private set { } }
+    private PathNode goalNode;
+    public PathNode GoalNode { get => goalNode; }
+    public bool GoalAssigned { get => null != goalNode; }
     public NodeMap nodeMap;
     public TileMap tileMap;
 
@@ -81,6 +82,8 @@ public class GameBoard
     {
         nodeMap = _nodeMap;
         tileMap = _tileMap;
+
+        AssignGoal(nodeMap.Nodes.Find(node => node.Type == TileType.goal));
     }
 
     public void AssignGoal(PathNode newGoal)
@@ -92,14 +95,28 @@ public class GameBoard
 
     public MapTile FindAssociatedTile(PathNode node)
     {
-        Debug.Assert(tileMap.Tiles[node.Index] != null);
-        return node == null ? null : tileMap.Tiles[node.Index];
+        if(null == node || node.Index < 0 || node.Index >= tileMap.Tiles.Count)
+        {
+            Debug.Assert(false);
+            return null;
+        }
+        else
+        {
+            return tileMap.Tiles[node.Index];
+        }
     }
 
     public PathNode FindAssociatedNode(MapTile tile)
     {
-        if(tile.Index < 0 || tile.Index >= nodeMap.Nodes.Count) { Debug.Log(tile.name + " " + tile.Index); }
-        return nodeMap.Nodes[tile.Index];
+        if(null == tile || tile.Index < 0 || tile.Index >= nodeMap.Nodes.Count)
+        {
+            Debug.Assert(false);
+            return null;
+        }
+        else
+        {
+            return nodeMap.Nodes[tile.Index];
+        }       
     }
 
     public void AssignNewData(PathNode node, TileData data)
@@ -116,8 +133,6 @@ public class GameBoard
 
     public MapTile AssignNewTile(MapTile oldTile, MapTile tileModel)
     {
-        // if(goalNode == FindAssociatedNode(oldTile)) { goalNode = null; } 
-
         Debug.Assert(null != oldTile);
 
         MapTile newTile = oldTile.InstantiateInPlace(tileModel); // preserves index

@@ -60,10 +60,9 @@ public class Attack : Action
 {
     public Attack(AIAgent agent) : base(agent) { }
 
-    // public Transform Target { set; get; }
-
     public override IDecision MakeDecision()
     {
+        ((OrganicAgent)agent).Attack();
         return null;
     }
 }

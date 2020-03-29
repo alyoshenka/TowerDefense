@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class GameOverState : GameState
 {
@@ -14,24 +14,31 @@ public class GameOverState : GameState
         else if (this != instance) { Destroy(this); }
     }
 
+    public Button returnToMenu;
+
     private void Start()
     {
         gameObject.SetActive(false);
 
+        returnToMenu.onClick.AddListener(
+            () => GameStateManager.Instance.Transition(this, MainMenuState.Instance));
     }
 
     public override void OnEnter()
     {
-        throw new System.NotImplementedException();
+        PauseState.Instance.isPaused = true;
+        base.OnEnter();
     }
 
     public override void OnExit()
     {
-        throw new System.NotImplementedException();
+        base.OnExit();
+
+        // destroy old map
     }
 
     public override bool CanTransition()
     {
-        throw new System.NotImplementedException();
+        return true;
     }
 }

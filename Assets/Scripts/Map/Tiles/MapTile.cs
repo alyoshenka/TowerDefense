@@ -13,7 +13,6 @@ public enum TileType
     enemy
 }
 
-[System.Serializable]
 public class PathNode
 {
     private TileData uniqueData;
@@ -69,7 +68,7 @@ public class PathNode
 }
 
 [System.Serializable]
-public abstract class MapTile : MonoBehaviour
+public class MapTile : MonoBehaviour
 {
     [SerializeField] protected TileData uniqueData;
     public TileData Data { get => uniqueData; }
@@ -110,6 +109,13 @@ public abstract class MapTile : MonoBehaviour
         tileEnter += HoverEnter;
         tileExit += HoverExit;
         tileClick += TileSelected;
+
+        DefendState.Instance.openDefend += (() => 
+        {
+            tileEnter -= HoverEnter;
+            tileExit -= HoverExit;
+            tileClick -= TileSelected;
+        });
     }
 
     private void HoverEnter()
@@ -150,7 +156,10 @@ public abstract class MapTile : MonoBehaviour
     /// how the tile affects agents
     /// </summary>
     /// <param name="agent"> the agent on the tile </param>
-    public abstract void InteractWithAgent(AIAgent agent);
+    public virtual void InteractWithAgent(AIAgent agent)
+    {
+        throw new System.NotImplementedException();
+    }
 
     // just pathdfinding stuff
     public void IndicateCurrent() { tileStatus = TileStatus.current; }

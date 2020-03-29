@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public class PauseState : GameState
 {
     private static PauseState instance;
-    public static PauseState Instance { get { return instance; } private set { } }
+    public static PauseState Instance { get => instance; }
 
     public Button resumeButton;
+    public bool isPaused; // private
 
     private void Awake()
     {
@@ -21,6 +22,7 @@ public class PauseState : GameState
         resumeButton.onClick.AddListener(
             () => GameStateManager.Instance.Transition(this, DefendState.Instance));
 
+        isPaused = true;
         gameObject.SetActive(false);
     }
 
@@ -33,12 +35,14 @@ public class PauseState : GameState
     public override void OnEnter()
     {
         base.OnEnter();
+        isPaused = true;
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter pause"); }
     }
 
     public override void OnExit()
     {
         base.OnExit();
+        isPaused = false;
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("exit pause"); }
     }
 }

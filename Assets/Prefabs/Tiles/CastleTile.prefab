@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 8760186591928140990}
   - component: {fileID: 5869692765816005302}
   - component: {fileID: 6712161317112774025}
-  - component: {fileID: 3650070891777405519}
+  - component: {fileID: -6833911040920017691}
   m_Layer: 0
   m_Name: CastleTile
-  m_TagString: Untagged
+  m_TagString: Goal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,7 +94,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3650070891777405519
+--- !u!114 &-6833911040920017691
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,7 +103,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4170006953480210871}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ad85c143de450e48a225295eda3f9bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 03f3c5a4140bec245914c7170e397ba0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueData:
@@ -113,6 +113,8 @@ MonoBehaviour:
     traversalCost: 0
   canBeChanged: 0
   displayImage: {fileID: 0}
-  showConnections: 1
+  showConnections: 0
   tileStatus: 0
   placedByPlayer: 0
+  maxHealth: 50
+  currentHealth: 0

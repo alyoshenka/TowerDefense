@@ -106,13 +106,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0c2b0cebbec3714d83ae865adfbe137, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainName: BasicTile
-  id: -1
+  uniqueData:
+    type: 6
+    buildCost: 0
+    index: -1
+    traversalCost: 0
   canBeChanged: 1
-  buildCost: 0
-  traversalCost: 1
   displayImage: {fileID: 0}
-  showConnections: 0
+  showConnections: 1
   tileStatus: 0
-  color: {r: 0, g: 0, b: 0, a: 0}
-  placedByPlayer: 0
+  placedByPlayer: 1

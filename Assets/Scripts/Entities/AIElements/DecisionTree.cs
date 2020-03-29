@@ -12,6 +12,8 @@ public abstract class DecisionTree
 
     public void RunTree(AIAgent agent)
     {
+        if (PauseState.Instance.isPaused) { return; }
+
         current = start;
         while (null != current) { current = current.MakeDecision(); }
     }
@@ -82,31 +84,5 @@ public class DefenderDecisionTree : DecisionTree
     public override void Update(AIAgent agent)
     {
         throw new System.NotImplementedException();
-    }
-}
-
-public class BasicEnemyDecisionTree : DecisionTree
-{
-    BooleanDecision isTired;
-    BooleanDecision atTarget;
-
-    Action advance;
-    Action rest;
-
-    public BasicEnemyDecisionTree(BasicEnemy agent)
-    {
-        advance = new Advance(agent);
-        rest = new Rest(agent);
-
-        atTarget = new BooleanDecision(rest, advance);
-        isTired = new BooleanDecision(rest, atTarget);
-
-        start = isTired;
-    }
-
-    public override void Update(AIAgent agent)
-    {
-        isTired.Value = ((OrganicAgent)agent).ShouldRest;
-        atTarget.Value = null == ((BasicEnemy)agent).Target;
     }
 }

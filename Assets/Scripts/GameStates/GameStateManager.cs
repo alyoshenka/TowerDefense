@@ -33,7 +33,7 @@ public class GameStateManager : MonoBehaviour
             next.OnEnter();
             currentState = MainMenuState.Instance;
         }
-        else { Debug.LogError("cannot transition"); }
+        else { Debug.LogWarning("cannot transition"); }
     }
 }
 
