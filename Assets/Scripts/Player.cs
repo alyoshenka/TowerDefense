@@ -75,4 +75,9 @@ public class Player : IDamageable
         throw new System.NotImplementedException();
         // gameover
     }
+
+    public void SaveAndDestroy()
+    {
+        Debug.Log("save player data and destroy references");
+    }
 }

@@ -106,9 +106,12 @@ public class MapTile : MonoBehaviour
     protected virtual void Start()
     {
         // ok this might be kinda bad
-        tileEnter += HoverEnter;
-        tileExit += HoverExit;
-        tileClick += TileSelected;
+        PlaceState.Instance.openPlace += (() =>
+        {           
+            tileEnter += HoverEnter;
+            tileExit += HoverExit;
+            tileClick += TileSelected;
+        });
 
         DefendState.Instance.openDefend += (() => 
         {

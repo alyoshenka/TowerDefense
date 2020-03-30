@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public abstract class AIAgent : MonoBehaviour
 {
-
     protected virtual void Update()
     {
         stateMachine.Update(this);

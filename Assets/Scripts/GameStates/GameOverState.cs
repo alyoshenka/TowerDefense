@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverState : GameState
+public class GameOverState : GamePlayState
 {
     private static GameOverState instance;
     public static GameOverState Instance { get { return instance; } private set { } }
@@ -18,10 +18,10 @@ public class GameOverState : GameState
 
     private void Start()
     {
-        gameObject.SetActive(false);
-
         returnToMenu.onClick.AddListener(
             () => GameStateManager.Instance.Transition(this, MainMenuState.Instance));
+
+        gameObject.SetActive(false);
     }
 
     public override void OnEnter()
@@ -34,7 +34,10 @@ public class GameOverState : GameState
     {
         base.OnExit();
 
-        // destroy old map
+        currentLevel.Destroy();
+        currentLevel = null;
+        player.SaveAndDestroy();
+        player = null;
     }
 
     public override bool CanTransition()

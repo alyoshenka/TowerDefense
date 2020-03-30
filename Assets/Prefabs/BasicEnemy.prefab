@@ -126,8 +126,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   currentHealth: 0
-  moveCooldown: 0.5
-  moveSpeed: 5
+  moveCooldown: 0.1
+  moveSpeed: 10
   weapon: {fileID: 6725922925602426046, guid: 947d84b515f8e6346a474942060da816, type: 3}
   points: 5
   attackRange: 0.6

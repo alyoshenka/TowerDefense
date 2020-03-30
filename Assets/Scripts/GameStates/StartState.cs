@@ -17,26 +17,28 @@ public class StartState : GamePlayState
     }
 
     private void Start()
-    {
-        base.Initialize(); // first state
-
+    {       
         playButton.onClick.AddListener(
             () => GameStateManager.Instance.Transition(this, PurchaseState.Instance));
-
-        player = new Player();
 
         gameObject.SetActive(false);
     }
 
+    private void SetupGame()
+    {
+        base.Initialize(); // first state
+        player = new Player();
+    }
+
     public override bool CanTransition()
     {
-        if (Debugger.Instance.StateTransitionWarnings) { Debug.LogWarning("start transition condition"); }
-        return true;
+        return currentLevel.Number == 0;
     }
 
     public override void OnEnter()
     {
         base.OnEnter();
+        SetupGame();
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter start"); }
     }
 

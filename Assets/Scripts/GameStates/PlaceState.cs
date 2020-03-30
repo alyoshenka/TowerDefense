@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class PlaceState : GamePlayState
 {
+    public event EnterStateEvent openPlace;
+
     private static PlaceState instance;
     public static PlaceState Instance { get { return instance; } private set { } }
 
@@ -43,6 +45,8 @@ public class PlaceState : GamePlayState
         currentLevel.AssignBoard(newBoard);
 
         SetLevel(CurrentLevel);
+
+        openPlace?.Invoke();
     }
 
     public override void OnExit()

@@ -31,7 +31,7 @@ public class GameStateManager : MonoBehaviour
         {
             prev.OnExit();
             next.OnEnter();
-            currentState = MainMenuState.Instance;
+            currentState = next;
         }
         else { Debug.LogWarning("cannot transition"); }
     }
@@ -54,6 +54,8 @@ public abstract class GameState : MonoBehaviour
 
 public abstract class GamePlayState : GameState
 {
+    public delegate void EnterStateEvent();
+
     protected static Level currentLevel;
     public static Level CurrentLevel { get { return currentLevel; } private set { } }
     [SerializeField] private Level showLevel; // just here to view

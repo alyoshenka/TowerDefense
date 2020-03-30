@@ -52,6 +52,11 @@ public class Level
     {
         board = givenBoard;
     }
+
+    public void Destroy()
+    {
+        board.Destroy();
+    }
 }
 
 [System.Serializable]

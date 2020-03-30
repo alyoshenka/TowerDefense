@@ -18,16 +18,24 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
     {
         stateMachine = new EnemySpawnerBrain(this);
 
-        DefendState.Instance.openDefend += (() => // BAD
-        {
-            pathToGoal = Pathfinder.DjikstrasPath(
-                PlaceState.Instance.Board.FindAssociatedNode(associatedTile),
-                PlaceState.Instance.Board.GoalNode,
-                PlaceState.Instance.Board.nodeMap);
-        });
-        
+        DefendState.Instance.openDefend += GetPath;     
 
         spawnElapsedTime = 0;
+    }
+
+    private void OnDestroy()
+    {
+        DefendState.Instance.openDefend -= GetPath;            
+    }
+
+    public void GetPath()
+    {
+        associatedTile = GetComponent<MapTile>(); // better system
+
+        pathToGoal = Pathfinder.DjikstrasPath(
+            PlaceState.Instance.Board.FindAssociatedNode(associatedTile),
+            PlaceState.Instance.Board.GoalNode,
+            PlaceState.Instance.Board.nodeMap);
     }
 
     public void SpawnEnemy()

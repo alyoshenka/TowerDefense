@@ -133,5 +133,5 @@ MonoBehaviour:
     type: 3}
   associatedTile: {fileID: 8236905536589452012}
   count: 1
-  spawnResetTime: 3
+  spawnResetTime: 0
   spawnElapsedTime: 0

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class DefendState : GamePlayState
 {
-    public delegate void EnterStateEvent();
     public event EnterStateEvent openDefend;
 
     private static DefendState instance;
@@ -13,8 +12,6 @@ public class DefendState : GamePlayState
 
     public Button pauseButton;
     public int startDelay;
-
-    private bool openedDefend;
 
     private void Awake()
     {
@@ -26,7 +23,6 @@ public class DefendState : GamePlayState
         pauseButton.onClick.AddListener(
             () => GameStateManager.Instance.Transition(this, PauseState.Instance));
 
-        openedDefend = false;
         gameObject.SetActive(false);
     }
 
@@ -34,11 +30,7 @@ public class DefendState : GamePlayState
     {
         base.OnEnter();
 
-        if (!openedDefend)
-        {
-            openedDefend = true;
-            openDefend?.Invoke();
-        }
+        openDefend?.Invoke();
         StartCoroutine("StartDelay");
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter defend"); }
     }
