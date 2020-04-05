@@ -235,6 +235,22 @@ PrefabInstance:
       propertyPath: TileMessages
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1356790595188341339, guid: c60876b865daff7449e96bb21679ba8d,
+        type: 3}
+      propertyPath: tileToTypeMap.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1356790595188341339, guid: c60876b865daff7449e96bb21679ba8d,
+        type: 3}
+      propertyPath: tileToTypeMap.Array.data[7].tile
+      value: 
+      objectReference: {fileID: 4170006953480210871, guid: 4d49f4c9bda92d449add8d67a857df13,
+        type: 3}
+    - target: {fileID: 1356790595188341339, guid: c60876b865daff7449e96bb21679ba8d,
+        type: 3}
+      propertyPath: tileToTypeMap.Array.data[7].type
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3358873722323274756, guid: c60876b865daff7449e96bb21679ba8d,
         type: 3}
       propertyPath: startDelay
@@ -362,6 +378,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4452428676214914659, guid: c60876b865daff7449e96bb21679ba8d,
         type: 3}
+      propertyPath: availableTiles.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4452428676214914659, guid: c60876b865daff7449e96bb21679ba8d,
+        type: 3}
       propertyPath: defaultTile
       value: 
       objectReference: {fileID: 3134196305117836450, guid: f74d23f1219fbb247aba1cef0282d42d,
@@ -371,6 +392,17 @@ PrefabInstance:
       propertyPath: tileParent
       value: 
       objectReference: {fileID: 1241388506}
+    - target: {fileID: 5735416956496725848, guid: c60876b865daff7449e96bb21679ba8d,
+        type: 3}
+      propertyPath: allotment.tile
+      value: 
+      objectReference: {fileID: 3134565222436357008, guid: 4d49f4c9bda92d449add8d67a857df13,
+        type: 3}
+    - target: {fileID: 5735416956496725848, guid: c60876b865daff7449e96bb21679ba8d,
+        type: 3}
+      propertyPath: allotment.count
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
 --- !u!1 &1241388506

@@ -4,26 +4,46 @@ using UnityEngine;
 
 public class EnemySpawner : AIAgent // give current path to goal to enemy on spawn
 {
-    public GameObject enemyToSpawn;
-    public MapTile associatedTile;
-    public int count;
-    public float spawnResetTime;
-    public bool CanSpawn { get => spawnElapsedTime > spawnResetTime && count > 0; }
+    public List<EnemyPack> enemySet;
 
+    public MapTile associatedTile;
+    public float spawnResetTime;
+    public bool CanSpawn { get => spawnElapsedTime > spawnResetTime && allEnemies.Count > 0; }
     public float spawnElapsedTime;
 
-    FoundPath pathToGoal;
+    private FoundPath pathToGoal;
+    private List<HostileAgent> allEnemies;
 
     private void Start()
     {
         stateMachine = new EnemySpawnerBrain(this);
-        DefendState.Instance.openDefend += GetPath;     
+
+        DefendState.Instance.openDefend += GetPath;
+        LoadAllEnemies();
+        
         spawnElapsedTime = 0;
     }
 
     private void OnDestroy()
     {
         DefendState.Instance.openDefend -= GetPath;            
+    }
+
+    private void LoadAllEnemies()
+    {
+        allEnemies = new List<HostileAgent>();
+
+        foreach(EnemyPack pack in enemySet)
+        {
+            for(int i = 0; i < pack.count; i++)
+            {
+                HostileAgent agent = Instantiate(
+                    pack.enemy, transform.position, Quaternion.identity, transform)
+                    .GetComponent<HostileAgent>();
+                allEnemies.Add(agent);
+                agent.gameObject.SetActive(false);
+            }
+        }
     }
 
     public void GetPath()
@@ -39,14 +59,46 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
     public void SpawnEnemy()
     {
         spawnElapsedTime = 0;
-        count--;
 
-        HostileAgent agent = Instantiate(
-            enemyToSpawn, transform.position, Quaternion.identity, transform)
-            .GetComponent<HostileAgent>();
+        HostileAgent agent = allEnemies[0];
+        agent.gameObject.SetActive(true);
         agent.AssignPath(pathToGoal);
+        allEnemies.RemoveAt(0);
+        if (Debugger.Instance.EnemyMessages) { Debug.Log(agent.name + " spawned"); }
 
-        Debug.Log(agent.name + " spawned");
+        if(allEnemies.Count == 0) { OnOutOfEnemies(); }
+    }
+
+    public void OnOutOfEnemies()
+    {
+        if (Debugger.Instance.EnemyMessages) { Debug.Log(name + " out of enemies"); }
+    }
+
+    // BAD
+    public static List<EnemyPack> AllEnemyPacks()
+    {
+        List<EnemyPack> ret = new List<EnemyPack>();
+        foreach(EnemySpawner spawner in FindObjectsOfType<EnemySpawner>())
+        {
+            foreach(EnemyPack pack in spawner.enemySet)
+            {
+                ret.Add(pack);
+            }
+        }
+        return ret;
+    }
+
+    public static List<HostileAgent> AllEnemies()
+    {
+        List<HostileAgent> ret = new List<HostileAgent>();
+        foreach(EnemySpawner spawner in FindObjectsOfType<EnemySpawner>())
+        {
+            foreach(HostileAgent agent in spawner.allEnemies)
+            {
+                ret.Add(agent);
+            }
+        }
+        return ret;
     }
 }
 

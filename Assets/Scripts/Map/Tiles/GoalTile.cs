@@ -27,7 +27,7 @@ public class GoalTile : MapTile, IDamageable
 
     public void ApplyDamage(int damage)
     {
-        Debug.Assert(damage > 0);
+        // Debug.Assert(damage > 0);
         currentHealth -= damage;
         UpdateHealthDisplay();
         if(currentHealth <= 0) { OnDeath(); }

@@ -12,11 +12,10 @@ GameObject:
   - component: {fileID: 8760186591928140990}
   - component: {fileID: 5869692765816005302}
   - component: {fileID: 6712161317112774025}
-  - component: {fileID: 8236905536589452012}
-  - component: {fileID: 1396720300631903825}
-  - component: {fileID: -7538575707243645209}
+  - component: {fileID: 3134565222436357008}
+  - component: {fileID: 3702621143972315160}
   m_Layer: 0
-  m_Name: EnemyTile
+  m_Name: TurretTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1816e49a91cc64e4986297061571e954, type: 2}
+  - {fileID: 2100000, guid: 1f0e18cc8f0a9aa4c9c9916d076da1a5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -96,7 +95,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8236905536589452012
+--- !u!114 &3134565222436357008
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,34 +108,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueData:
-    type: 6
-    buildCost: 0
+    type: 7
+    buildCost: 500
     index: -1
-    traversalCost: 0
+    traversalCost: 10000
   canBeChanged: 0
   displayImage: {fileID: 0}
   showConnections: 0
   tileStatus: 0
   placedByPlayer: 0
---- !u!114 &1396720300631903825
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4170006953480210871}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af5337afb3286c44baf090861c555567, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemySet:
-  - enemy: {fileID: 3901912992367826147, guid: d3e6d1aca97e2264ba9c995d64857b42, type: 3}
-    count: 1
-  associatedTile: {fileID: 8236905536589452012}
-  spawnResetTime: 0
-  spawnElapsedTime: 0
---- !u!114 &-7538575707243645209
+--- !u!114 &3702621143972315160
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -148,5 +129,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc47636765c99c3418c11e9052f3ec61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectile: {fileID: 0}
-  shotResetTime: 5
+  projectile: {fileID: 6725922925602426046, guid: a7e27be67de23fd41b1c62ff049e7638,
+    type: 3}
+  shotResetTime: 3

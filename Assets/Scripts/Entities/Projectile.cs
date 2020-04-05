@@ -25,7 +25,7 @@ public class Projectile : MonoBehaviour
 
     private void Explode()
     {
-        Debug.Log("explosion");
+        // Debug.Log("explosion");
         Destroy(gameObject);
     }
 }

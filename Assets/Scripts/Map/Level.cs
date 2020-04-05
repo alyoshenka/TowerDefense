@@ -7,11 +7,13 @@ public class Level
 {
     [SerializeField] private int number;
     public int Number { get => number; }
+    public bool WinCon { get => allEnemies.Count == 0; }
 
     [SerializeField] private List<TileAllotment> allottedTiles;
     public List<TileAllotment> AllottedTiles { get => allottedTiles; }
     [SerializeField] private List<EnemyPack> enemyHorde;
     public List<EnemyPack> EnemyHorde { get => enemyHorde; }
+    private List<HostileAgent> allEnemies;
     [SerializeField] private GameBoard board;
     public GameBoard Board { get => board; }
 
@@ -24,6 +26,7 @@ public class Level
     public static Level CreateLevel(int level)
     {
         Level ret = new Level();
+        DefendState.Instance.openDefend += (() => { ret.allEnemies = EnemySpawner.AllEnemies(); }); // cancer
         ret.number = level;
 
         if(level <= 0) { return ret; } // start
@@ -45,7 +48,20 @@ public class Level
 
     private static List<EnemyPack> AssignEnemies(int level)
     {
-        return new List<EnemyPack>();
+        // return new List<EnemyPack>();
+        return EnemySpawner.AllEnemyPacks();
+    }
+
+    public void DestroyEnemy(HostileAgent agent)
+    {
+        allEnemies.Remove(agent);
+        
+        if(WinCon) 
+        { 
+            Debug.Log("win cond");
+            GameStateManager.Instance.Transition(GameStateManager.Instance.currentState, GameOverState.Instance);
+        }
+        else if(allEnemies.Count < 0) { Debug.Assert(false); }
     }
 
     public void AssignBoard(GameBoard givenBoard)
@@ -110,10 +126,7 @@ public class GameBoard
             Debug.Assert(false);
             return null;
         }
-        else
-        {
-            return tileMap.Tiles[node.Index];
-        }
+        else {  return tileMap.Tiles[node.Index]; }
     }
 
     public PathNode FindAssociatedNode(MapTile tile)
@@ -123,10 +136,7 @@ public class GameBoard
             Debug.Assert(false);
             return null;
         }
-        else
-        {
-            return nodeMap.Nodes[tile.Index];
-        }       
+        else { return nodeMap.Nodes[tile.Index]; }       
     }
 
     public void AssignNewData(PathNode node, TileData data)
@@ -152,7 +162,7 @@ public class GameBoard
         nodeMap.SetNodeType(FindAssociatedNode(newTile), newTile.Type); // could cause problems when presets are no longer used
         tileMap.ReplaceTile(oldTile, newTile); // here
 
-        if (newTile.Type == TileType.wall) { FindAssociatedNode(tileModel).ClearConnections(); } // wall
+        if (newTile.Type == TileType.wall || newTile.Type == TileType.turret) { FindAssociatedNode(newTile).ClearConnections(); } // wall
         if (oldTile.Type == TileType.goal) { PlaceState.Instance.Board.AssignGoal(null); }
         if (newTile.Type == TileType.goal) { PlaceState.Instance.Board.AssignGoal(FindAssociatedNode(newTile)); }
 
@@ -162,13 +172,13 @@ public class GameBoard
     public void RemoveNode(PathNode node, bool removeTile = true)
     {
         nodeMap.RemoveNode(node);
-        if (removeTile) { RemoveTile(FindAssociatedTile(node)); }
+        if (removeTile) { RemoveTile(FindAssociatedTile(node), false); }
     }
 
     public void RemoveTile(MapTile tile, bool removeNode = true)
     {
         tileMap.RemoveTile(tile);
-        if (removeNode) { RemoveNode(FindAssociatedNode(tile)); }
+        if (removeNode) { RemoveNode(FindAssociatedNode(tile), false); }
     }
 
     public void Destroy()

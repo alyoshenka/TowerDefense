@@ -127,7 +127,8 @@ public class MapEditor : MonoBehaviour
 
     public void EditorTileClick(EditorTile tile)
     {
-        bool isWall = tile.Type == TileType.wall || currentData.Type == TileType.wall;
+        bool isWall = tile.Type == TileType.wall || currentData.Type == TileType.wall 
+            || tile.Type == TileType.turret || currentData.Type == TileType.turret;
         if (currentData.Type == TileType.goal)
         {          
             gameBoard.AssignGoal(gameBoard.FindAssociatedNode(tile));
@@ -206,6 +207,7 @@ public struct TileData
     public static TileData Wall { get => new TileData(TileType.wall, Color.black, 200, 10000); }
     public static TileData Goal { get => new TileData(TileType.goal, new Color(1, 0, 1, 1), 0, 0); }
     public static TileData Enemy { get => new TileData(TileType.enemy, Color.red, 0, 0); }
+    public static TileData Turret { get => new TileData(TileType.turret, new Color(1, 0.5f, 0, 1), 500, 10000); }
 
 
     #endregion
@@ -231,6 +233,7 @@ public struct TileData
             presets.Add(Wall);
             presets.Add(Goal);
             presets.Add(Enemy);
+            presets.Add(Turret);
         }
     }
 

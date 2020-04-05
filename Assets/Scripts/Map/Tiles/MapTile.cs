@@ -10,7 +10,8 @@ public enum TileType
     water,
     wall,
     goal,
-    enemy
+    enemy,
+    turret
 }
 
 public class PathNode

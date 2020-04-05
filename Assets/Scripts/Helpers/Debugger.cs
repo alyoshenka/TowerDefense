@@ -10,6 +10,7 @@ public class Debugger : MonoBehaviour
     public bool StateTransitionWarnings;
     public bool TileMessages;
     public bool AgentMessages;
+    public bool EnemyMessages;
 
     void Awake() { Instance = this; }
 }

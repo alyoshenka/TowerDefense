@@ -261,8 +261,9 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        foreach (PathNode wall in nodeMap.Nodes.FindAll(node => node.Type == TileType.wall))
-            { wall.ClearConnections(); }
+        foreach (PathNode node in nodeMap.Nodes.FindAll(node => node.Type == TileType.wall 
+            || node.Type == TileType.turret))
+        { node.ClearConnections(); }
 
         return nodeMap;
     }

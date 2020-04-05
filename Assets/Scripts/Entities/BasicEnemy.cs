@@ -6,6 +6,9 @@ using UnityEngine;
 [RequireComponent(typeof(BasicEnemyBubble))]
 public class BasicEnemy : HostileAgent
 {
+
+    public bool yeet;
+
     protected new void Start()
     {
         base.Start();
@@ -17,11 +20,14 @@ public class BasicEnemy : HostileAgent
     {
         stateMachine.Update(this);
         stateMachine.RunTree(this);
+
+        if (yeet) { OnDeath(); }
     }
 
     public override void OnDeath()
     {
-        throw new System.NotImplementedException();
+        GamePlayState.CurrentLevel.DestroyEnemy(this);
+        Destroy(gameObject);
     }
 
     public override void Attack()

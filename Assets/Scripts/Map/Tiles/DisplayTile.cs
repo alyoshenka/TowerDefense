@@ -11,7 +11,7 @@ public class DisplayTile : MapTile
 
     [SerializeField] private TileAllotment allotment;
     public MapTile Tile { get => allotment.tile; }
-    public TileAllotment Allottment { get { return allotment; } private set { } }
+    public TileAllotment Allottment { get => allotment; } 
 
     public Button selectButton;
     public Image showImage;

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GameStateManager : MonoBehaviour
 {
     private static GameStateManager instance;
-    public static GameStateManager Instance { get { return instance; } private set { } }
+    public static GameStateManager Instance { get => instance; }
 
     private void Awake()
     {
@@ -22,7 +22,7 @@ public class GameStateManager : MonoBehaviour
         player = new Player();
     }
 
-    GameState currentState;
+    public GameState currentState;
     Player player;
 
     public void Transition(GameState prev, GameState next)

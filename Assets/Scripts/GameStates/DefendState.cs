@@ -35,8 +35,6 @@ public class DefendState : GamePlayState
         openDefend?.Invoke();
         currentLevel.Board.goalTile.CastleHealth = castleHealth;
 
-        Debug.Log(currentLevel.Board.nodeMap.Nodes[0].TraversalCost);
-
         StartCoroutine("StartDelay");
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter defend"); }
     }
