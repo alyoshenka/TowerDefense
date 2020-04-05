@@ -17,9 +17,7 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
     private void Start()
     {
         stateMachine = new EnemySpawnerBrain(this);
-
         DefendState.Instance.openDefend += GetPath;     
-
         spawnElapsedTime = 0;
     }
 

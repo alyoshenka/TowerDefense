@@ -11,5 +11,5 @@ public class Debugger : MonoBehaviour
     public bool TileMessages;
     public bool AgentMessages;
 
-    void Start() { Instance = this; }
+    void Awake() { Instance = this; }
 }

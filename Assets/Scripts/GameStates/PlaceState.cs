@@ -36,15 +36,7 @@ public class PlaceState : GamePlayState
         base.OnEnter();
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter place"); }
 
-        // generate map
-        int newNumber = currentLevel.Number + 1;
-        Level newLevel = Level.CreateLevel(newNumber);
-        currentLevel = newLevel; 
-        GameBoard newBoard = MapGenerator.GenerateBoard(newNumber, 
-            Vector2.one * (newNumber + 5), tileParent);
-        currentLevel.AssignBoard(newBoard);
-
-        SetLevel(CurrentLevel);
+        GenerateNextMap();
 
         openPlace?.Invoke();
     }
@@ -60,5 +52,18 @@ public class PlaceState : GamePlayState
         if (!currentLevel.Board.GoalAssigned) { Debug.Log("goal not assigned"); }
         if (Debugger.Instance.StateTransitionWarnings) { Debug.LogWarning("place transition condition"); }
         return currentLevel.Board.GoalAssigned;
+    }
+
+    private void GenerateNextMap()
+    {
+        // generate map
+        int newNumber = currentLevel.Number + 1;
+        Level newLevel = Level.CreateLevel(newNumber);
+        currentLevel = newLevel; 
+        GameBoard newBoard = MapGenerator.GenerateBoard(newNumber, 
+            Vector2.one * (newNumber + 5), tileParent);
+        currentLevel.AssignBoard(newBoard);
+
+        SetLevel(CurrentLevel);
     }
 }

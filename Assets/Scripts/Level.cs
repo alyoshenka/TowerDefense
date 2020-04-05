@@ -55,6 +55,10 @@ public class Level
 
     public void Destroy()
     {
+        allottedTiles.Clear();
+        allottedTiles = null;
+        enemyHorde.Clear();
+        enemyHorde = null;
         board.Destroy();
     }
 }
@@ -169,8 +173,13 @@ public class GameBoard
     }
 
     public void Destroy()
-    {
-        foreach(MapTile tile in tileMap.Tiles) { tile.Destroy(); }
+    {      
+        while(tileMap.Tiles.Count > 0)
+        {
+            MapTile tile = tileMap.Tiles[0];
+            tileMap.RemoveTile(tile);
+            tile.Destroy();
+        }
         tileMap.Tiles.Clear();
 
         goalNode = null;

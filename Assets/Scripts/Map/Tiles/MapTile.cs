@@ -34,7 +34,6 @@ public class PathNode
         connections.Add(newNode);
     }
 
-
     private PathNode() { }
 
     public PathNode(TileData setData)
@@ -103,40 +102,47 @@ public class MapTile : MonoBehaviour
 
     public bool placedByPlayer;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         // ok this might be kinda bad
-        PlaceState.Instance.openPlace += (() =>
-        {           
-            tileEnter += HoverEnter;
-            tileExit += HoverExit;
-            tileClick += TileSelected;
-        });
-
-        DefendState.Instance.openDefend += (() => 
-        {
-            tileEnter -= HoverEnter;
-            tileExit -= HoverExit;
-            tileClick -= TileSelected;
-        });
+        PlaceState.Instance.openPlace += AddPlaceIndicators;
+        DefendState.Instance.openDefend += RemovePlaceIndicators;
     }
 
-    private void HoverEnter()
+    protected virtual void OnDestroy()
+    {
+        PlaceState.Instance.openPlace -= AddPlaceIndicators;
+        DefendState.Instance.openDefend -= RemovePlaceIndicators;
+    }
+
+    #region Placement
+    private void AddPlaceIndicators()
+    {
+        tileEnter += HoverEnter;
+        tileExit += HoverExit;
+        tileClick += TileSelected;
+    }
+    private void RemovePlaceIndicators()
+    {
+        tileEnter -= HoverEnter;
+        tileExit -= HoverExit;
+        tileClick -= TileSelected;
+    }
+    protected virtual void HoverEnter()
     {
         transform.localScale *= 1.4f;
         currentHover = this;
     }
-
-    private void HoverExit()
+    protected virtual void HoverExit()
     {
         transform.localScale /= 1.4f;
         if(this == currentHover) { currentHover = null; }
     }
-
-    private void TileSelected()
+    protected virtual void TileSelected()
     {
         TilePlacement.Instance.ClickTile(this);
     }
+    #endregion
 
     public MapTile InstantiateInPlace(MapTile tileModel)
     {
@@ -150,10 +156,11 @@ public class MapTile : MonoBehaviour
 
     public void Destroy()
     {
+        currentHover = null;
         if (Debugger.Instance.TileMessages) { Debug.Log("destroy " + name); }
-        Destroy(gameObject);
+        if (null != gameObject && null != this) { Destroy(gameObject); }
+        // Destroy(this);
     }
-
 
     /// <summary>
     /// how the tile affects agents

@@ -6,24 +6,33 @@ public class EditorTile : MapTile
 {
     public static EditorTile CurrentHover { get => (EditorTile)currentHover; }
 
-    protected override void Start()
+    protected override void Awake()
     {
-        // base.Start();
+        tileEnter += HoverEnter;
+        tileExit += HoverExit;
+        tileClick += TileSelected;
+    }
 
-        tileEnter += (() => 
-        {
-            showConnections = true;
+    protected override void OnDestroy()
+    {
+        tileEnter -= HoverEnter;
+        tileExit -= HoverExit;
+        tileClick -= TileSelected;
+    }
+
+    protected override void HoverEnter()
+    {
+        showConnections = true;
             currentHover = this;
-        });
-        tileExit += (() => 
-        {
-            showConnections = false;
+    }
+    protected override void HoverExit()
+    {
+        showConnections = false;
             if (this == currentHover) { currentHover = null; }
-        });
-        tileClick += (() =>
-        {
-            MapEditor.Instance.EditorTileClick(this);
-        });
+    }
+    protected override void TileSelected()
+    {
+        MapEditor.Instance.EditorTileClick(this);
     }
 
     protected override void OnDrawGizmos()

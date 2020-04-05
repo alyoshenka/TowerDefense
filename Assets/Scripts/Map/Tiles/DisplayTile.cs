@@ -29,7 +29,7 @@ public class DisplayTile : MapTile
         selectedTile = null;
     }
 
-    protected override void Start()
+    protected override void Awake()
     {
         // base.Start();
 

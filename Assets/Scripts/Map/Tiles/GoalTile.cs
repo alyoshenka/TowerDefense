@@ -7,10 +7,9 @@ public class GoalTile : MapTile, IDamageable
     public float maxHealth;
     public float currentHealth;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
-
+        base.Awake();
         ResetHealth();
     }
 
