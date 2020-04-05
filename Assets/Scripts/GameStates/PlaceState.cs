@@ -8,7 +8,7 @@ public class PlaceState : GamePlayState
     public event EnterStateEvent openPlace;
 
     private static PlaceState instance;
-    public static PlaceState Instance { get { return instance; } private set { } }
+    public static PlaceState Instance { get => instance; }
 
     public bool GoalPlaced { get => currentLevel.Board.GoalAssigned; }
     public GameBoard Board { get => currentLevel.Board; } // bas design!!
@@ -63,6 +63,9 @@ public class PlaceState : GamePlayState
         GameBoard newBoard = MapGenerator.GenerateBoard(newNumber, 
             Vector2.one * (newNumber + 5), tileParent);
         currentLevel.AssignBoard(newBoard);
+
+        // take this out later
+        ConnectionShower.Instance.board = newBoard;
 
         SetLevel(CurrentLevel);
     }

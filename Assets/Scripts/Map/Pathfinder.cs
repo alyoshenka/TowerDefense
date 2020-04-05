@@ -25,6 +25,8 @@ public class Pathfinder
         {
             unvisitedNodes.Remove(currentNode);
 
+            Debug.Assert(currentNode.connections.Count <= 4); // take out later
+
             // all neighbors
             foreach (PathNode neighbor in currentNode.connections)
             {

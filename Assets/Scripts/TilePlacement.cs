@@ -27,7 +27,7 @@ public class TilePlacement : MonoBehaviour
         availableTiles = new List<TileAllotment>();
         for(int i = 0; i < tileSlots.Count; i++)
         {
-            availableTiles.Add(tileSlots[i].Allottment);
+            availableTiles.Add(tileSlots[i].Allottment); // this needs to be changed to reset on game over
         }
     }
 

@@ -49,17 +49,15 @@ public class NodeMap
         Nodes.Remove(node);
     }
 
-    // new node gets old node's connections, old node gets cleared
-    public static void ReplaceConnections(PathNode oldNode, PathNode newNode)
-    {
-        newNode.AssignConnections(oldNode.connections);
-        oldNode.ClearConnections();
-    }
-
     public TileType NodeType(int index)
     {
         if(index >= nodes.Count) { Debug.Log(index); }
         return nodes[index].Type;
+    }
+
+    public void SetNodeType(PathNode node, TileType newType)
+    {
+        node.AssignData(TileData.FindByType(newType));
     }
 
     public void ResetNodes()
@@ -88,9 +86,13 @@ public class TileMap
 
     public void AddTile(MapTile tile) { tiles.Add(tile); }
 
-    public void RemoveTile(MapTile tile)
+    public void RemoveTile(MapTile tile) { tiles.Remove(tile); }
+
+    public void ReplaceTile(MapTile oldTile, MapTile newTile)
     {
-        tiles.Remove(tile);
+        int idx = tiles.IndexOf(oldTile);
+        tiles.RemoveAt(idx);
+        tiles.Insert(idx, newTile);
     }
 }
 

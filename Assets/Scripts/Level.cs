@@ -148,7 +148,8 @@ public class GameBoard
         newTile.AssignData(tileModel.Data, true);
         newTile.placedByPlayer = true;
 
-        NodeMap.ReplaceConnections(FindAssociatedNode(oldTile), FindAssociatedNode(newTile));
+        nodeMap.SetNodeType(FindAssociatedNode(newTile), newTile.Type); // could cause problems when presets are no longer used
+        tileMap.ReplaceTile(oldTile, newTile); // here
 
         if(newTile.Type == TileType.wall) { FindAssociatedNode(tileModel).ClearConnections(); } // wall
         if(oldTile.Type == TileType.goal) { PlaceState.Instance.Board.AssignGoal(null); }

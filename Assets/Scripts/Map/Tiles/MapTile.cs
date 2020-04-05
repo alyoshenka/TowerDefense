@@ -50,8 +50,21 @@ public class PathNode
         uniqueData = newData;
     }
 
-    public void AssignConnections(List<PathNode> newConnections) { connections = newConnections; }
+    public void ReplaceConnections(PathNode oldNode) 
+    {
+        for(int i = 0; i < oldNode.connections.Count; i++)
+        {
+            PathNode neighbor = oldNode.connections[i];
+            neighbor.RemoveConnection(oldNode);
+            neighbor.AddConnection(this);
+        }
 
+        connections = new List<PathNode>(oldNode.connections);
+        oldNode.ClearConnections();
+
+        Debug.Assert(oldNode.connections.Count == 0);
+    }
+     
     public void RemoveFromGoal() { AssignData(TileData.Basic); }
 
     public void AssignAsGoal() { AssignData(TileData.Goal); }
@@ -159,6 +172,7 @@ public class MapTile : MonoBehaviour
         currentHover = null;
         if (Debugger.Instance.TileMessages) { Debug.Log("destroy " + name); }
         if (null != gameObject && null != this) { Destroy(gameObject); }
+        else { Debug.LogError("something probably bad"); }
         // Destroy(this);
     }
 
