@@ -112,7 +112,7 @@ MonoBehaviour:
     buildCost: 0
     index: -1
     traversalCost: 0
-  canBeChanged: 1
+  canBeChanged: 0
   displayImage: {fileID: 0}
   showConnections: 0
   tileStatus: 0

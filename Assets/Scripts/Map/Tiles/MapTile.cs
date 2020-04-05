@@ -22,7 +22,7 @@ public class PathNode
     
     [HideInInspector] public float calculatedCost; // cost to get to this node
 
-    public int TraversalCost { get => uniqueData.Cost; }
+    public int TraversalCost { get => uniqueData.traversalCost; }
 
     public PathNode previousNode; // determined when finding path
     public List<PathNode> connections;
@@ -42,6 +42,8 @@ public class PathNode
         calculatedCost = Mathf.Infinity;
 
         uniqueData = setData;
+
+        Debug.Assert(TraversalCost == setData.traversalCost);
     }
 
     public void AssignData(TileData newData)
@@ -87,7 +89,7 @@ public class MapTile : MonoBehaviour
     public TileType Type { get => uniqueData.Type; }
     public Color DisplayColor { get => uniqueData.DisplayColor; }
     public int TraversalCost { get => uniqueData.traversalCost; }
-    public int BuildCost { get { return uniqueData.Cost; } private set { } }
+    public int BuildCost { get { return uniqueData.BuildCost; } private set { } }
     public int Index { get => uniqueData.index; set => uniqueData.index = value; }
     
 
@@ -97,7 +99,7 @@ public class MapTile : MonoBehaviour
     public event TileExitedEvent tileExit;
     public delegate void TileClickedEvent();
     public event TileClickedEvent tileClick;
-    protected static MapTile currentHover;
+    public static MapTile currentHover;
 
     public bool GoalTile { get => uniqueData.Type == TileType.goal; }
 
@@ -118,8 +120,11 @@ public class MapTile : MonoBehaviour
     protected virtual void Awake()
     {
         // ok this might be kinda bad
-        PlaceState.Instance.openPlace += AddPlaceIndicators;
-        DefendState.Instance.openDefend += RemovePlaceIndicators;
+        if (canBeChanged) 
+        { 
+            PlaceState.Instance.openPlace += AddPlaceIndicators;
+            DefendState.Instance.openDefend += RemovePlaceIndicators;
+        }
     }
 
     protected virtual void OnDestroy()
@@ -129,13 +134,13 @@ public class MapTile : MonoBehaviour
     }
 
     #region Placement
-    private void AddPlaceIndicators()
+    public void AddPlaceIndicators()
     {
         tileEnter += HoverEnter;
         tileExit += HoverExit;
         tileClick += TileSelected;
     }
-    private void RemovePlaceIndicators()
+    public void RemovePlaceIndicators()
     {
         tileEnter -= HoverEnter;
         tileExit -= HoverExit;
@@ -235,6 +240,8 @@ public class MapTile : MonoBehaviour
         uniqueData = newData;
 
         name = uniqueData.index + "-" + uniqueData.Type;
+
+        if(Type != TileType.basic) { canBeChanged = false; } // maybe??
     }
 
     public void AssignDataTile(MapTile otherTile)

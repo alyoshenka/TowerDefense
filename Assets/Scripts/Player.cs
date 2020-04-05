@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// separate roles between player and goaltile/castle
+
 // manages the player values
 [System.Serializable]
 public class Player : IDamageable

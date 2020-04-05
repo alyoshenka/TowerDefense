@@ -82,6 +82,7 @@ public class GameBoard
 {
     private PathNode goalNode;
     public PathNode GoalNode { get => goalNode; }
+    public GoalTile goalTile { get => (GoalTile)FindAssociatedTile(goalNode); }
     public bool GoalAssigned { get => null != goalNode; }
     public NodeMap nodeMap;
     public TileMap tileMap;
@@ -151,12 +152,9 @@ public class GameBoard
         nodeMap.SetNodeType(FindAssociatedNode(newTile), newTile.Type); // could cause problems when presets are no longer used
         tileMap.ReplaceTile(oldTile, newTile); // here
 
-        if(newTile.Type == TileType.wall) { FindAssociatedNode(tileModel).ClearConnections(); } // wall
-        if(oldTile.Type == TileType.goal) { PlaceState.Instance.Board.AssignGoal(null); }
-        if (newTile.Type == TileType.goal)
-        {
-            PlaceState.Instance.Board.AssignGoal(FindAssociatedNode(newTile));
-        }
+        if (newTile.Type == TileType.wall) { FindAssociatedNode(tileModel).ClearConnections(); } // wall
+        if (oldTile.Type == TileType.goal) { PlaceState.Instance.Board.AssignGoal(null); }
+        if (newTile.Type == TileType.goal) { PlaceState.Instance.Board.AssignGoal(FindAssociatedNode(newTile)); }
 
         return newTile;
     }

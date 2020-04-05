@@ -7,7 +7,6 @@ public class Pathfinder
 
     // weight paths that are closer to as-the-crow-flies paths
 
-
     public static FoundPath DjikstrasPath(PathNode _start, PathNode _goal, NodeMap nodeMap)
     {
         return RunDjikstras(_start, _goal, nodeMap);
@@ -30,7 +29,7 @@ public class Pathfinder
             // all neighbors
             foreach (PathNode neighbor in currentNode.connections)
             {
-                if(neighbor.calculatedCost > 1000)
+                if(neighbor.calculatedCost > 1000000)
                 {
                     float newCost = currentNode.calculatedCost + neighbor.TraversalCost;
                     if (newCost < neighbor.calculatedCost)

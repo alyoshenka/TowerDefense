@@ -95,7 +95,6 @@ public class MapEditor : MonoBehaviour
 
     public static void SaveBoard(GameBoard board, string fileName)
     {
-        Debug.Assert(board.GoalAssigned);
         SaveMap toSave = MapGenerator.ExtractData(board);
 
         fileName = "Assets/Maps/" + fileName + ".txt";
@@ -193,7 +192,7 @@ public struct TileData
     [SerializeField] private TileType type;
     public TileType Type { get => type; }
     [SerializeField] private int buildCost;
-    public int Cost { get => buildCost; }
+    public int BuildCost { get => buildCost; }
     public int index;
 
     [Range(1, 25)] public int traversalCost;

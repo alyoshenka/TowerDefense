@@ -6,6 +6,8 @@ public class EditorTile : MapTile
 {
     public static EditorTile CurrentHover { get => (EditorTile)currentHover; }
 
+    public Color displayColor;
+
     protected override void Awake()
     {
         tileEnter += HoverEnter;
@@ -23,23 +25,23 @@ public class EditorTile : MapTile
     protected override void HoverEnter()
     {
         showConnections = true;
-            currentHover = this;
+        currentHover = this;
     }
     protected override void HoverExit()
     {
         showConnections = false;
-            if (this == currentHover) { currentHover = null; }
+        if (this == currentHover) { currentHover = null; }
     }
     protected override void TileSelected()
     {
         MapEditor.Instance.EditorTileClick(this);
+
+        displayColor = TileData.FindByType(Type).DisplayColor;
     }
 
     protected override void OnDrawGizmos()
-    {
-        base.OnDrawGizmos();
-
-        Gizmos.color = this == currentHover ? MapEditor.color : DisplayColor;
+    { 
+        Gizmos.color = this == currentHover ? MapEditor.color : displayColor;
         Gizmos.DrawCube(transform.position, this == currentHover 
             ? Vector3.one : new Vector3(0.9f, 0.9f, 0.9f));
 

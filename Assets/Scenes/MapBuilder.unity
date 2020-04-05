@@ -370,9 +370,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultTile: {fileID: 4170006953480210871, guid: 7a0f06a1bab5bc24198edb1771230694,
     type: 3}
-  fileName: big
-  defaultGridSize: {x: 5, y: 5}
-  visualizeGrid: 1
+  fileName: 1
+  defaultGridSize: {x: 6, y: 6}
+  visualizeGrid: 0
   tiles:
   - type: 0
     buildCost: 0
@@ -395,3 +395,4 @@ MonoBehaviour:
   StateChangeMessages: 0
   StateTransitionWarnings: 0
   TileMessages: 0
+  AgentMessages: 0

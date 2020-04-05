@@ -21,6 +21,7 @@ public class TilePlacement : MonoBehaviour
     [SerializeField] private List<TileAllotment> availableTiles;
 
     public GameObject tileParent;
+    public MapTile defaultTile; // set old goal
 
     private void Start()
     {
@@ -98,6 +99,7 @@ public class TilePlacement : MonoBehaviour
         // make new tile
         DisplayTile.SelectedTile.TakeTile();
         MapTile newTile = PlaceState.Instance.Board.AssignNewTile(clickedTile, DisplayTile.SelectedTile.Tile);
+        newTile.AddPlaceIndicators();
         newTile.placedByPlayer = true;
 
         if (clickedTile.placedByPlayer) { ReturnTile(clickedTile); }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class DefendState : GamePlayState
 {
@@ -10,6 +11,7 @@ public class DefendState : GamePlayState
     private static DefendState instance;
     public static DefendState Instance { get { return instance; } private set { } }
 
+    public TMP_Text castleHealth;
     public Button pauseButton;
     public int startDelay;
 
@@ -31,6 +33,10 @@ public class DefendState : GamePlayState
         base.OnEnter();
 
         openDefend?.Invoke();
+        currentLevel.Board.goalTile.CastleHealth = castleHealth;
+
+        Debug.Log(currentLevel.Board.nodeMap.Nodes[0].TraversalCost);
+
         StartCoroutine("StartDelay");
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter defend"); }
     }

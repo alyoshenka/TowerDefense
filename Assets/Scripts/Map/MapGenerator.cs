@@ -66,7 +66,6 @@ public class NodeMap
         {
             node.calculatedCost = Mathf.Infinity;
             node.previousNode = null;
-            node.ClearConnections();
         }
     }
 }
@@ -149,7 +148,7 @@ public class MapGenerator : MonoBehaviour
                 GameObject newTileObject = GameObject.Instantiate(
                     toCopy, 
                     new Vector3(x - (size.x / 2), -y + (size.y / 2), 0), 
-                    Quaternion.identity, parent);
+                    Quaternion.identity, PlaceState.Instance.tileParent);
 
                 MapTile newTile = newTileObject.GetComponent<MapTile>();
                 int idx = y * Mathf.RoundToInt(size.x) + x;
@@ -174,6 +173,7 @@ public class MapGenerator : MonoBehaviour
         foreach(PathNode node in gameBoard.nodeMap.Nodes)
         {
             tiles.Add(node.Data);
+            Debug.Log(node.Type);
         }
         map.tileData = tiles;
 

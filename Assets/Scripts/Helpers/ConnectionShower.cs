@@ -22,6 +22,7 @@ public class ConnectionShower : MonoBehaviour
 
         Gizmos.color = Color.green;
 
+        /*
         foreach(PathNode node in board.nodeMap.Nodes)
         {
             foreach(PathNode neighbor in node.connections)
@@ -32,6 +33,16 @@ public class ConnectionShower : MonoBehaviour
                     board.FindAssociatedTile(node).transform.position, 
                     board.FindAssociatedTile(neighbor).transform.position);
             }
+        }
+        */
+
+        if(null == MapTile.currentHover) { return; }
+
+        foreach(PathNode neighbor in board.FindAssociatedNode(MapTile.currentHover).connections)
+        {
+            Gizmos.DrawLine(
+                    MapTile.currentHover.transform.position, 
+                    board.FindAssociatedTile(neighbor).transform.position);
         }
     }
 }

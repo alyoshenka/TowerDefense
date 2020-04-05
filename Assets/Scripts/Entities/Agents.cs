@@ -9,8 +9,8 @@ public abstract class AIAgent : MonoBehaviour
 {
     protected virtual void Update()
     {
-        stateMachine.Update(this);
-        stateMachine.RunTree(this);
+        stateMachine?.Update(this);
+        stateMachine?.RunTree(this);
     }
 
     public DecisionTree stateMachine;
