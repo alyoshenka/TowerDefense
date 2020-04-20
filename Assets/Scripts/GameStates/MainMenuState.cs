@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class MainMenuState : GameState
 {
     private static MainMenuState instance;
-    public static MainMenuState Instance { get { return instance; } private set { } }
+    public static MainMenuState Instance { get => instance; }
     private void Awake()
     {
         if (null == instance) { instance = this; }
@@ -20,11 +20,11 @@ public class MainMenuState : GameState
     private void Start()
     {
         playButton.onClick.AddListener(
-            () => GameStateManager.Instance.Transition(this, StartState.Instance)); // start
+            () => GameStateManager.Instance.StartGame()); // start
         tutorialButton.onClick.AddListener(
-            () => GameStateManager.Instance.Transition(this, TutorialState.Instance));
+            () => GameStateManager.Instance.StartTutorial());
         settingsButton.onClick.AddListener(
-            () => GameStateManager.Instance.Transition(this, SettingsState.Instance));
+            () => GameStateManager.Instance.OpenSettings());
 
         gameObject.SetActive(false);
     }

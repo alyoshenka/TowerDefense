@@ -59,7 +59,7 @@ public class Level
         if(WinCon) 
         { 
             Debug.Log("win cond");
-            GameStateManager.Instance.Transition(GameStateManager.Instance.currentState, GameOverState.Instance);
+            GameStateManager.Instance.GameOver(true);
         }
         else if(allEnemies.Count < 0) { Debug.Assert(false); }
     }

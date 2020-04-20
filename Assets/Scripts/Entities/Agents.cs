@@ -14,6 +14,14 @@ public abstract class AIAgent : MonoBehaviour
     }
 
     public DecisionTree stateMachine;
+
+    protected Color brainDisplay = Color.black; // get rid of later
+
+    public virtual void OnDrawGizmos()
+    {
+        Gizmos.color = brainDisplay;
+        Gizmos.DrawWireSphere(transform.position, 0.55f);
+    }
 }
 
 /// <summary>
@@ -37,16 +45,23 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
         get => null == target ||
             Vector3.Distance(transform.position, target.transform.position) < targetEps;
     }
-    
 
-    [Tooltip("How long until it can move again")]
+    public UnityEngine.UI.Image healthBar;   
+
+    [Tooltip("How long until I can move again?")]
     public float moveCooldown;
+    [Tooltip("How long until I can attack again?")]
+    public float reloadCooldown;
+
     protected float restedTime;
+
     public bool ShouldRest { get => restedTime < moveCooldown; }
+    public bool ShouldReload { get => restedTime < reloadCooldown; }
 
     // public float attackCooldown;
 
     public float moveSpeed;
+    public float rotSpeed;
 
     protected void Start()
     {
@@ -64,19 +79,38 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
     {
         currentHealth -= damage;
         if(currentHealth <= 0) { OnDeath(); }
+
+        healthBar.fillAmount = currentHealth / maxHealth;
     }
 
     public abstract void OnDeath();
 
+    public void Turn()
+    {
+        float ARot = transform.eulerAngles.z;
+        float ToBRot = Mathf.Atan2(
+            target.transform.position.y - transform.position.y, 
+            target.transform.position.x - transform.position.x) 
+            * Mathf.Rad2Deg;
+
+        transform.Rotate(Vector3.forward * Time.deltaTime * rotSpeed);
+        // bool cw;
+
+        brainDisplay = Color.grey;
+    }
+
     public void Advance()
     {
-        transform.LookAt(target.transform);
-        transform.position += transform.forward * moveSpeed * Time.deltaTime;
+        transform.position += transform.up * moveSpeed * Time.deltaTime;
+
+        brainDisplay = Color.blue;
     }
 
     public void Rest()
     {
         restedTime += Time.deltaTime;
+
+        brainDisplay = Color.magenta;
     }
 
     public void AssignNextTarget()
@@ -95,6 +129,8 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
             target = PlaceState.Instance.Board.FindAssociatedTile(
             foundPath.path[targetIdx]);
         }
+
+        brainDisplay = Color.green;
     }
 
     public void AssignPath(FoundPath path)
@@ -104,7 +140,35 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
         AssignNextTarget();
     }
 
-    public abstract void Attack();
+    public virtual void Attack() { brainDisplay = Color.red; } // abstract
+
+    public virtual bool LookingAtTarget()
+    {
+        float ARot = transform.eulerAngles.z;
+        float ToBRot = Mathf.Atan2(
+            target.transform.position.y - transform.position.y, 
+            target.transform.position.x - transform.position.x) 
+            * Mathf.Rad2Deg;
+        return Mathf.Abs(ARot - ToBRot) < 1;
+    }
+
+    public override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+
+        if(null == target) { return; }
+
+        int len = 2;
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.right * len);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + transform.up * len);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * len);
+
+        Gizmos.color = Color.black;
+        Gizmos.DrawLine(transform.position, target.transform.position);
+    }
 }
 
 public abstract class HostileAgent : OrganicAgent

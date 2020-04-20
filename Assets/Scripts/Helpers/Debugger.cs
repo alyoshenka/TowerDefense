@@ -11,6 +11,9 @@ public class Debugger : MonoBehaviour
     public bool TileMessages;
     public bool AgentMessages;
     public bool EnemyMessages;
+    public bool AgentBrainMessages;
+    public bool DeveloperHaltMessages;
+    public bool UIAssigned;
 
     void Awake() { Instance = this; }
 }

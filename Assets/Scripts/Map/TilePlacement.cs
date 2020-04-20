@@ -15,6 +15,9 @@ public class TilePlacement : MonoBehaviour
         else if (this != instance) { Destroy(this); }
     }
 
+    // all the tiles have been used
+    public bool AllUsed { get => tileSlots.FindAll(t => t.Available).Count == 0; }
+
     public DisplayTile display;
     public List<DisplayTile> tileSlots; // make dynamic later
 
@@ -43,16 +46,6 @@ public class TilePlacement : MonoBehaviour
     {
         availableTiles = tiles;
         // BadUpdateDisplay(tiles);
-    }
-
-    private void BadUpdateDisplay(List<TileAllotment> tiles)
-    {
-        Debug.Assert(tiles.Count == availableTiles.Count);
-
-        for(int i = 0; i < tiles.Count; i++)
-        {
-            tileSlots[i].SetAssociatedTile(tiles[i]);
-        }
     }
 
     private void UpdateDisplay()
@@ -126,4 +119,9 @@ public class TilePlacement : MonoBehaviour
 
         // return money
     }
+
+    /// <summary>
+    /// visualize unused tiles
+    /// </summary>
+    public void IndicateUnused() { foreach(DisplayTile tile in tileSlots.FindAll(t => t.Available)) { tile.IndicateUnused(); } }
 }

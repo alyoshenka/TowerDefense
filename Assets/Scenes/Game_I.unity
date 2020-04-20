@@ -204,26 +204,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &714249493 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3358873722801202850, guid: c60876b865daff7449e96bb21679ba8d,
-    type: 3}
-  m_PrefabInstance: {fileID: 795939569}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &714249497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 714249493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1717fef315d9a054baeb73095163737c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  board: {}
-  showConnections: 1
 --- !u!1001 &795939569
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -231,36 +211,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
-      propertyPath: TileMessages
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356790595188341339, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
-      propertyPath: tileToTypeMap.Array.size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356790595188341339, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
-      propertyPath: tileToTypeMap.Array.data[7].tile
-      value: 
-      objectReference: {fileID: 4170006953480210871, guid: 4d49f4c9bda92d449add8d67a857df13,
-        type: 3}
-    - target: {fileID: 1356790595188341339, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
-      propertyPath: tileToTypeMap.Array.data[7].type
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3358873722323274756, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
-      propertyPath: startDelay
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3358873722323274756, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
-      propertyPath: castleHealth
-      value: 
-      objectReference: {fileID: 1916340148}
     - target: {fileID: 3358873722801202860, guid: c60876b865daff7449e96bb21679ba8d,
         type: 3}
       propertyPath: tileParent
@@ -378,31 +328,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4452428676214914659, guid: c60876b865daff7449e96bb21679ba8d,
         type: 3}
-      propertyPath: availableTiles.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4452428676214914659, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
-      propertyPath: defaultTile
-      value: 
-      objectReference: {fileID: 3134196305117836450, guid: f74d23f1219fbb247aba1cef0282d42d,
-        type: 3}
-    - target: {fileID: 4452428676214914659, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
       propertyPath: tileParent
       value: 
       objectReference: {fileID: 1241388506}
-    - target: {fileID: 5735416956496725848, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
-      propertyPath: allotment.tile
-      value: 
-      objectReference: {fileID: 3134565222436357008, guid: 4d49f4c9bda92d449add8d67a857df13,
-        type: 3}
-    - target: {fileID: 5735416956496725848, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
-      propertyPath: allotment.count
-      value: 3
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
 --- !u!1 &1241388506
@@ -501,18 +429,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1916340148 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1392022551, guid: c60876b865daff7449e96bb21679ba8d,
-    type: 3}
-  m_PrefabInstance: {fileID: 795939569}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2074178205
 GameObject:
   m_ObjectHideFlags: 0

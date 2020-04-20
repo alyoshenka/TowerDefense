@@ -32,6 +32,8 @@ public class BasicEnemy : HostileAgent
 
     public override void Attack()
     {
+        base.Attack(); // take out later
+
         if (ShouldRest) { Rest(); }
         else
         {
@@ -43,10 +45,13 @@ public class BasicEnemy : HostileAgent
 
 public class BasicEnemyBrain : DecisionTree
 {
-    BooleanDecision isTired;
+    BooleanDecision isTired_move;
+    BooleanDecision isTired_reload;
     BooleanDecision atTarget;
+    BooleanDecision lookingAtTarget;
     BooleanDecision withinRange;
 
+    Action turn;
     Action advance;
     Action rest;
     Action assignNextTarget;
@@ -54,23 +59,28 @@ public class BasicEnemyBrain : DecisionTree
 
     public BasicEnemyBrain(BasicEnemy agent)
     {
+        turn = new Turn(agent);
         advance = new Advance(agent);
         rest = new Rest(agent);
         assignNextTarget = new AssignNextTarget(agent);
         attack = new Attack(agent);
 
-        atTarget = new BooleanDecision(assignNextTarget, advance);
-        withinRange = new BooleanDecision(attack, atTarget);
-        isTired = new BooleanDecision(rest, withinRange);
+        lookingAtTarget = new BooleanDecision(advance, turn);
+        atTarget = new BooleanDecision(assignNextTarget, lookingAtTarget);
+        isTired_reload = new BooleanDecision(rest, attack);
+        withinRange = new BooleanDecision(isTired_reload, atTarget);
+        isTired_move = new BooleanDecision(rest, withinRange);
 
-        start = isTired;
+        start = isTired_move;
     }
 
     public override void Update(AIAgent agent)
     {
-        isTired.Value = ((OrganicAgent)agent).ShouldRest;
+        isTired_move.Value = ((OrganicAgent)agent).ShouldRest;
+        isTired_reload.Value = ((OrganicAgent)agent).ShouldReload;
         atTarget.Value = ((OrganicAgent)agent).ReachedTarget;
         withinRange.Value = ((HostileAgent)agent).withinRangeOfGoal;
+        lookingAtTarget.Value = ((OrganicAgent)agent).LookingAtTarget();
     }
 }
 

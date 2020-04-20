@@ -23,7 +23,10 @@ public class DefendState : GamePlayState
     private void Start()
     {
         pauseButton.onClick.AddListener(
-            () => GameStateManager.Instance.Transition(this, PauseState.Instance));
+            () => PauseState.Instance.TogglePauseGame());
+
+        nextLogicalState = GameOverState.Instance; // should this be different?
+        GoalTile.goalDeath += (() => { GameStateManager.Instance.TransitionToNextState(this); });
 
         gameObject.SetActive(false);
     }

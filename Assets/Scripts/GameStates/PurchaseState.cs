@@ -18,8 +18,9 @@ public class PurchaseState : GamePlayState
 
     private void Start()
     {
+        nextLogicalState = PlaceState.Instance;
         playButton.onClick.AddListener(
-            () => GameStateManager.Instance.Transition(this, PlaceState.Instance));
+            () => GameStateManager.Instance.TransitionToNextState(this));
 
         gameObject.SetActive(false);
     }

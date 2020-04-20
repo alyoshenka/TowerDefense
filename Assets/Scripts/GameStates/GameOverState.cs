@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverState : GamePlayState
+public class GameOverState : GamePlayState // this should be win/lose
 {
     private static GameOverState instance;
     public static GameOverState Instance { get { return instance; } private set { } }
@@ -18,15 +18,16 @@ public class GameOverState : GamePlayState
 
     private void Start()
     {
+       
         returnToMenu.onClick.AddListener(
-            () => GameStateManager.Instance.Transition(this, MainMenuState.Instance));
+            () => GameStateManager.Instance.ReturnToMenu());
 
         gameObject.SetActive(false);
     }
 
     public override void OnEnter()
     {
-        PauseState.Instance.isPaused = true;
+        PauseState.Instance.PauseGame();
         base.OnEnter();
     }
 

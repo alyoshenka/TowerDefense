@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class FakeTurretBrain : MonoBehaviour
 {
-    public Projectile projectile;
+    public GameObject projectile;
+    // public Transform barrel;
     public float shotResetTime;
 
     float shotElapsedTime;
@@ -12,6 +13,9 @@ public class FakeTurretBrain : MonoBehaviour
     private void Start()
     {
         shotElapsedTime = 0;
+
+        Debug.Log(name);
+        Debug.Assert(null != projectile);
     }
 
     private void Update()
@@ -20,13 +24,17 @@ public class FakeTurretBrain : MonoBehaviour
         if(shotElapsedTime > shotResetTime) { Shoot(); }
     }
 
+    // thing rotates until it can get a shot
+    // rotation speed determines a good part of firing speed
+    // but firing speed is still a thing
+
     private void Shoot()
     {
         shotElapsedTime = 0;
         HostileAgent agent = NearestEnemy();
         if(null == agent) { return; }
 
-        GameObject proj = Instantiate(projectile, transform.position, transform.rotation, transform).gameObject;
+        GameObject proj = Instantiate(projectile, transform.position, transform.rotation, transform);
         proj.transform.LookAt(agent.transform);
     }
 

@@ -9,7 +9,8 @@ public class PauseState : GameState
     public static PauseState Instance { get => instance; }
 
     public Button resumeButton;
-    public bool isPaused; // private
+    private bool paused; 
+    public bool Paused { get => paused; }
 
     private void Awake()
     {
@@ -19,10 +20,11 @@ public class PauseState : GameState
 
     private void Start()
     {
+        nextLogicalState = this; // kinda weird
         resumeButton.onClick.AddListener(
-            () => GameStateManager.Instance.Transition(this, DefendState.Instance));
+            () => PauseState.Instance.TogglePauseGame());
 
-        isPaused = true;
+        paused = true;
         gameObject.SetActive(false);
     }
 
@@ -35,14 +37,38 @@ public class PauseState : GameState
     public override void OnEnter()
     {
         base.OnEnter();
-        isPaused = true;
-        if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter pause"); }
+        paused = true;
+        if (Debugger.Instance.StateChangeMessages) { Debug.Log(GamePlayState.CurrentLevel.WinCon ? "game win" : GoalTile.LoseCon ? "game lose" : "enter pause"); } // sorry
     }
 
     public override void OnExit()
     {
         base.OnExit();
-        isPaused = false;
+        paused = false;
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("exit pause"); }
+    }
+
+    public void PauseGame()
+    {
+        if (paused) { Debug.LogError("game already paused"); }
+        paused = true;
+        if (Debugger.Instance.DeveloperHaltMessages) { Debug.Log("pause"); }
+
+        GameStateManager.Instance.TransitionToNextState(this); // gross?? or will it work?
+    }
+
+    public void UnpauseGame()
+    {
+        if (!paused) { Debug.LogError("game not paused"); }
+        paused = false;
+        if (Debugger.Instance.DeveloperHaltMessages) { Debug.Log("unpause"); }
+
+        GameStateManager.Instance.GoBack();
+    }
+
+    public void TogglePauseGame()
+    {
+        if (paused) { UnpauseGame(); }
+        else { PauseGame(); }
     }
 }

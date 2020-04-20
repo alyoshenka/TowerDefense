@@ -43,7 +43,7 @@ public abstract class Action : IDecision
     public Transform Target { get; set; }
     private Action() { }
     public Action(AIAgent agent) { this.agent = agent; }
-    public abstract IDecision MakeDecision();
+    public virtual IDecision MakeDecision() { if (Debugger.Instance.AgentBrainMessages) { Debug.Log(GetType()); } return null; }
 }
 
 public class Defend : Action
@@ -52,6 +52,7 @@ public class Defend : Action
 
     public override IDecision MakeDecision()
     {
+        base.MakeDecision();
         return null;
     }
 }
@@ -62,6 +63,7 @@ public class Attack : Action
 
     public override IDecision MakeDecision()
     {
+        base.MakeDecision();
         ((OrganicAgent)agent).Attack();
         return null;
     }
@@ -73,6 +75,7 @@ public class BreakWall : Action
 
     public override IDecision MakeDecision()
     {
+        base.MakeDecision();
         return null;
     }
 }
@@ -83,6 +86,7 @@ public class Advance : Action
 
     public override IDecision MakeDecision()
     {
+        base.MakeDecision();
         ((OrganicAgent)agent).Advance();
         return null;
     }
@@ -94,6 +98,7 @@ public class Rest : Action
 
     public override IDecision MakeDecision()
     {
+        base.MakeDecision();
         ((OrganicAgent)agent).Rest();
         return null;
     }
@@ -105,6 +110,19 @@ public class Rebuild : Action
 
     public override IDecision MakeDecision()
     {
+        base.MakeDecision();
+        return null;
+    }
+}
+
+public class Turn : Action
+{
+    public Turn(OrganicAgent agent) : base(agent) { }
+
+    public override IDecision MakeDecision()
+    {
+        base.MakeDecision();
+        ((OrganicAgent)agent).Turn();
         return null;
     }
 }

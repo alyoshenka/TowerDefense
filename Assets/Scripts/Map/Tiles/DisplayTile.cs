@@ -18,6 +18,8 @@ public class DisplayTile : MapTile
     public TMP_Text quantityText;
     public TMP_Text buildCostText;
 
+    public Animator animator;
+
     [HideInInspector] public Color defaultColor; // get rid of later
     [HideInInspector] public Color displayColor;
 
@@ -36,7 +38,7 @@ public class DisplayTile : MapTile
         selectButton.onClick.AddListener(() => TilePlacement.Instance.SelectTile(this));
 
         ColorBlock colorVars = selectButton.colors;
-        colorVars.highlightedColor = Color.blue;
+        colorVars.highlightedColor = Color.gray;
         selectButton.colors = colorVars;
 
         defaultColor = showImage.color;
@@ -72,6 +74,9 @@ public class DisplayTile : MapTile
             selectedTile = this;
             displayColor = Color.yellow;
         }
+
+        animator.SetTrigger("ClickDisplayTile");
+        Debug.Log("boop");
 
         UpdateDisplay();
     }
@@ -116,6 +121,11 @@ public class DisplayTile : MapTile
     {       
         DeselectTile(); // is this really necessary
     }
+
+    /// <summary>
+    /// visual indication that there are unused tiles left
+    /// </summary>
+    public void IndicateUnused() { animator.SetTrigger("TileUnused"); }  
 
     public override void InteractWithAgent(AIAgent agent)
     {

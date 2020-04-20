@@ -12,7 +12,7 @@ public abstract class DecisionTree
 
     public void RunTree(AIAgent agent)
     {
-        if (PauseState.Instance.isPaused) { return; }
+        if (PauseState.Instance.Paused) { return; }
 
         current = start;
         while (null != current) { current = current.MakeDecision(); }

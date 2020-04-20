@@ -19,7 +19,7 @@ public class SettingsState : GameState
     private void Start()
     {
         backButton.onClick.AddListener(
-            () => GameStateManager.Instance.Transition(this, MainMenuState.Instance));
+            () => GameStateManager.Instance.ReturnToMenu());
 
         gameObject.SetActive(false);
     }

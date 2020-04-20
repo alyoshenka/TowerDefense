@@ -15,7 +15,7 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        IDamageable ent = other.GetComponent<IDamageable>();
+        IDamageable ent = other.GetComponentInParent<IDamageable>();
         if (null != ent)
         {
             ent.ApplyDamage(damage);
