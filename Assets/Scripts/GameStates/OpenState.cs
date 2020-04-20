@@ -14,10 +14,7 @@ public class OpenState : GameState
         else if (this != instance) { Destroy(this); }
     }
 
-    public override bool CanTransition()
-    {
-        return true;
-    }
+    public override bool CanTransition() { return true; }
 
     public override void OnEnter() { UnityEngine.Debug.LogWarning("this should never happen"); }
     public override void OnExit() { }

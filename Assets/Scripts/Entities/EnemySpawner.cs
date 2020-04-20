@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class EnemySpawner : AIAgent // give current path to goal to enemy on spawn
 {
-    public static bool hit = false; // take out
-
     public List<EnemyPack> enemySet;
 
     public MapTile associatedTile;
@@ -145,7 +143,6 @@ public class RechargeTimer : Action
 
     public override IDecision MakeDecision()
     {
-        if (!EnemySpawner.hit) { PauseState.Instance.PauseGame(); EnemySpawner.hit = true; }
         base.MakeDecision();
         ((EnemySpawner)agent).spawnElapsedTime += Time.deltaTime;
         return null;

@@ -15,6 +15,8 @@ public class DefendState : GamePlayState
     public Button pauseButton;
     public int startDelay;
 
+    public bool pauseOnEnter;
+
     private void Awake()
     {
         if (null == instance) { instance = this; }
@@ -40,6 +42,8 @@ public class DefendState : GamePlayState
 
         StartCoroutine("StartDelay");
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter defend"); }
+
+        if (pauseOnEnter) { PauseState.Instance.PauseGame(); }
     }
 
     private IEnumerator StartDelay()

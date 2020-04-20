@@ -17,11 +17,13 @@ public class GameStateManager : MonoBehaviour
     }
 
     private void Start()
-    {
+    {        
+        player = new Player(); // this should happen somewhere else
+
         currentState = OpenState.Instance;
         Transition(MainMenuState.Instance);
 
-        player = new Player();
+        PauseState.Instance.PauseGame(true);
     }
 
     private GameState previousState; // private

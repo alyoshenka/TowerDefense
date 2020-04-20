@@ -130,6 +130,7 @@ public class MapTile : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
+        if(null != PlaceState.Instance) { return; }
         PlaceState.Instance.openPlace -= AddPlaceIndicators;
         DefendState.Instance.openDefend -= RemovePlaceIndicators;
     }

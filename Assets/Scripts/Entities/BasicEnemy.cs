@@ -37,7 +37,7 @@ public class BasicEnemy : HostileAgent
         if (ShouldRest) { Rest(); }
         else
         {
-            Instantiate(weapon, transform.position, transform.rotation, transform);
+            Instantiate(weapon, transform.position, Quaternion.Euler(transform.up), transform);
             restedTime = 0;
         }
     }
@@ -47,8 +47,10 @@ public class BasicEnemyBrain : DecisionTree
 {
     BooleanDecision isTired_move;
     BooleanDecision isTired_reload;
+    BooleanDecision isTired_turn;
     BooleanDecision atTarget;
     BooleanDecision lookingAtTarget;
+    BooleanDecision posedForGoal;
     BooleanDecision withinRange;
 
     Action turn;
@@ -66,21 +68,24 @@ public class BasicEnemyBrain : DecisionTree
         attack = new Attack(agent);
 
         lookingAtTarget = new BooleanDecision(advance, turn);
-        atTarget = new BooleanDecision(assignNextTarget, lookingAtTarget);
+        isTired_move = new BooleanDecision(rest, lookingAtTarget);
+        atTarget = new BooleanDecision(assignNextTarget, isTired_move);
         isTired_reload = new BooleanDecision(rest, attack);
-        withinRange = new BooleanDecision(isTired_reload, atTarget);
-        isTired_move = new BooleanDecision(rest, withinRange);
+        isTired_turn = new BooleanDecision(rest, turn);
+        posedForGoal = new BooleanDecision(isTired_reload, isTired_turn);
+        withinRange = new BooleanDecision(posedForGoal, atTarget);
 
-        start = isTired_move;
+        start = withinRange;
     }
 
     public override void Update(AIAgent agent)
     {
-        isTired_move.Value = ((OrganicAgent)agent).ShouldRest;
+        isTired_move.Value = isTired_turn.Value = ((OrganicAgent)agent).ShouldRest;
         isTired_reload.Value = ((OrganicAgent)agent).ShouldReload;
         atTarget.Value = ((OrganicAgent)agent).ReachedTarget;
         withinRange.Value = ((HostileAgent)agent).withinRangeOfGoal;
-        lookingAtTarget.Value = ((OrganicAgent)agent).LookingAtTarget();
+        lookingAtTarget.Value = ((OrganicAgent)agent).LookingAtTarget;
+        posedForGoal.Value = lookingAtTarget.Value && withinRange.Value;
     }
 }
 

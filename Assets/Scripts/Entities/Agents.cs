@@ -38,13 +38,14 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
     [SerializeField] protected int currentHealth;
 
     public int CurrentHealth { get => currentHealth; }
-    public static float targetEps = 0.1f;
+
     protected MapTile target;
+    public bool LookingAtTarget { get => Mathf.Abs(NeededRotationToTarget()) < targetLookEps; }
     public bool ReachedTarget
     {
         get => null == target ||
             Vector3.Distance(transform.position, target.transform.position) < targetEps;
-    }
+    }   
 
     public UnityEngine.UI.Image healthBar;   
 
@@ -62,6 +63,9 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
 
     public float moveSpeed;
     public float rotSpeed;
+    private int ccw; // turn in clockwise direction
+    private static float targetEps = 0.1f;
+    private static float targetLookEps = 1; // deg
 
     protected void Start()
     {
@@ -87,16 +91,53 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
 
     public void Turn()
     {
-        float ARot = transform.eulerAngles.z;
-        float ToBRot = Mathf.Atan2(
-            target.transform.position.y - transform.position.y, 
-            target.transform.position.x - transform.position.x) 
-            * Mathf.Rad2Deg;
+        float rotDif = NeededRotationToTarget();
 
-        transform.Rotate(Vector3.forward * Time.deltaTime * rotSpeed);
-        // bool cw;
+        int newCCW = rotDif < 0 ? 1 : -1;
+        if(newCCW != ccw && Mathf.Abs(rotDif) < targetLookEps) 
+        { 
+            Debug.LogWarning("overshot");
+
+            float neededRot = ClampRot(rotDif - GameRot()); // amount to rotate back
+            transform.Rotate(Vector3.forward * neededRot);
+        }
+        else { transform.Rotate(Vector3.forward * Time.deltaTime * rotSpeed * newCCW); }
+        ccw = newCCW;
 
         brainDisplay = Color.grey;
+    }
+
+    // y is "forward"
+    private float GameRot() { return ClampRot(transform.eulerAngles.z + 90); }
+
+    // SIMPLIFY
+    // deg, for now
+    private float NeededRotationToTarget()
+    {
+        if (null == target)
+        {
+            Debug.LogWarning("no target");
+            return 0;
+        }
+
+        float ARot = GameRot();
+
+        float yDif = target.transform.position.y - transform.position.y;
+        float xDif = target.transform.position.x - transform.position.x;
+        float ToBRot = Mathf.Atan2(yDif, xDif) * Mathf.Rad2Deg;
+
+        float rotDif = ClampRot(ARot - ToBRot);
+
+        return rotDif;
+    }
+
+    // clamp degrees --180 <= rot < 180
+    private float ClampRot(float rot)
+    {
+        if(rot >= 180) { rot -= 360; }
+        if(rot < -180) { rot += 360; }
+        Debug.Assert(rot >= -180 && rot < 180); // check for really big or small numbers that didn't get clamped
+        return rot;
     }
 
     public void Advance()
@@ -141,16 +182,6 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
     }
 
     public virtual void Attack() { brainDisplay = Color.red; } // abstract
-
-    public virtual bool LookingAtTarget()
-    {
-        float ARot = transform.eulerAngles.z;
-        float ToBRot = Mathf.Atan2(
-            target.transform.position.y - transform.position.y, 
-            target.transform.position.x - transform.position.x) 
-            * Mathf.Rad2Deg;
-        return Mathf.Abs(ARot - ToBRot) < 1;
-    }
 
     public override void OnDrawGizmos()
     {
