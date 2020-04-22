@@ -10,7 +10,7 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
-        transform.Translate(transform.forward * speed * Time.deltaTime, Space.World);
+        transform.position += transform.up * Time.deltaTime * speed;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -27,5 +27,11 @@ public class Projectile : MonoBehaviour
     {
         // Debug.Log("explosion");
         Destroy(gameObject);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, transform.position + transform.up);
     }
 }

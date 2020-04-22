@@ -13,9 +13,6 @@ public class FakeTurretBrain : MonoBehaviour
     private void Start()
     {
         shotElapsedTime = 0;
-
-        Debug.Log(name);
-        Debug.Assert(null != projectile);
     }
 
     private void Update()

@@ -14,6 +14,7 @@ public class Debugger : MonoBehaviour
     public bool AgentBrainMessages;
     public bool DeveloperHaltMessages;
     public bool UIAssigned;
+    public bool AggroTriggers;
 
     void Awake() { Instance = this; }
 }

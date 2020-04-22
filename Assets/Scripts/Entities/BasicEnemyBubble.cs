@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BasicEnemyBubble : AggroBubble
 {
+    public new BasicEnemy agent;
 
     private void Start()
     {
@@ -11,12 +12,9 @@ public class BasicEnemyBubble : AggroBubble
         me.isTrigger = true;
     }
 
-    protected override void OnTriggerEnter(Collider other)
+    public override void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Goal"))
-        {
-            Debug.Log(name);
-            agent.withinRangeOfGoal = true;
-        }
+        base.OnTriggerEnter(other);
+        if (other.CompareTag("Goal")) { agent.SetTargetAsGoal(); }
     }
 }

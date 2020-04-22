@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(BasicEnemyBubble))]
 public class BasicEnemy : HostileAgent
 {
-
+    public bool withinRangeOfGoal;
     public bool yeet;
 
     protected new void Start()
@@ -26,6 +26,7 @@ public class BasicEnemy : HostileAgent
 
     public override void OnDeath()
     {
+        base.OnDeath();
         GamePlayState.CurrentLevel.DestroyEnemy(this);
         Destroy(gameObject);
     }
@@ -37,9 +38,16 @@ public class BasicEnemy : HostileAgent
         if (ShouldRest) { Rest(); }
         else
         {
-            Instantiate(weapon, transform.position, Quaternion.Euler(transform.up), transform);
+            Instantiate(weapon, transform.position, transform.rotation, transform);
             restedTime = 0;
         }
+    }
+
+    public void SetTargetAsGoal()
+    {
+        withinRangeOfGoal = true;
+        targetIdx = foundPath.path.Count - 1;
+        target = PlaceState.Instance.Board.FindAssociatedTile(foundPath.path[targetIdx]); // bad
     }
 }
 
@@ -78,13 +86,15 @@ public class BasicEnemyBrain : DecisionTree
         start = withinRange;
     }
 
-    public override void Update(AIAgent agent)
+    public override void Update(AIAgent _agent)
     {
-        isTired_move.Value = isTired_turn.Value = ((OrganicAgent)agent).ShouldRest;
-        isTired_reload.Value = ((OrganicAgent)agent).ShouldReload;
-        atTarget.Value = ((OrganicAgent)agent).ReachedTarget;
-        withinRange.Value = ((HostileAgent)agent).withinRangeOfGoal;
-        lookingAtTarget.Value = ((OrganicAgent)agent).LookingAtTarget;
+        BasicEnemy agent = (BasicEnemy)_agent; // better?
+
+        isTired_move.Value = isTired_turn.Value = agent.ShouldRest;
+        isTired_reload.Value = agent.ShouldReload;
+        atTarget.Value = agent.ReachedTarget;
+        withinRange.Value = agent.withinRangeOfGoal;
+        lookingAtTarget.Value = agent.LookingAtTarget;
         posedForGoal.Value = lookingAtTarget.Value && withinRange.Value;
     }
 }

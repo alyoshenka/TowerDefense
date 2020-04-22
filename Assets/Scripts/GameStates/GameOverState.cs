@@ -27,7 +27,7 @@ public class GameOverState : GamePlayState // this should be win/lose
 
     public override void OnEnter()
     {
-        PauseState.Instance.PauseGame();
+        PauseState.Instance.PauseGame(true);
         base.OnEnter();
     }
 

@@ -52,7 +52,7 @@ public class PauseState : GameState
 
     public void PauseGame(bool silent = false)
     {       
-        if (Paused) { Debug.LogWarning("game silent paused"); }
+        if (Paused && Debugger.Instance.DeveloperHaltMessages) { Debug.LogWarning("game silent paused"); }
         if (Paused && loudPaused) { Debug.LogWarning("game already paused"); }
 
         silentPaused = true;

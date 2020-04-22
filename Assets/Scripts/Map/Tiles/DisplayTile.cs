@@ -76,7 +76,6 @@ public class DisplayTile : MapTile
         }
 
         animator.SetTrigger("ClickDisplayTile");
-        Debug.Log("boop");
 
         UpdateDisplay();
     }

@@ -212,16 +212,7 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
-      propertyPath: DeveloperHaltMessages
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
-      propertyPath: AgentBrainMessages
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3358873722323274756, guid: c60876b865daff7449e96bb21679ba8d,
-        type: 3}
-      propertyPath: pauseOnEnter
+      propertyPath: AggroTriggers
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3358873722801202860, guid: c60876b865daff7449e96bb21679ba8d,

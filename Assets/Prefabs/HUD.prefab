@@ -1915,6 +1915,7 @@ MonoBehaviour:
   castleHealth: {fileID: 1392022551}
   pauseButton: {fileID: 3358873722021478316}
   startDelay: 0
+  pauseOnEnter: 1
 --- !u!1 &3358873722479506845
 GameObject:
   m_ObjectHideFlags: 0
@@ -2674,7 +2675,7 @@ MonoBehaviour:
   AgentMessages: 0
   EnemyMessages: 0
   AgentBrainMessages: 0
-  DeveloperHaltMessages: 1
+  DeveloperHaltMessages: 0
   UIAssigned: 0
 --- !u!114 &5578519
 MonoBehaviour:

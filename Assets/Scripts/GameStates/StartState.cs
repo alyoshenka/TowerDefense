@@ -28,7 +28,7 @@ public class StartState : GamePlayState
     private void SetupGame()
     {
         base.Initialize(); // first state
-        player = new Player();
+        player = new Player(); // here too?
     }
 
     public override bool CanTransition()

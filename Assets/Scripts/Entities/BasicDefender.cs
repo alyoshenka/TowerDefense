@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicDefender : FriendlyAgent
+public class BasicDefender : HostileAgent
 {
     public override void Attack()
     {

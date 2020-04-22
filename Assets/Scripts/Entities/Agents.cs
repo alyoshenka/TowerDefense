@@ -24,10 +24,12 @@ public abstract class AIAgent : MonoBehaviour
     }
 }
 
+// todo: switch order of hostile and organic agents in class hierarchy
+
 /// <summary>
 /// An agent that can move and die
 /// </summary>
-public abstract class OrganicAgent : AIAgent, IDamageable // every agent should be damageable! (maybe???)
+public abstract class OrganicAgent : AIAgent, IDamageable
 {
     protected FoundPath foundPath;
     protected int targetIdx;
@@ -51,13 +53,11 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
 
     [Tooltip("How long until I can move again?")]
     public float moveCooldown;
-    [Tooltip("How long until I can attack again?")]
-    public float reloadCooldown;
 
     protected float restedTime;
 
     public bool ShouldRest { get => restedTime < moveCooldown; }
-    public bool ShouldReload { get => restedTime < reloadCooldown; }
+
 
     // public float attackCooldown;
 
@@ -67,7 +67,7 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
     private static float targetEps = 0.1f;
     private static float targetLookEps = 1; // deg
 
-    protected void Start()
+    protected virtual void Start()
     {
         ResetHealth();
 
@@ -167,6 +167,7 @@ public abstract class OrganicAgent : AIAgent, IDamageable // every agent should 
         }
         else
         {
+            // bad
             target = PlaceState.Instance.Board.FindAssociatedTile(
             foundPath.path[targetIdx]);
         }
@@ -208,13 +209,25 @@ public abstract class HostileAgent : OrganicAgent
     public int points;
     public float attackRange;
 
-    public bool withinRangeOfGoal;
+    [Tooltip("How long until I can attack again?")]
+    public float reloadCooldown;
+    public bool ShouldReload { get => restedTime < reloadCooldown; }
 
-    public override abstract void OnDeath();
+    private List<AggroBubble> attackers; // so i can destroy references
+
+    protected override void Start()
+    {
+        base.Start();
+        attackers = new List<AggroBubble>();
+    }
+
+    public void AddAttacker(AggroBubble bubble) { attackers.Add(bubble); }
+    public void RemoveAttacker(AggroBubble bubble) { attackers.Remove(bubble); } // hopefully doesn't break stuff
+
+
+    public override void OnDeath() 
+    {
+        foreach (AggroBubble bubble in attackers) { bubble.RemoveAgent(this); }
+    }
    
-}
-
-public abstract class FriendlyAgent : OrganicAgent
-{
-    public override abstract void OnDeath();
 }
