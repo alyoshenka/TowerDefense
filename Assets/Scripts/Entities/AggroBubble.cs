@@ -9,15 +9,13 @@ public class AggroBubble : MonoBehaviour
     public event AgentTriggerBubble agentEnter;
     public event AgentTriggerBubble agentExit;
 
-
-
     public HostileAgent agent;
     public SphereCollider me; // make regular collider
 
     private List<HostileAgent> withinRange;
     public HostileAgent RequestTarget { get => withinRange.Count > 0 ? withinRange[0] : null; }
 
-    private void Start()
+    private void Awake()
     {
         me.radius = agent.attackRange;
         me.isTrigger = true;
@@ -31,7 +29,7 @@ public class AggroBubble : MonoBehaviour
         if(null != ag) { AddAgent(ag); }        
     }
 
-    private void OnTriggerExit(Collider other)
+    public virtual void OnTriggerExit(Collider other)
     {
         HostileAgent ag = other.GetComponentInParent<HostileAgent>();
         if(null != ag) { RemoveAgent(ag); }

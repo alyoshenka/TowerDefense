@@ -9,8 +9,8 @@ public abstract class AIAgent : MonoBehaviour
 {
     protected virtual void Update()
     {
-        stateMachine?.Update(this);
-        stateMachine?.RunTree(this);
+        stateMachine.Update(this);
+        stateMachine.RunTree(this);
     }
 
     public DecisionTree stateMachine;
@@ -41,11 +41,12 @@ public abstract class OrganicAgent : AIAgent, IDamageable
 
     public int CurrentHealth { get => currentHealth; }
 
-    protected MapTile target;
-    public bool LookingAtTarget { get => Mathf.Abs(NeededRotationToTarget()) < targetLookEps; }
+    protected GameObject target;
+    public bool LookingAtTarget { get => HasTarget ? Mathf.Abs(NeededRotationToTarget()) < targetLookEps : true; }
+    public bool HasTarget { get => null != target; }
     public bool ReachedTarget
     {
-        get => null == target ||
+        get => HasTarget ||
             Vector3.Distance(transform.position, target.transform.position) < targetEps;
     }   
 
@@ -67,7 +68,7 @@ public abstract class OrganicAgent : AIAgent, IDamageable
     private static float targetEps = 0.1f;
     private static float targetLookEps = 1; // deg
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         ResetHealth();
 
@@ -116,7 +117,7 @@ public abstract class OrganicAgent : AIAgent, IDamageable
     {
         if (null == target)
         {
-            Debug.LogWarning("no target");
+            Debug.LogWarning(name + " has no target");
             return 0;
         }
 
@@ -162,14 +163,14 @@ public abstract class OrganicAgent : AIAgent, IDamageable
         if (targetIdx >= foundPath.path.Count)
         {
             target = null;
-            Debug.Log(name + " reached goal");
+
             gameObject.SetActive(false);
         }
         else
         {
             // bad
             target = PlaceState.Instance.Board.FindAssociatedTile(
-            foundPath.path[targetIdx]);
+            foundPath.path[targetIdx]).gameObject;
         }
 
         brainDisplay = Color.green;
@@ -215,9 +216,9 @@ public abstract class HostileAgent : OrganicAgent
 
     private List<AggroBubble> attackers; // so i can destroy references
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         attackers = new List<AggroBubble>();
     }
 

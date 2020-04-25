@@ -9,7 +9,6 @@ public abstract class DecisionTree
 
     public abstract void Update(AIAgent agent); // update values
 
-
     public void RunTree(AIAgent agent)
     {
         if (PauseState.Instance.Paused) { return; }

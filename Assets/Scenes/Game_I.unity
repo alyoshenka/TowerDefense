@@ -173,7 +173,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -212,7 +212,11 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
-      propertyPath: AggroTriggers
+      propertyPath: AgentBrainMessages
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: DeveloperHaltMessages
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3358873722801202860, guid: c60876b865daff7449e96bb21679ba8d,

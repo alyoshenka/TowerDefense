@@ -64,7 +64,7 @@ public class Attack : Action
     public override IDecision MakeDecision()
     {
         base.MakeDecision();
-        ((OrganicAgent)agent).Attack();
+        ((HostileAgent)agent).Attack();
         return null;
     }
 }

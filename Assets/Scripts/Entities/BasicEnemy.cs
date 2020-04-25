@@ -9,9 +9,9 @@ public class BasicEnemy : HostileAgent
     public bool withinRangeOfGoal;
     public bool yeet;
 
-    protected new void Start()
+    protected new void Awake()
     {
-        base.Start();
+        base.Awake();
        
         stateMachine = new BasicEnemyBrain(this);
     }
@@ -47,7 +47,7 @@ public class BasicEnemy : HostileAgent
     {
         withinRangeOfGoal = true;
         targetIdx = foundPath.path.Count - 1;
-        target = PlaceState.Instance.Board.FindAssociatedTile(foundPath.path[targetIdx]); // bad
+        target = PlaceState.Instance.Board.FindAssociatedTile(foundPath.path[targetIdx]).gameObject; // bad
     }
 }
 

@@ -4,22 +4,21 @@ using UnityEngine;
 
 public class BasicTurret : HostileAgent
 {
-    protected new BasicTurretBrain stateMachine;
-
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
 
         stateMachine = new BasicTurretBrain(this);
 
         // do better
-        GetComponent<AggroBubble>().agentEnter += stateMachine.StopWaiting;
+        GetComponent<AggroBubble>().agentEnter += ((BasicTurretBrain)stateMachine).StopWaiting;
     }
 }
 
 public class BasicTurretBrain : DecisionTree
 {
     BooleanDecision enemiesWithinRange;
+    BooleanDecision hasTarget;
     BooleanDecision lookingAtEnemy;
     BooleanDecision canAttack;
 
@@ -27,6 +26,7 @@ public class BasicTurretBrain : DecisionTree
     Action reload; // are they the same?
     Action turn;
     Action attack;
+    Action assignTarget;
 
     bool waiting;
 
@@ -35,10 +35,12 @@ public class BasicTurretBrain : DecisionTree
         reload = new Rest(agent);
         turn = new Turn(agent);
         attack = new Attack(agent); // override
+        assignTarget = new AssignNextTarget(agent);
 
         canAttack = new BooleanDecision(attack, reload);
         lookingAtEnemy = new BooleanDecision(canAttack, turn);
-        enemiesWithinRange = new BooleanDecision(lookingAtEnemy, reload);
+        hasTarget = new BooleanDecision(lookingAtEnemy, assignTarget);
+        enemiesWithinRange = new BooleanDecision(hasTarget, reload);
 
         start = enemiesWithinRange;
     }
@@ -53,5 +55,6 @@ public class BasicTurretBrain : DecisionTree
         enemiesWithinRange.Value = waiting;
         lookingAtEnemy.Value = agent.LookingAtTarget;
         canAttack.Value = !agent.ShouldReload;
+        hasTarget.Value = agent.HasTarget;
     }
 }
