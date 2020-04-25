@@ -4,7 +4,7 @@ using UnityEngine;
 
 // Goal: Attack Base
 [RequireComponent(typeof(BasicEnemyBubble))]
-public class BasicEnemy : HostileAgent
+public class BasicEnemy : OrganicAgent
 {
     public bool withinRangeOfGoal;
     public bool yeet;
@@ -29,18 +29,6 @@ public class BasicEnemy : HostileAgent
         base.OnDeath();
         GamePlayState.CurrentLevel.DestroyEnemy(this);
         Destroy(gameObject);
-    }
-
-    public override void Attack()
-    {
-        base.Attack(); // take out later
-
-        if (ShouldRest) { Rest(); }
-        else
-        {
-            Instantiate(weapon, transform.position, transform.rotation, transform);
-            restedTime = 0;
-        }
     }
 
     public void SetTargetAsGoal()
@@ -101,7 +89,7 @@ public class BasicEnemyBrain : DecisionTree
 
 public class AssignNextTarget : Action
 {
-    public AssignNextTarget(OrganicAgent agent) : base(agent) { }
+    public AssignNextTarget(HostileAgent agent) : base(agent) { }
 
     public override IDecision MakeDecision()
     {

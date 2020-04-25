@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BasicEnemyBubble : AggroBubble
 {
-    public new BasicEnemy agent;
+    public BasicEnemy agent;
 
     private void Start()
     {

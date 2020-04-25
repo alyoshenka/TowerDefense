@@ -43,7 +43,7 @@ public abstract class Action : IDecision
     public Transform Target { get; set; }
     private Action() { }
     public Action(AIAgent agent) { this.agent = agent; }
-    public virtual IDecision MakeDecision() { if (Debugger.Instance.AgentBrainMessages) { Debug.Log(GetType()); } return null; }
+    public virtual IDecision MakeDecision() { if (Debugger.Instance.AgentBrainMessages) { Debug.Log(GetType()); } return null; } // make abstract
 }
 
 public class Defend : Action
@@ -94,12 +94,12 @@ public class Advance : Action
 
 public class Rest : Action
 {
-    public Rest(OrganicAgent agent) : base(agent) { }
+    public Rest(HostileAgent agent) : base(agent) { }
 
     public override IDecision MakeDecision()
     {
         base.MakeDecision();
-        ((OrganicAgent)agent).Rest();
+        ((HostileAgent)agent).Rest();
         return null;
     }
 }
@@ -117,12 +117,12 @@ public class Rebuild : Action
 
 public class Turn : Action
 {
-    public Turn(OrganicAgent agent) : base(agent) { }
+    public Turn(HostileAgent agent) : base(agent) { }
 
     public override IDecision MakeDecision()
     {
         base.MakeDecision();
-        ((OrganicAgent)agent).Turn();
+        ((HostileAgent)agent).Turn();
         return null;
     }
 }

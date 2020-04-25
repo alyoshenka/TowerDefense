@@ -12,7 +12,7 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
     public float spawnElapsedTime;
 
     private FoundPath pathToGoal;
-    private List<HostileAgent> allEnemies;
+    private List<OrganicAgent> allEnemies;
 
     private void Start()
     {
@@ -31,15 +31,15 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
 
     private void LoadAllEnemies()
     {
-        allEnemies = new List<HostileAgent>();
+        allEnemies = new List<OrganicAgent>();
 
         foreach(EnemyPack pack in enemySet)
         {
             for(int i = 0; i < pack.count; i++)
             {
-                HostileAgent agent = Instantiate(
+                OrganicAgent agent = Instantiate(
                     pack.enemy, transform.position, Quaternion.identity, transform)
-                    .GetComponent<HostileAgent>();
+                    .GetComponent<OrganicAgent>();
                 allEnemies.Add(agent);
                 agent.gameObject.SetActive(false);
             }
@@ -60,7 +60,7 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
     {
         spawnElapsedTime = 0;
 
-        HostileAgent agent = allEnemies[0];
+        OrganicAgent agent = allEnemies[0];
         agent.gameObject.SetActive(true);
         agent.AssignPath(pathToGoal);
         allEnemies.RemoveAt(0);

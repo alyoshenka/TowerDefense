@@ -207,14 +207,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   currentHealth: 0
-  healthBar: {fileID: 5267047807240436943}
-  moveCooldown: 0.2
-  reloadCooldown: 0.5
-  moveSpeed: 15
-  rotSpeed: 40
   weapon: {fileID: 6725922925602426046, guid: 947d84b515f8e6346a474942060da816, type: 3}
   points: 5
   attackRange: 0.7
+  aggro: {fileID: -7164109188117268608}
+  healthBar: {fileID: 5267047807240436943}
+  rotSpeed: 40
+  reloadCooldown: 0.5
+  moveSpeed: 5
+  moveCooldown: 0.4
   withinRangeOfGoal: 0
   yeet: 0
 --- !u!114 &-7164109188117268608
@@ -229,8 +230,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146bc3682b8e59a4abb18f95551bf357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 3901912992367826147}
   me: {fileID: 8738731594765464878}
+  agent: {fileID: 3901912992367826147}
 --- !u!1001 &8762532378290393779
 PrefabInstance:
   m_ObjectHideFlags: 0

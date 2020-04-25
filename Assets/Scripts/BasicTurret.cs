@@ -11,7 +11,12 @@ public class BasicTurret : HostileAgent
         stateMachine = new BasicTurretBrain(this);
 
         // do better
-        GetComponent<AggroBubble>().agentEnter += ((BasicTurretBrain)stateMachine).StopWaiting;
+        aggro.agentEnter += ((BasicTurretBrain)stateMachine).StopWaiting;
+    }
+
+    public override void AssignNextTarget()
+    {
+        target = aggro.RequestTarget?.gameObject; // design better
     }
 }
 
@@ -35,7 +40,7 @@ public class BasicTurretBrain : DecisionTree
         reload = new Rest(agent);
         turn = new Turn(agent);
         attack = new Attack(agent); // override
-        assignTarget = new AssignNextTarget(agent);
+        assignTarget = new AssignNextAttackTarget(agent);
 
         canAttack = new BooleanDecision(attack, reload);
         lookingAtEnemy = new BooleanDecision(canAttack, turn);
@@ -46,15 +51,30 @@ public class BasicTurretBrain : DecisionTree
     }
 
     public void StartWaiting() { waiting = true; }
-    public void StopWaiting() { waiting = false; }
+    public void StopWaiting() 
+    { 
+        waiting = false;
+        if (Debugger.Instance.AggroTriggers) { Debug.Log("stopped waiting"); }
+    }
 
     public override void Update(AIAgent _agent)
     {
         HostileAgent agent = (HostileAgent)_agent;
 
-        enemiesWithinRange.Value = waiting;
+        enemiesWithinRange.Value = !waiting;
         lookingAtEnemy.Value = agent.LookingAtTarget;
         canAttack.Value = !agent.ShouldReload;
         hasTarget.Value = agent.HasTarget;
+    }
+}
+
+public class AssignNextAttackTarget : Action
+{
+    public AssignNextAttackTarget(HostileAgent agent) : base(agent) { }
+
+    public override IDecision MakeDecision()
+    {
+        ((BasicTurret)agent).AssignNextTarget();
+        return null;
     }
 }

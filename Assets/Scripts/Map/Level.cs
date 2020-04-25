@@ -55,6 +55,8 @@ public class Level
     public void DestroyEnemy(HostileAgent agent)
     {
         allEnemies.Remove(agent);
+
+        Debugger.Instance.BL.text = "Total enemies: " + allEnemies.Count;
         
         if(WinCon) 
         { 

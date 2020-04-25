@@ -52,36 +52,3 @@ public class EnemyDecisionTree : DecisionTree
         throw new System.NotImplementedException();
     }
 }
-
-public class DefenderDecisionTree : DecisionTree
-{
-    // decisions
-    BooleanDecision tired;
-    BooleanDecision enemyInRange;
-    BooleanDecision wallBroken;
-
-    // actions
-    Rest rest;
-    Attack attack;
-    Rebuild rebuild;
-    Advance patrol;
-
-    public DefenderDecisionTree(BasicDefender agent)
-    {
-        patrol = new Advance(agent);
-        rebuild = new Rebuild(agent);
-        attack = new Attack(agent);
-        rest = new Rest(agent);
-
-        wallBroken = new BooleanDecision(rebuild, patrol);
-        enemyInRange = new BooleanDecision(attack, wallBroken);
-        tired = new BooleanDecision(rest, enemyInRange);
-
-        start = tired;
-    }
-
-    public override void Update(AIAgent agent)
-    {
-        throw new System.NotImplementedException();
-    }
-}

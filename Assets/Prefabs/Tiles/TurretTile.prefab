@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1209799048467053711}
   - component: {fileID: 6838242419907327696}
   - component: {fileID: 6201941950219991185}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 6524794012946533522}
   - component: {fileID: 2596460714411953910}
   - component: {fileID: 2865088238072784647}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 5459477388560663281}
   - component: {fileID: 1581275799241159258}
   - component: {fileID: 8433410641798697489}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -268,7 +268,7 @@ GameObject:
   - component: {fileID: 1644787782985119280}
   - component: {fileID: 5586556533011763833}
   - component: {fileID: 2269390472782675020}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74785cbf8d46a2c4f97d94c94c639560, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 2269390472782675020}
   me: {fileID: 2423978185961470845}
 --- !u!54 &5586556533011763833
 Rigidbody:
@@ -357,14 +356,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   currentHealth: 0
-  healthBar: {fileID: 1232243239868284197}
-  moveCooldown: 0
-  moveSpeed: 0
-  rotSpeed: 30
   weapon: {fileID: 6725922925602426046, guid: 0425bec65d2cd5c4e912d8327d5fce24, type: 3}
   points: 10
-  attackRange: 5
-  reloadCooldown: 1
+  attackRange: 2
+  aggro: {fileID: 1644787782985119280}
+  healthBar: {fileID: 1232243239868284197}
+  rotSpeed: 250
+  reloadCooldown: 0.5
 --- !u!1 &4561642742128582845
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,7 +373,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2448628003934842388}
   - component: {fileID: 2423978185961470845}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: AggroBubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -404,7 +402,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4561642742128582845}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -418,7 +416,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6740318186532901392}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -446,10 +444,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8728634793601401257}
     m_Modifications:
+    - target: {fileID: 1567232831687108072, guid: 404d3d038a32d044381874f0ef4e7328,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3111833501344084348, guid: 404d3d038a32d044381874f0ef4e7328,
         type: 3}
       propertyPath: m_Name
       value: HealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 3111833501344084348, guid: 404d3d038a32d044381874f0ef4e7328,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4681118379748484044, guid: 404d3d038a32d044381874f0ef4e7328,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8477868432455567623, guid: 404d3d038a32d044381874f0ef4e7328,
         type: 3}

@@ -15,6 +15,10 @@ public class Debugger : MonoBehaviour
     public bool DeveloperHaltMessages;
     public bool UIAssigned;
     public bool AggroTriggers;
+    public bool ShowAggroRanges;
+
+    public TMPro.TMP_Text BL;
+    public TMPro.TMP_Text BR;
 
     void Awake() { Instance = this; }
 }

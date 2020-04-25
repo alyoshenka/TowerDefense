@@ -19,77 +19,97 @@ public abstract class AIAgent : MonoBehaviour
 
     public virtual void OnDrawGizmos()
     {
-        Gizmos.color = brainDisplay;
-        Gizmos.DrawWireSphere(transform.position, 0.55f);
+        if (Debugger.Instance != null && Debugger.Instance.AgentBrainMessages)
+        {
+            Gizmos.color = brainDisplay;
+            Gizmos.DrawWireSphere(transform.position, 0.55f);
+        }
     }
 }
 
-// todo: switch order of hostile and organic agents in class hierarchy
 
 /// <summary>
-/// An agent that can move and die
+/// an agent that can attack and die
 /// </summary>
-public abstract class OrganicAgent : AIAgent, IDamageable
+public abstract class HostileAgent : AIAgent, IDamageable
 {
-    protected FoundPath foundPath;
+    // total allowable health
+    [SerializeField] private int maxHealth = 10;
+    // get maxHealth
+    public int MaxHealth { get => maxHealth; }
+    // current agent health
+    [SerializeField] protected int currentHealth;
+    // get currentHealth
+    public int CurrentHealth { get => currentHealth; }
+    // looking at target, true if no target assigned
+    public bool LookingAtTarget { get => HasTarget ? Mathf.Abs(NeededRotationToTarget()) < targetLookEps : true; }
+    // target assigned
+    public bool HasTarget { get => null != target; }
+    // get restedTime < reloadCooldown
+    public bool ShouldReload { get => restedTime < reloadCooldown; }
+    // current hostile target
+    protected GameObject target;
+    // time without moving
+    protected float restedTime;
+    // epsilon angle from looking at target (deg)
+    private static float targetLookEps = 1;
+    // index of terget
     protected int targetIdx;
 
-    [SerializeField] private int maxHealth = 10;
-    public int MaxHealth { get => maxHealth; }
+    // turn in clockwise direction
+    private int ccw;
 
-    [SerializeField] protected int currentHealth;
-
-    public int CurrentHealth { get => currentHealth; }
-
-    protected GameObject target;
-    public bool LookingAtTarget { get => HasTarget ? Mathf.Abs(NeededRotationToTarget()) < targetLookEps : true; }
-    public bool HasTarget { get => null != target; }
-    public bool ReachedTarget
-    {
-        get => HasTarget ||
-            Vector3.Distance(transform.position, target.transform.position) < targetEps;
-    }   
-
-    public UnityEngine.UI.Image healthBar;   
-
-    [Tooltip("How long until I can move again?")]
-    public float moveCooldown;
-
-    protected float restedTime;
-
-    public bool ShouldRest { get => restedTime < moveCooldown; }
-
-
-    // public float attackCooldown;
-
-    public float moveSpeed;
+    [Tooltip("Weapon to shoot")]
+    public Projectile weapon;
+    [Tooltip("Amount of points gained on death")]
+    public int points;
+    [Tooltip("Radius of aggro sphere")]
+    public float attackRange;
+    [Tooltip("aggro sphere")]
+    public AggroBubble aggro;
+    [Tooltip("Current health display image")]
+    public UnityEngine.UI.Image healthBar;  
+    [Tooltip("Rotation speed")]
     public float rotSpeed;
-    private int ccw; // turn in clockwise direction
-    private static float targetEps = 0.1f;
-    private static float targetLookEps = 1; // deg
+    [Tooltip("How long until I can attack again?")]
+    public float reloadCooldown;
+
+
+    private List<AggroBubble> attackers; // so i can destroy references
 
     protected virtual void Awake()
     {
+        attackers = new List<AggroBubble>();
         ResetHealth();
+        restedTime = reloadCooldown;
 
-        restedTime = moveCooldown;
+        aggro.Initialize(attackRange);
     }
+
+    public void AddAttacker(AggroBubble bubble) { attackers.Add(bubble); }
+    public void RemoveAttacker(AggroBubble bubble) { attackers.Remove(bubble); } // hopefully doesn't break stuff
 
     public void ResetHealth()
     {
         currentHealth = maxHealth;
     }
 
-    public void ApplyDamage(int damage)
+    public virtual void ApplyDamage(int damage)
     {
         currentHealth -= damage;
         if(currentHealth <= 0) { OnDeath(); }
 
-        healthBar.fillAmount = currentHealth / maxHealth;
+        healthBar.fillAmount = 1.0f * currentHealth / maxHealth;
     }
 
-    public abstract void OnDeath();
+    public virtual void OnDeath() 
+    {
+        foreach (AggroBubble bubble in attackers) { bubble.RemoveAgent(this); }
+    }
 
+    /// <summary>
+    /// turn towards next target
+    /// </summary>
     public void Turn()
     {
         float rotDif = NeededRotationToTarget();
@@ -108,11 +128,14 @@ public abstract class OrganicAgent : AIAgent, IDamageable
         brainDisplay = Color.grey;
     }
 
-    // y is "forward"
+    /// <summary>
+    /// rotation in "game" space (deg), y is forward
+    /// </summary>
     private float GameRot() { return ClampRot(transform.eulerAngles.z + 90); }
 
-    // SIMPLIFY
-    // deg, for now
+    /// <summary>
+    /// how far to rotate to be looking at target (deg)
+    /// </summary>
     private float NeededRotationToTarget()
     {
         if (null == target)
@@ -132,7 +155,9 @@ public abstract class OrganicAgent : AIAgent, IDamageable
         return rotDif;
     }
 
-    // clamp degrees --180 <= rot < 180
+    /// <summary>
+    /// clamp degrees: -180 <= rot < 180
+    /// </summary>
     private float ClampRot(float rot)
     {
         if(rot >= 180) { rot -= 360; }
@@ -141,13 +166,9 @@ public abstract class OrganicAgent : AIAgent, IDamageable
         return rot;
     }
 
-    public void Advance()
-    {
-        transform.position += transform.up * moveSpeed * Time.deltaTime;
-
-        brainDisplay = Color.blue;
-    }
-
+    /// <summary>
+    /// increase restedTime
+    /// </summary>
     public void Rest()
     {
         restedTime += Time.deltaTime;
@@ -155,7 +176,92 @@ public abstract class OrganicAgent : AIAgent, IDamageable
         brainDisplay = Color.magenta;
     }
 
-    public void AssignNextTarget()
+    public virtual void AssignNextTarget()
+    {
+        // abstract?
+    }
+
+    public virtual void Attack() 
+    { 
+        brainDisplay = Color.red; 
+
+        Instantiate(weapon, transform.position, transform.rotation, transform);
+        restedTime = 0;
+    }
+
+    public override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+        
+        if(null == Debugger.Instance) { return; }
+
+        if (Debugger.Instance.ShowAggroRanges)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, attackRange);
+        }
+
+        if(null == target) { return; }
+
+        if (Debugger.Instance.AgentBrainMessages)
+        {
+            int len = 1;
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, transform.position + transform.right * len);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(transform.position, transform.position + transform.up * len);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(transform.position, transform.position + transform.forward * len);
+
+            Gizmos.color = Color.black;
+            Gizmos.DrawLine(transform.position, target.transform.position);
+        }
+    }
+   
+}
+
+/// <summary>
+/// An agent that can move
+/// </summary>
+public abstract class OrganicAgent : HostileAgent
+{
+    protected FoundPath foundPath;       
+    // allowable dist to target
+    private static float targetEps = 0.1f;
+    // has target and within allowable distance
+    public bool ReachedTarget
+    {
+        get => HasTarget &&
+            Vector3.Distance(transform.position, target.transform.position) < targetEps;
+    }
+    // get restedTime < moveCooldown
+    public bool ShouldRest { get => restedTime < moveCooldown; }
+
+    [Tooltip("Movement speed")]
+    public float moveSpeed;
+    [Tooltip("How long until I can move again?")]
+    public float moveCooldown;
+
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        // set to max
+        restedTime = reloadCooldown > moveCooldown ? reloadCooldown : moveCooldown;
+    }
+    
+    /// <summary>
+    /// move forwards
+    /// </summary>
+    public void Advance()
+    {
+        transform.position += transform.up * moveSpeed * Time.deltaTime;
+
+        brainDisplay = Color.blue;
+    }
+
+    public override void AssignNextTarget()
     {
         targetIdx++;
         restedTime = 0;
@@ -181,54 +287,5 @@ public abstract class OrganicAgent : AIAgent, IDamageable
         foundPath = path;
         targetIdx = -1;
         AssignNextTarget();
-    }
-
-    public virtual void Attack() { brainDisplay = Color.red; } // abstract
-
-    public override void OnDrawGizmos()
-    {
-        base.OnDrawGizmos();
-
-        if(null == target) { return; }
-
-        int len = 2;
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + transform.right * len);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, transform.position + transform.up * len);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward * len);
-
-        Gizmos.color = Color.black;
-        Gizmos.DrawLine(transform.position, target.transform.position);
-    }
-}
-
-public abstract class HostileAgent : OrganicAgent
-{
-    public Projectile weapon;
-    public int points;
-    public float attackRange;
-
-    [Tooltip("How long until I can attack again?")]
-    public float reloadCooldown;
-    public bool ShouldReload { get => restedTime < reloadCooldown; }
-
-    private List<AggroBubble> attackers; // so i can destroy references
-
-    protected override void Awake()
-    {
-        base.Awake();
-        attackers = new List<AggroBubble>();
-    }
-
-    public void AddAttacker(AggroBubble bubble) { attackers.Add(bubble); }
-    public void RemoveAttacker(AggroBubble bubble) { attackers.Remove(bubble); } // hopefully doesn't break stuff
-
-
-    public override void OnDeath() 
-    {
-        foreach (AggroBubble bubble in attackers) { bubble.RemoveAgent(this); }
-    }
-   
+    }    
 }

@@ -9,7 +9,6 @@ public class AggroBubble : MonoBehaviour
     public event AgentTriggerBubble agentEnter;
     public event AgentTriggerBubble agentExit;
 
-    public HostileAgent agent;
     public SphereCollider me; // make regular collider
 
     private List<HostileAgent> withinRange;
@@ -17,10 +16,17 @@ public class AggroBubble : MonoBehaviour
 
     private void Awake()
     {
-        me.radius = agent.attackRange;
-        me.isTrigger = true;
-
         withinRange = new List<HostileAgent>();
+    }
+
+    public void Initialize(float rad)
+    {
+        me.isTrigger = true;
+        me.radius = rad;
+
+        // BAD
+        DefendState.Instance.openDefend += (() => { me.enabled = true; });
+        me.enabled = false;
     }
 
     public virtual void OnTriggerEnter(Collider other)
@@ -43,7 +49,7 @@ public class AggroBubble : MonoBehaviour
         agentEnter?.Invoke();
 
         if (Debugger.Instance.AggroTriggers) 
-        { 
+        {
             Debug.Log(agent.name + " entered " + name + "'s aggro range"); 
         }
     }
