@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// tile represeting enemy objective/player base
+/// </summary>
 public class GoalTile : MapTile, IDamageable
 {
-    private static GoalTile instance;
-    public static bool LoseCon { get => instance.currentHealth <= 0; } // take out
+    private static GoalTile instance; // singleton instance
+    public static bool LoseCon { get => instance.currentHealth <= 0; } // return if game is lost
 
     public delegate void GoalDeathEvent();
-    public static event GoalDeathEvent goalDeath; // lose state
+    public static event GoalDeathEvent goalDeath; // invoked upon goal death
 
-    private TMP_Text castleHealth;
+    private TMP_Text castleHealth; // castle/player health display
     public TMP_Text CastleHealth 
     {
         get => castleHealth; 
@@ -22,8 +25,8 @@ public class GoalTile : MapTile, IDamageable
         }
     }
 
-    public float maxHealth;
-    public float currentHealth;
+    [Tooltip("max health")] public float maxHealth;
+    [Tooltip("current health")] public float currentHealth;
 
     protected override void Awake()
     {
@@ -42,6 +45,9 @@ public class GoalTile : MapTile, IDamageable
         if(currentHealth <= 0) { OnDeath(); }
     }
 
+    /// <summary>
+    /// update display to reflect current health
+    /// </summary>
     private void UpdateHealthDisplay()
     {
         castleHealth.text = currentHealth.ToString();

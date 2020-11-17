@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// allows contruction and saving of new levels
+/// </summary>
 public class LevelBuilder : MonoBehaviour
 {
-    private static LevelBuilder instance;
-    public static LevelBuilder Instance { get { return instance; } private set { } }
+    public static LevelBuilder Instance { get; private set; } // singleton instance
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
-    public List<Level> levels;
+    [Tooltip("current saved levels")] public List<Level> levels;
 }
 

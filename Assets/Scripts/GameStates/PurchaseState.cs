@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// purchase upgrades....etc
+/// </summary>
 public class PurchaseState : GamePlayState
 {
-    private static PurchaseState instance;
-    public static PurchaseState Instance { get { return instance; } private set { } }
+    public static PurchaseState Instance { get; private set; } // singleton instance
 
-    public Button playButton;
+    [Tooltip("push to play game")] public Button playButton;
 
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
     private void Start()

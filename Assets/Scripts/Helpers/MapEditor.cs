@@ -8,30 +8,27 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public class MapEditor : MonoBehaviour
 {
-    private static MapEditor instance;
-    public static MapEditor Instance { get => instance; }
+    public static MapEditor Instance { get; private set; } // singleton instance
 
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
-    public GameObject defaultTile;
-    public string fileName = "basicLevel";
-    [SerializeField] public Vector2 defaultGridSize;
-    public bool visualizeGrid;
-    public List<TileData> tiles;
+    [Tooltip("default placing tile")] public GameObject defaultTile;
+    [Tooltip("file to save level")] public string fileName = "basicLevel";
+    [SerializeField] [Tooltip("(width, height) of grid")] public Vector2 defaultGridSize;
+    [Tooltip("show grid of (w, h) size")] public bool visualizeGrid;
+    [Tooltip("available tiles")] public List<TileData> tiles;
 
-    public bool save;
-    public bool load;
+    [Tooltip("save level to file")] public bool save;
+    [Tooltip("load level from file")] public bool load;
 
-    GameBoard gameBoard;
-    public GameBoard Board { get => gameBoard; }
+    public GameBoard Board { get; private set; } // singleton board instance
+
     int tileIdx;
-
     TileData currentData;
-
     public static Color color;
 
     private void Start()
@@ -44,7 +41,7 @@ public class MapEditor : MonoBehaviour
         }
         NodeMap nodeMap = MapGenerator.GenerateNodeMap(defaultTiles, defaultGridSize);
         TileMap tileMap = MapGenerator.GenerateTileMap(nodeMap, transform);
-        gameBoard = new GameBoard(nodeMap, tileMap);
+        Board = new GameBoard(nodeMap, tileMap);
         tileIdx = 0;
         currentData = tiles[tileIdx];        
     }
@@ -80,7 +77,7 @@ public class MapEditor : MonoBehaviour
         if (save)
         {
             Debug.Log("save to " + fileName);
-            SaveBoard(gameBoard, fileName);
+            SaveBoard(Board, fileName);
             save = false;
         }
 
@@ -93,6 +90,11 @@ public class MapEditor : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// save board to file
+    /// </summary>
+    /// <param name="board">board to save</param>
+    /// <param name="fileName">filename to use</param>
     public static void SaveBoard(GameBoard board, string fileName)
     {
         SaveMap toSave = MapGenerator.ExtractData(board);
@@ -119,10 +121,10 @@ public class MapEditor : MonoBehaviour
 
     private void LoadNewData(string fileName)
     {
-        gameBoard.Destroy();
+        Board.Destroy();
         NodeMap newNodes = LoadNodeMap(fileName);
         TileMap newTiles = MapGenerator.GenerateTileMap(newNodes, transform);
-        gameBoard = new GameBoard(newNodes, newTiles);
+        Board = new GameBoard(newNodes, newTiles);
     }
 
     public void EditorTileClick(EditorTile tile)
@@ -131,10 +133,10 @@ public class MapEditor : MonoBehaviour
             || tile.Type == TileType.turret || currentData.Type == TileType.turret;
         if (currentData.Type == TileType.goal)
         {          
-            gameBoard.AssignGoal(gameBoard.FindAssociatedNode(tile));
+            Board.AssignGoal(Board.FindAssociatedNode(tile));
         }
-        gameBoard.AssignNewData(tile, currentData, true); // this
-        if (isWall) { gameBoard.nodeMap = MapGenerator.AddNodeConnections(gameBoard.nodeMap); }  
+        Board.AssignNewData(tile, currentData, true); // this
+        if (isWall) { Board.nodeMap = MapGenerator.AddNodeConnections(Board.nodeMap); }  
     }
 
     private void OnDrawGizmos()
@@ -155,6 +157,9 @@ public class MapEditor : MonoBehaviour
     }
 }
 
+/// <summary>
+/// serializable color
+/// </summary>
 [System.Serializable]
 public struct Color_S
 {
@@ -174,10 +179,13 @@ public struct Color_S
     }
 }
 
+/// <summary>
+/// represents all needed data for a single game tile
+/// </summary>
 [System.Serializable]
 public struct TileData
 {
-    private static List<TileData> presets;
+    private static List<TileData> presets; // all available tile presets
     public static List<TileData> Presets
     {
         get
@@ -187,19 +195,19 @@ public struct TileData
         }
     }
 
-    private Color_S displayColor;
-    public Color DisplayColor { get => displayColor.ToColor(); set => displayColor = new Color_S(value); }
+    private Color_S displayColor; // color in display (map editor)
+    public Color DisplayColor { get => displayColor.ToColor(); set => displayColor = new Color_S(value); } // get serializable display color
 
-    [SerializeField] private TileType type;
-    public TileType Type { get => type; }
-    [SerializeField] private int buildCost;
-    public int BuildCost { get => buildCost; }
-    public int index;
+    [SerializeField] [Tooltip("tile type")] private TileType type;
+    public TileType Type { get => type; } // get tile type
+    [SerializeField] [Tooltip("cost to place this tile")] private int buildCost;
+    public int BuildCost { get => buildCost; } // get build cost
+    public int index; // honestly kinda not sure? ToDo: write better comment
 
-    [Range(1, 25)] public int traversalCost;
+    [Range(1, 25)] [Tooltip("cost/speed to traverse")] public int traversalCost;
 
-    #region Presets
-
+    // tile presets
+    #region Presets 
     public static TileData Basic { get => new TileData(TileType.basic, Color.gray, 0, 1); }
     public static TileData Dirt { get => new TileData(TileType.dirt, Color.yellow, 5, 2); }
     public static TileData Grass { get => new TileData(TileType.grass, Color.green, 10, 3); }
@@ -208,10 +216,13 @@ public struct TileData
     public static TileData Goal { get => new TileData(TileType.goal, new Color(1, 0, 1, 1), 0, 0); }
     public static TileData Enemy { get => new TileData(TileType.enemy, Color.red, 0, 0); }
     public static TileData Turret { get => new TileData(TileType.turret, new Color(1, 0.5f, 0, 1), 500, 10000); }
-
-
     #endregion
 
+    /// </summary>
+    /// <param name="_type">tile type</param>
+    /// <param name="_color">tile color</param>
+    /// <param name="_build">build cost</param>
+    /// <param name="_traverse">traversal cost</param>
     public TileData(TileType _type, Color _color, int _build, int _traverse)
     {
         type = _type;
@@ -221,6 +232,9 @@ public struct TileData
         traversalCost = _traverse;
     }
 
+    /// <summary>
+    /// assert presets are initialized, if not, initializes them
+    /// </summary>
     private static void AssertPresetsInitialized()
     {
         if(null == presets)
@@ -237,6 +251,9 @@ public struct TileData
         }
     }
 
+    /// <summary>
+    /// find a preset tile by given type
+    /// </summary>
     public static TileData FindByType(TileType _type)
     {
         AssertPresetsInitialized();
@@ -244,9 +261,12 @@ public struct TileData
     }
 }
 
+/// <summary>
+/// a saved tile map
+/// </summary>
 [System.Serializable]
 public class SaveMap
 {
-    public List<TileData> tileData;
-    public Vector2_S size;
+    public List<TileData> tileData; // all the tiles in the map
+    public Vector2_S size; // map size (w, h)
 }

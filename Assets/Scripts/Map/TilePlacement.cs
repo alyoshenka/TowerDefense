@@ -3,28 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// display info of hovered tile??
-
+// ToDo: display info of hovered tile??
+/// <summary>
+/// manages placement of tiles in tile place state
+/// </summary>
 public class TilePlacement : MonoBehaviour
 {
-    private static TilePlacement instance;
-    public static TilePlacement Instance { get => instance; }
+    public static TilePlacement Instance { get; private set; } // singleton instance
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
-    // all the tiles have been used
-    public bool AllUsed { get => tileSlots.FindAll(t => t.Available).Count == 0; }
+    public bool AllUsed { get => tileSlots.FindAll(t => t.Available).Count == 0; } // all the tiles have been used
 
-    public DisplayTile display;
-    public List<DisplayTile> tileSlots; // make dynamic later
+    [Tooltip("currently selected tile display")] public DisplayTile display;
+    // ToDo: make dynamic later
+    [Tooltip("display tile slots")] public List<DisplayTile> tileSlots; 
 
-    [SerializeField] private List<TileAllotment> availableTiles;
+    [SerializeField] [Tooltip("tiles available for placing")] private List<TileAllotment> availableTiles;
 
-    public GameObject tileParent;
-    public MapTile defaultTile; // set old goal
+    [Tooltip("object to parent new tiles to")] public GameObject tileParent;
+    // ToDo(?): set old goal
+    [Tooltip("honestly not sure")] public MapTile defaultTile; 
 
     private void Start()
     {
@@ -35,6 +37,9 @@ public class TilePlacement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// select a new tile to place
+    /// </summary>
     public void SelectTile(DisplayTile newTile)
     {
         DisplayTile.SelectedTile?.DeselectTile();
@@ -42,12 +47,18 @@ public class TilePlacement : MonoBehaviour
         UpdateDisplay();
     }
 
+    /// <summary>
+    /// disperse a given tile allotment
+    /// </summary>
     public void GiveTiles(List<TileAllotment> tiles)
     {
         availableTiles = tiles;
         // BadUpdateDisplay(tiles);
     }
 
+    /// <summary>
+    /// update display to show current tile allotment
+    /// </summary>
     private void UpdateDisplay()
     {
         if(null == DisplayTile.SelectedTile)
@@ -64,6 +75,9 @@ public class TilePlacement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// click (and select) a map tile
+    /// </summary>
     public void ClickTile(MapTile clickedTile)
     {
         Debug.Assert(null != clickedTile);
@@ -104,6 +118,9 @@ public class TilePlacement : MonoBehaviour
         clickedTile.Destroy();
     }
 
+    /// <summary>
+    /// return a given map tile to allotment
+    /// </summary>
     private void ReturnTile(MapTile returningTile)
     {
         TileAllotment returnedAllot = 

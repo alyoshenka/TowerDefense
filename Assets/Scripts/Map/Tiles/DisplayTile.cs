@@ -4,31 +4,36 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// display for a tile that can be placed
+/// </summary>
 public class DisplayTile : MapTile
 {
-    private static DisplayTile selectedTile;
-    public static DisplayTile SelectedTile { get => selectedTile; }
+    public static DisplayTile SelectedTile { get; private set; } // currently selected tile
 
-    [SerializeField] private TileAllotment allotment;
-    public MapTile Tile { get => allotment.tile; }
-    public TileAllotment Allottment { get => allotment; } 
+    [SerializeField] [Tooltip("how many of this tile that are allowed")] private TileAllotment allotment;
+    public MapTile Tile { get => allotment.tile; } // get associated tile
+    public TileAllotment Allottment { get => allotment; } // get tile allotment
 
-    public Button selectButton;
-    public Image showImage;
-    public TMP_Text quantityText;
-    public TMP_Text buildCostText;
+    [Tooltip("push to select this tile")] public Button selectButton;
+    [Tooltip("display image holder")] public Image showImage;
+    [Tooltip("tile alloment holder")] public TMP_Text quantityText;
+    [Tooltip("build cost holder")] public TMP_Text buildCostText;
+    [Tooltip("selection animator")] public Animator animator;
 
-    public Animator animator;
+    // ToDo: get rid of later
+    [HideInInspector] public Color defaultColor; // default tile color
+    [HideInInspector] public Color displayColor; // tile display color
 
-    [HideInInspector] public Color defaultColor; // get rid of later
-    [HideInInspector] public Color displayColor;
+    public bool Available { get => null != allotment && allotment.count > 0; } // get if tile is available to place
 
-    public bool Available { get => null != allotment && allotment.count > 0; }
-
+    /// <summary>
+    /// clear tile selection
+    /// </summary>
     public static void ClearSelection()
     {
-        selectedTile?.DeselectTile();
-        selectedTile = null;
+        SelectedTile?.DeselectTile();
+        SelectedTile = null;
     }
 
     protected override void Awake()
@@ -46,32 +51,35 @@ public class DisplayTile : MapTile
 
         DeselectTile();
 
-        selectedTile = null;
+        SelectedTile = null;
 
         UpdateDisplay();
 
         uniqueData = allotment.tile.Data;
     }
 
+    /// <summary>
+    /// select a tile for placing
+    /// </summary>
     public void SelectTile()
     {
         if (!Available)
         {
-            selectedTile = null;
+            SelectedTile = null;
             return;
         } // something else??
 
         // check for bad logic
         // I think it's okay
 
-        if (this == selectedTile)
+        if (this == SelectedTile)
         {
-            selectedTile = null;
+            SelectedTile = null;
             DeselectTile();
         }
         else
         {
-            selectedTile = this;
+            SelectedTile = this;
             displayColor = Color.yellow;
         }
 
@@ -80,12 +88,18 @@ public class DisplayTile : MapTile
         UpdateDisplay();
     }
 
+    /// <summary>
+    /// deseelct tile for placing
+    /// </summary>
     public void DeselectTile()
     {
         displayColor = Available ? defaultColor : Color.gray;
         UpdateDisplay();
     }
 
+    /// <summary>
+    /// set tile allotmet for associated tile
+    /// </summary>
     public void SetAssociatedTile(TileAllotment allot)
     {
         allotment = allot;
@@ -96,6 +110,9 @@ public class DisplayTile : MapTile
         buildCostText.text = allot.tile.BuildCost.ToString();
     }
 
+    /// <summary>
+    /// take a tile from the allotment
+    /// </summary>
     public void TakeTile()
     {
         allotment.count--;
@@ -103,6 +120,9 @@ public class DisplayTile : MapTile
         UpdateDisplay();
     }
 
+    /// <summary>
+    /// update UI display text
+    /// </summary>
     public void UpdateDisplay()
     {
         quantityText.text = "x " + allotment?.count.ToString();
@@ -110,12 +130,18 @@ public class DisplayTile : MapTile
         // other things
     }
 
+    /// <summary>
+    /// show tile available to place
+    /// </summary>
     public void SetAvailable()
     {
         displayColor = defaultColor;
         DeselectTile();
     }
 
+    /// <summary>
+    /// show tile unavailable to place
+    /// </summary>
     public void SetUnavailable()
     {       
         DeselectTile(); // is this really necessary

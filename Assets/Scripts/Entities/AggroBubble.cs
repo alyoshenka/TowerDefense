@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// aggro sphere trigger collider
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class AggroBubble : MonoBehaviour
 {
     public delegate void AgentTriggerBubble();
-    public event AgentTriggerBubble agentEnter;
-    public event AgentTriggerBubble agentExit;
+    public event AgentTriggerBubble agentEnter; // agent enters trigger
+    public event AgentTriggerBubble agentExit;  // agent exits trigger
 
-    public SphereCollider me; // make regular collider
+    // ToDo: make regular collider and allow inheritance
+    public SphereCollider me; // collider to trigger action
 
-    private List<HostileAgent> withinRange;
+    private List<HostileAgent> withinRange; // agents that are within range of action
+    // get first agent in range (queue-style)
     public HostileAgent RequestTarget { get => withinRange.Count > 0 ? withinRange[0] : null; }
 
     private void Awake()
@@ -19,6 +24,10 @@ public class AggroBubble : MonoBehaviour
         withinRange = new List<HostileAgent>();
     }
 
+    /// <summary>
+    /// set values
+    /// </summary>
+    /// <param name="rad">aggro radius</param>
     public void Initialize(float rad)
     {
         me.isTrigger = true;
@@ -41,6 +50,10 @@ public class AggroBubble : MonoBehaviour
         if(null != ag) { RemoveAgent(ag); }
     }
 
+    /// <summary>
+    /// add a new agent to the list in range
+    /// </summary>
+    /// <param name="agent">the new agent to add</param>
     public void AddAgent(HostileAgent agent)
     {
         withinRange.Add(agent); // fires in order (not distance)
@@ -54,6 +67,10 @@ public class AggroBubble : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// remove an agent from the list in range
+    /// </summary>
+    /// <param name="agent">the agent to remove</param>
     public void RemoveAgent(HostileAgent agent) 
     { 
         withinRange.Remove(agent); 

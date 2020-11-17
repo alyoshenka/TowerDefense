@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// tile "geography"
+/// </summary>
 public enum TileType
 {
     basic,
@@ -14,21 +17,31 @@ public enum TileType
     turret
 }
 
+/// <summary>
+/// a node with a type and connections
+/// </summary>
 public class PathNode
 {
-    private TileData uniqueData;
-    public TileData Data { get => uniqueData; }
-    public TileType Type { get => uniqueData.Type; }
-    public int Index { get => uniqueData.index; }
+    private TileData uniqueData; // tile type data
+    public TileData Data { get => uniqueData; } // get unique data
+    public TileType Type { get => uniqueData.Type; } // get tile type
+    public int Index { get => uniqueData.index; } // get tile index
     
     [HideInInspector] public float calculatedCost; // cost to get to this node
 
-    public int TraversalCost { get => uniqueData.traversalCost; }
+    public int TraversalCost { get => uniqueData.traversalCost; } // get traversal cost
 
     public PathNode previousNode; // determined when finding path
-    public List<PathNode> connections;
+    public List<PathNode> connections; // all connected nodes
 
+    /// <summary>
+    /// remove node connection
+    /// </summary>
     public void RemoveConnection(PathNode oldNode) { connections.Remove(oldNode); }
+
+    /// <summary>
+    /// add new node connection, asserting no duplicates
+    /// </summary>
     public void AddConnection(PathNode newNode)
     {
         Debug.Assert(!connections.Contains(newNode));
@@ -37,6 +50,7 @@ public class PathNode
 
     private PathNode() { }
 
+    /// <param name="setData">unique data</param>
     public PathNode(TileData setData)
     {
         connections = new List<PathNode>();
@@ -47,12 +61,19 @@ public class PathNode
         Debug.Assert(TraversalCost == setData.traversalCost);
     }
 
+    /// <summary>
+    /// assign new unique data
+    /// </summary>
     public void AssignData(TileData newData)
     {
         newData.index = uniqueData.index;
         uniqueData = newData;
     }
 
+    /// <summary>
+    /// replace this node's connections with the old node's connections
+    /// remove old node's connections
+    /// </summary>
     public void ReplaceConnections(PathNode oldNode) 
     {
         for(int i = 0; i < oldNode.connections.Count; i++)
@@ -68,8 +89,14 @@ public class PathNode
         Debug.Assert(oldNode.connections.Count == 0);
     }
      
+    /// <summary>
+    /// make this tile not the goal tile
+    /// </summary>
     public void RemoveFromGoal() { AssignData(TileData.Basic); }
 
+    /// <summary>
+    /// make this tile the goal tile
+    /// </summary>
     public void AssignAsGoal() { AssignData(TileData.Goal); }
 
     /// <summary>
@@ -82,41 +109,41 @@ public class PathNode
     }
 }
 
+/// <summary>
+/// a tile in the map, gameobject
+/// </summary>
 [System.Serializable]
 public class MapTile : MonoBehaviour
 {
-    [SerializeField] protected TileData uniqueData;
-    public TileData Data { get => uniqueData; }
-    public TileType Type { get => uniqueData.Type; }
-    public Color DisplayColor { get => uniqueData.DisplayColor; }
-    public int TraversalCost { get => uniqueData.traversalCost; }
-    public int BuildCost { get { return uniqueData.BuildCost; } private set { } }
-    public int Index { get => uniqueData.index; set => uniqueData.index = value; }
+    [SerializeField] [Tooltip("tile type data")] protected TileData uniqueData;
+    public TileData Data { get => uniqueData; } // get unique data
+    public TileType Type { get => uniqueData.Type; } // get tile type
+    public Color DisplayColor { get => uniqueData.DisplayColor; } // get display color
+    public int TraversalCost { get => uniqueData.traversalCost; } // get traversal cost
+    public int BuildCost { get { return uniqueData.BuildCost; } private set { } } // get build cost
+    public int Index { get => uniqueData.index; set => uniqueData.index = value; } // get/set tile index
     
 
     public delegate void TileEnteredEvent();
-    public event TileEnteredEvent tileEnter;
+    public event TileEnteredEvent tileEnter; // invoke on mouse hover enter
     public delegate void TileExitedEvent();
-    public event TileExitedEvent tileExit;
+    public event TileExitedEvent tileExit; // invoke on mouse hover exit
     public delegate void TileClickedEvent();
-    public event TileClickedEvent tileClick;
-    public static MapTile currentHover;
+    public event TileClickedEvent tileClick; // invoke on tile click
+    public static MapTile currentHover; // the current tile being hovered over
 
-    public bool GoalTile { get => uniqueData.Type == TileType.goal; }
+    public bool GoalTile { get => uniqueData.Type == TileType.goal; } // get whether this is the goal tile
 
-    [SerializeField] protected bool canBeChanged = true; // not quite optimal but ok
-    public bool CanBeChanged { get { return canBeChanged || placedByPlayer; } private set { } }
-    
-    public bool HasCost { get => BuildCost > 0; }
+    // ToDo: not quite optimal but ok
+    [SerializeField] [Tooltip("this tile can be edited")] protected bool canBeChanged = true;
+    // ToDo: find better place
+    [SerializeField] [Tooltip("tile UI display image")] private Sprite displayImage;
+    [Tooltip("show tile/node connetions")] public bool showConnections;
+    [Tooltip("this tile has been placed by the player")] public bool placedByPlayer;
+    public bool CanBeChanged { get { return canBeChanged || placedByPlayer; } private set { } } // get if tile can be change
+    public bool HasCost { get => BuildCost > 0; } // get if tile has a build cost    
 
-    
-    [SerializeField] private Sprite displayImage; // find better place
-
-    public bool showConnections;
-
-    public TileStatus tileStatus = TileStatus.none;
-
-    public bool placedByPlayer;
+    [HideInInspector] public TileStatus tileStatus = TileStatus.none; // pathfinding status   
 
     protected virtual void Awake()
     {
@@ -136,34 +163,54 @@ public class MapTile : MonoBehaviour
     }
 
     #region Placement
+    /// <summary>
+    /// add interaction indicators for tile placement
+    /// </summary>
     public void AddPlaceIndicators()
     {
         tileEnter += HoverEnter;
         tileExit += HoverExit;
         tileClick += TileSelected;
     }
+    /// <summary>
+    /// remove interaction indicators for tile placement
+    /// </summary>
     public void RemovePlaceIndicators()
     {
         tileEnter -= HoverEnter;
         tileExit -= HoverExit;
         tileClick -= TileSelected;
     }
+    /// <summary>
+    /// action upon mouse hover enter
+    /// </summary>
     protected virtual void HoverEnter()
     {
         transform.localScale *= 1.4f;
         currentHover = this;
     }
+    /// <summary>
+    /// action upon mouse hover exiy
+    /// </summary>
     protected virtual void HoverExit()
     {
         transform.localScale /= 1.4f;
         if(this == currentHover) { currentHover = null; }
     }
+    /// <summary>
+    /// action upon tile selected
+    /// </summary>
     protected virtual void TileSelected()
     {
         TilePlacement.Instance.ClickTile(this);
     }
     #endregion
 
+    /// <summary>
+    /// instantiate tile in place, assign/move data accordingly
+    /// </summary>
+    /// <param name="tileModel">tile model to copy</param>
+    /// <returns>newly created map tile</returns>
     public MapTile InstantiateInPlace(MapTile tileModel)
     {
         GameObject copy = Instantiate(
@@ -174,6 +221,9 @@ public class MapTile : MonoBehaviour
         return newTile;
     }
 
+    /// <summary>
+    /// properly dispose of tile
+    /// </summary>
     public void Destroy()
     {
         currentHover = null;
@@ -192,11 +242,24 @@ public class MapTile : MonoBehaviour
         throw new System.NotImplementedException();
     }
 
-    // just pathdfinding stuff
+    #region Pathfinding Display Indicators
+    /// <summary>
+    /// mark as current tile (pathfinding display)
+    /// </summary>
     public void IndicateCurrent() { tileStatus = TileStatus.current; }
+    /// <summary>
+    /// mark as next tile (pathfinding display)
+    /// </summary>
     public void IndicateNext() { tileStatus = TileStatus.next; }
+    /// <summary>
+    /// mark tile as cleared (pathfinding stuff)
+    /// </summary>
     public void IndicateCleared() { tileStatus = TileStatus.clear; }
+    /// <summary>
+    /// clear pathfinding stuff
+    /// </summary>
     public void IndicateNone() { tileStatus = TileStatus.none; }
+    #endregion
 
     protected virtual void OnDrawGizmos()
     { 
@@ -227,7 +290,7 @@ public class MapTile : MonoBehaviour
         }
     }
 
-    // is this the best way to be doign thie?
+    // ToDo: is this the best way to be doign thie?
 
     private void OnMouseEnter() { tileEnter?.Invoke(); }
 
@@ -235,7 +298,10 @@ public class MapTile : MonoBehaviour
 
     private void OnMouseDown() { tileClick?.Invoke(); }
 
-
+    /// <summary>
+    /// assign new tile data
+    /// </summary>
+    /// <param name="preserveIndex">keep current index?</param>
     public void AssignData(TileData newData, bool preserveIndex)
     {
         if (preserveIndex) { newData.index = uniqueData.index; }
@@ -246,18 +312,24 @@ public class MapTile : MonoBehaviour
         if(Type != TileType.basic) { canBeChanged = false; } // maybe??
     }
 
+    /// <summary>
+    /// copy data from another tile
+    /// </summary>
     public void AssignDataTile(MapTile otherTile)
     {
         uniqueData = otherTile.uniqueData;
     }
 }
 
+/// <summary>
+/// pathfinding display status
+/// </summary>
 public enum TileStatus
 {
-    none,
-    current,
-    next,
-    clear
+    none, // no status
+    current, // current pathfinding node
+    next, // next pathfinding node
+    clear // cleared pathfinding node
 }
 
 

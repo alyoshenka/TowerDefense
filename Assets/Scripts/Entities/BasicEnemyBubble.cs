@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// aggro sphere for a basic enemy
+/// </summary>
 public class BasicEnemyBubble : AggroBubble
 {
-    public BasicEnemy agent;
+    public BasicEnemy agent; // agent who owns this aggro bubble
 
     private void Start()
     {

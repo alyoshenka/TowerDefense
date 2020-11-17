@@ -5,22 +5,22 @@ using UnityEngine.UI;
 
 public class PlaceState : GamePlayState
 {
-    public event EnterStateEvent openPlace;
+    public event EnterStateEvent openPlace; // invoked upon entering state
 
-    private static PlaceState instance;
-    public static PlaceState Instance { get => instance; }
+    public static PlaceState Instance { get; private set; } // singleton instance
 
-    public bool GoalPlaced { get => currentLevel.Board.GoalAssigned; }
-    public GameBoard Board { get => currentLevel.Board; } // bas design!!
+    public bool GoalPlaced { get => currentLevel.Board.GoalAssigned; } // get whether goal is assigned
+    // ToDo: bad design!
+    public GameBoard Board { get => currentLevel.Board; } // get current board
 
-    public Transform tileParent;
-    public Button playButton;
-    public TilePlacement tilePlacement;
+    [Tooltip("parent transform for tiles")] public Transform tileParent;
+    [Tooltip("push to 'start' game")] public Button playButton;
+    [Tooltip("tile placement manager")] public TilePlacement tilePlacement;
 
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
     private void Start()
@@ -56,6 +56,9 @@ public class PlaceState : GamePlayState
         return currentLevel.Board.GoalAssigned;
     }
 
+    /// <summary>
+    /// increment level, generate and assign new board
+    /// </summary>
     private void GenerateNextMap()
     {
         // generate map

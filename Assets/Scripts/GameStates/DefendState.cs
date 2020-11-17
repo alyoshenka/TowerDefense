@@ -4,23 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// main game state, defend after tiles have been placed
+/// </summary>
 public class DefendState : GamePlayState
 {
-    public event EnterStateEvent openDefend;
+    public event EnterStateEvent openDefend; // invoked upon entering state
+    public static DefendState Instance { get; private set; } // singleton instance
 
-    private static DefendState instance;
-    public static DefendState Instance { get { return instance; } private set { } }
-
-    public TMP_Text castleHealth;
-    public Button pauseButton;
-    public int startDelay;
-
-    public bool pauseOnEnter;
+    [Tooltip("player/castle health display")] public TMP_Text castleHealth;
+    [Tooltip("push to pause game")] public Button pauseButton;
+    [Tooltip("delay start for number to seconds")] public int startDelay;
+    [Tooltip("pause (silent) upon entering")] public bool pauseOnEnter;
 
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
     private void Start()
     {
@@ -46,6 +46,9 @@ public class DefendState : GamePlayState
         if (pauseOnEnter) { PauseState.Instance.PauseGame(); }
     }
 
+    /// <summary>
+    /// delay start, play animation?
+    /// </summary>
     private IEnumerator StartDelay()
     {
         yield return new WaitForSeconds(startDelay);

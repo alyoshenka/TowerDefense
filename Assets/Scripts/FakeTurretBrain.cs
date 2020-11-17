@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// (temporaty) shoot at enemies
+/// </summary>
 public class FakeTurretBrain : MonoBehaviour
 {
-    public GameObject projectile;
+    [Tooltip("object to shoot")] public GameObject projectile;
     // public Transform barrel;
-    public float shotResetTime;
+    [Tooltip("time (s) between shots")] public float shotResetTime;
 
     float shotElapsedTime;
 
@@ -25,6 +28,9 @@ public class FakeTurretBrain : MonoBehaviour
     // rotation speed determines a good part of firing speed
     // but firing speed is still a thing
 
+    /// <summary>
+    /// shoot at enemy
+    /// </summary>
     private void Shoot()
     {
         shotElapsedTime = 0;
@@ -35,6 +41,7 @@ public class FakeTurretBrain : MonoBehaviour
         proj.transform.LookAt(agent.transform);
     }
 
+    /// <returns>the closest enemy</returns>
     private HostileAgent NearestEnemy()
     {
         HostileAgent[] enemies = FindObjectsOfType<HostileAgent>();

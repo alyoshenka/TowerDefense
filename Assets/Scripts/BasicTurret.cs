@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// shoots at targets
+/// </summary>
 public class BasicTurret : HostileAgent
 {
     protected override void Awake()
@@ -20,21 +23,25 @@ public class BasicTurret : HostileAgent
     }
 }
 
+/// <summary>
+/// basic turrent "brain"
+/// </summary>
 public class BasicTurretBrain : DecisionTree
 {
-    BooleanDecision enemiesWithinRange;
-    BooleanDecision hasTarget;
-    BooleanDecision lookingAtEnemy;
-    BooleanDecision canAttack;
+    BooleanDecision enemiesWithinRange; // there are enemies within range
+    BooleanDecision hasTarget; // a target is assigned
+    BooleanDecision lookingAtEnemy; // looking at target
+    BooleanDecision canAttack; // able to attack target
 
     Action wait; // wait for interrupt (collision enter)
     Action reload; // are they the same?
-    Action turn;
-    Action attack;
-    Action assignTarget;
+    Action turn; // rotate
+    Action attack; // attack target
+    Action assignTarget; // assign new target
 
-    bool waiting;
+    bool waiting; // waiting to reset timer????
 
+    /// <param name="agent">the agent to act upon</param>
     public BasicTurretBrain(BasicTurret agent)
     {
         reload = new Rest(agent);
@@ -50,7 +57,13 @@ public class BasicTurretBrain : DecisionTree
         start = enemiesWithinRange;
     }
 
+    /// <summary>
+    /// wait for something(?)
+    /// </summary>
     public void StartWaiting() { waiting = true; }
+    /// <summary>
+    /// stop waiting(?)
+    /// </summary>
     public void StopWaiting() 
     { 
         waiting = false;
@@ -68,6 +81,9 @@ public class BasicTurretBrain : DecisionTree
     }
 }
 
+/// <summary>
+/// assign a new target to attack
+/// </summary>
 public class AssignNextAttackTarget : Action
 {
     public AssignNextAttackTarget(HostileAgent agent) : base(agent) { }

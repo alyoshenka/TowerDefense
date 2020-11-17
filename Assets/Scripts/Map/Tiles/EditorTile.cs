@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// map tile used for board editing
+/// </summary>
 public class EditorTile : MapTile
 {
-    public static EditorTile CurrentHover { get => (EditorTile)currentHover; }
-
-    public Color displayColor;
+    public static EditorTile CurrentHover { get => (EditorTile)currentHover; } // current hovered tile
+    [Tooltip("color to display this tile")] public Color displayColor;
 
     protected override void Awake()
     {

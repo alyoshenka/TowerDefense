@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// manage game and player settings
+/// </summary>
 public class SettingsState : GameState
 {
-    private static SettingsState instance;
-    public static SettingsState Instance { get { return instance; } private set { } }
+    public static SettingsState Instance { get; private set; } // singleton instance
 
-    public Button backButton;
+    [Tooltip("push to go back (to main menu")] public Button backButton;
 
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
     private void Start()

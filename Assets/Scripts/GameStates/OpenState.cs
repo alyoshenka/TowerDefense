@@ -2,16 +2,15 @@
 // not really sure what this is gonna do
 
 /// <summary>
-/// sets everything up for the game
+/// sets everything up for the game, first state
 /// </summary>
 public class OpenState : GameState
 {
-    private static OpenState instance;
-    public static OpenState Instance { get => instance; }
+    public static OpenState Instance { get; private set; } // singleton instance
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
     public override bool CanTransition() { return true; }

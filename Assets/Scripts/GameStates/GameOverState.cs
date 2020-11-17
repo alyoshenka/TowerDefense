@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverState : GamePlayState // this should be win/lose
+/// <summary>
+/// game is over, either won or lost
+/// </summary>
+public class GameOverState : GamePlayState
 {
-    private static GameOverState instance;
-    public static GameOverState Instance { get { return instance; } private set { } }
+    private static GameOverState instance; // singleton instance
+    public static GameOverState Instance // get singleton instance
+        { get { return instance; } private set { } }
 
     private void Awake()
     {
@@ -14,7 +18,7 @@ public class GameOverState : GamePlayState // this should be win/lose
         else if (this != instance) { Destroy(this); }
     }
 
-    public Button returnToMenu;
+    [Tooltip("push to return to menu")] public Button returnToMenu;
 
     private void Start()
     {

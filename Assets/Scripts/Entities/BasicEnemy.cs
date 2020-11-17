@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Goal: Attack Base
+/// <summary>
+/// goal: attack base(castle) ONLY
+/// </summary>
 [RequireComponent(typeof(BasicEnemyBubble))]
 public class BasicEnemy : OrganicAgent
 {
-    public bool withinRangeOfGoal;
-    public bool yeet;
+    public bool withinRangeOfGoal; // close enough to goal to attack
+    public bool yeet; // should be destroyed
 
     protected new void Awake()
     {
@@ -39,22 +41,31 @@ public class BasicEnemy : OrganicAgent
     }
 }
 
+/// <summary>
+/// decision structure for a basic enemy
+/// </summary>
 public class BasicEnemyBrain : DecisionTree
 {
-    BooleanDecision isTired_move;
-    BooleanDecision isTired_reload;
-    BooleanDecision isTired_turn;
-    BooleanDecision atTarget;
-    BooleanDecision lookingAtTarget;
-    BooleanDecision posedForGoal;
-    BooleanDecision withinRange;
+    #region Decisions
+    BooleanDecision isTired_move;       // is tired from moving
+    BooleanDecision isTired_reload;     // is tired from reloading
+    BooleanDecision isTired_turn;       // is tired from turning
+    BooleanDecision atTarget;           // very close to target
+    BooleanDecision lookingAtTarget;    // facing terget
+    BooleanDecision posedForGoal;       // ready to attack goal
+    BooleanDecision withinRange;        // within range of target
+    #endregion
 
-    Action turn;
-    Action advance;
-    Action rest;
-    Action assignNextTarget;
-    Action attack;
+    #region Actions
+    Action turn;                // rotate
+    Action advance;             // move forwards
+    Action rest;                // refill rest counter
+    Action assignNextTarget;    // get next target in list
+    Action attack;              // attack target
+    #endregion
 
+
+    /// <param name="agent">the agent to act upon</param>
     public BasicEnemyBrain(BasicEnemy agent)
     {
         turn = new Turn(agent);
@@ -87,6 +98,9 @@ public class BasicEnemyBrain : DecisionTree
     }
 }
 
+/// <summary>
+/// assign the next target as the current target
+/// </summary>
 public class AssignNextTarget : Action
 {
     public AssignNextTarget(HostileAgent agent) : base(agent) { }

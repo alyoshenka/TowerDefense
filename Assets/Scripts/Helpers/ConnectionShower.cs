@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// debug node connections
+/// </summary>
 public class ConnectionShower : MonoBehaviour
 {
-    private static ConnectionShower instance;
-    public static ConnectionShower Instance { get => instance; }
+    public static ConnectionShower Instance { get; private set; } // singleton instance
 
-    public GameBoard board;
-    public bool showConnections;
+    [Tooltip("current board")] public GameBoard board;
+    [Tooltip("show board connections")] public bool showConnections;
 
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
     private void OnDrawGizmos()

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-// serializable Vector2
+/// <summary>
+/// serializable Vector2
+/// </summary>
 [System.Serializable]
 public struct Vector2_S
 {
@@ -18,20 +20,25 @@ public struct Vector2_S
     public Vector2 ToVec2() { return new Vector2(x, y); }
 }
 
-// path from start to goal
+/// <summary>
+/// path from start to goal
+/// </summary>
 public struct FoundPath
 {
-    public PathNode start;
-    public PathNode goal;
-    public List<PathNode> path;
+    public PathNode start; // starting node
+    public PathNode goal; // ending node
+    public List<PathNode> path; // list of nodes connection them
 }
 
+/// <summary>
+/// a map of connected nodes
+/// </summary>
 [System.Serializable]
 public class NodeMap
 {
-    private List<PathNode> nodes;
-    public List<PathNode> Nodes { get => nodes; }
-    private Vector2_S size;
+    private List<PathNode> nodes; // all nodes
+    public List<PathNode> Nodes { get => nodes; } // get nodes
+    private Vector2_S size; // size (w, h)
     public Vector2 Size { get => size.ToVec2(); }
 
     private NodeMap() { }
@@ -41,25 +48,40 @@ public class NodeMap
         size = new Vector2_S(_size);
     } 
 
+    /// <summary>
+    /// add a node to the list
+    /// </summary>
     public void AddNode(PathNode node) { nodes.Add(node); }
 
+    /// <summary>
+    /// remove a node from the list, clearing all connections
+    /// </summary>
     public void RemoveNode(PathNode node)
     {
         node.ClearConnections();
         Nodes.Remove(node);
     }
 
+    /// <summary>
+    /// get type of nodes[index]
+    /// </summary>
     public TileType NodeType(int index)
     {
         if(index >= nodes.Count) { Debug.Log(index); }
         return nodes[index].Type;
     }
 
+    /// <summary>
+    /// set type of node to default type values
+    /// </summary>
     public void SetNodeType(PathNode node, TileType newType)
     {
         node.AssignData(TileData.FindByType(newType));
     }
 
+    /// <summary>
+    /// reset node values for pathfinding
+    /// </summary>
     public void ResetNodes()
     {
         foreach(PathNode node in nodes)
@@ -70,44 +92,59 @@ public class NodeMap
     }
 }
 
+/// <summary>
+/// map of tiles
+/// </summary>
 public class TileMap
 {
-    private List<MapTile> tiles;
-    public List<MapTile> Tiles { get => tiles; }
-    public Vector2 size;
+    public List<MapTile> Tiles { get; } // all tiles
+    public Vector2 size; // map size (w, h)
 
     private TileMap() { }
     public TileMap(List<MapTile> _tiles, Vector2 _size)
     {
-        tiles = _tiles;
+        Tiles = _tiles;
         size = _size;
     }
 
-    public void AddTile(MapTile tile) { tiles.Add(tile); }
+    /// <summary>
+    /// add a new tile
+    /// </summary>
+    public void AddTile(MapTile tile) { Tiles.Add(tile); }
 
-    public void RemoveTile(MapTile tile) { tiles.Remove(tile); }
+    /// <summary>
+    /// remove a tile
+    /// </summary>
+    public void RemoveTile(MapTile tile) { Tiles.Remove(tile); }
 
+    /// <summary>
+    /// replace old tile with new tile, preserving index
+    /// </summary>
     public void ReplaceTile(MapTile oldTile, MapTile newTile)
     {
-        int idx = tiles.IndexOf(oldTile);
-        tiles.RemoveAt(idx);
-        tiles.Insert(idx, newTile);
+        int idx = Tiles.IndexOf(oldTile);
+        Tiles.RemoveAt(idx);
+        Tiles.Insert(idx, newTile);
     }
 }
 
-// map type to prefab
+/// <summary>
+/// map type to prefab
+/// </summary>
 [System.Serializable]
 public class GameObjectTypeMap
 {
-    public GameObject tile;
-    public TileType type;
+    [Tooltip("tile gameobject")] public GameObject tile;
+    [Tooltip("tile type")] public TileType type;
 }
 
-// generate a grid of tiles and associated Nodes
+/// <summary>
+/// generate a grid of tiles and associated nodes
+/// </summary>
 public class MapGenerator : MonoBehaviour
 {
-    public List<GameObjectTypeMap> tileToTypeMap;
-    private static List<GameObjectTypeMap> staticTileToTypeMap;
+    [Tooltip("list of tile object/type options")] public List<GameObjectTypeMap> tileToTypeMap;
+    private static List<GameObjectTypeMap> staticTileToTypeMap; // tile to type map
 
     private void Awake()
     {
@@ -120,6 +157,9 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// generate a node map from tile data, of size
+    /// </summary
     public static NodeMap GenerateNodeMap(List<TileData> tiles, Vector2 size)
     {
         NodeMap nodeMap = new NodeMap(new List<PathNode>(), size);
@@ -133,6 +173,9 @@ public class MapGenerator : MonoBehaviour
         return nodeMap;
     }
 
+    /// <summary>
+    /// generate a tile map from node map, childed to parent
+    /// </summary>
     public static TileMap GenerateTileMap(NodeMap nodeMap, Transform parent)
     {
         TileMap tileMap = new TileMap(new List<MapTile>(), nodeMap.Size);
@@ -163,6 +206,9 @@ public class MapGenerator : MonoBehaviour
         return tileMap;
     }
 
+    /// <summary>
+    /// get data to save from a gameboard
+    /// </summary>
     public static SaveMap ExtractData(GameBoard gameBoard)
     {
         SaveMap map = new SaveMap();
@@ -180,12 +226,18 @@ public class MapGenerator : MonoBehaviour
         return map;
     }
 
+    /// <summary>
+    /// get associated object from static map given type
+    /// </summary>
     public static GameObject FindAssociatedObject(TileType type)
     {
         return staticTileToTypeMap.Find(obj => obj.type == type).tile;
     }
 
-    // basic, needs filename/randomness
+    // ToDo: basic, needs filename/randomness
+    /// <summary>
+    /// load a given level, child to parent
+    /// </summary>
     public static GameBoard GenerateBoard(int level, Vector2 size, Transform parent)
     {
         NodeMap nodeMap =  MapEditor.LoadNodeMap(level.ToString());
@@ -193,7 +245,10 @@ public class MapGenerator : MonoBehaviour
         return new GameBoard(nodeMap, tileMap);
     }
 
-    // connect the grid
+    /// <summary>
+    /// connect the given node map
+    /// </summary>
+    /// <param name="reset">reset node values for pathfinding?</param>
     public static NodeMap AddNodeConnections(NodeMap nodeMap, bool reset = true)
     {
         if (reset) { nodeMap.ResetNodes(); }

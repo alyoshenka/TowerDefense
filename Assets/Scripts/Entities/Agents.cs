@@ -13,9 +13,10 @@ public abstract class AIAgent : MonoBehaviour
         stateMachine.RunTree(this);
     }
 
-    public DecisionTree stateMachine;
+    public DecisionTree stateMachine; // brain
 
-    protected Color brainDisplay = Color.black; // get rid of later
+    // ToDo: get rid of/ revide debug strategy
+    protected Color brainDisplay = Color.black; // gizmo display color
 
     public virtual void OnDrawGizmos()
     {
@@ -33,31 +34,23 @@ public abstract class AIAgent : MonoBehaviour
 /// </summary>
 public abstract class HostileAgent : AIAgent, IDamageable
 {
-    // total allowable health
-    [SerializeField] private int maxHealth = 10;
-    // get maxHealth
-    public int MaxHealth { get => maxHealth; }
-    // current agent health
-    [SerializeField] protected int currentHealth;
-    // get currentHealth
-    public int CurrentHealth { get => currentHealth; }
+    public int MaxHealth { get => maxHealth; } // get maxHealth
+    public int CurrentHealth { get => currentHealth; } // get currentHealth
     // looking at target, true if no target assigned
-    public bool LookingAtTarget { get => HasTarget ? Mathf.Abs(NeededRotationToTarget()) < targetLookEps : true; }
-    // target assigned
-    public bool HasTarget { get => null != target; }
-    // get restedTime < reloadCooldown
-    public bool ShouldReload { get => restedTime < reloadCooldown; }
-    // current hostile target
-    protected GameObject target;
-    // time without moving
-    protected float restedTime;
-    // epsilon angle from looking at target (deg)
-    private static float targetLookEps = 1;
-    // index of terget
-    protected int targetIdx;
+    public bool LookingAtTarget { get => HasTarget ? Mathf.Abs(NeededRotationToTarget()) < targetLookEps : true; }   
+    public bool HasTarget { get => null != target; } // target assigned
+    public bool ShouldReload { get => restedTime < reloadCooldown; } // get restedTime < reloadCooldown
+    
+    protected GameObject target; // current hostile target   
+    protected float restedTime; // time without moving
+    protected int targetIdx; // index of target
 
-    // turn in clockwise direction
-    private int ccw;
+    private static float targetLookEps = 1; // epsilon angle from looking at target (deg)
+    
+    private int ccw; // turn in clockwise direction?
+
+    [SerializeField] [Tooltip("total allowable health")] private int maxHealth = 10;
+    [SerializeField] [Tooltip("current health value")] protected int currentHealth;
 
     [Tooltip("Weapon to shoot")]
     public Projectile weapon;
@@ -74,8 +67,8 @@ public abstract class HostileAgent : AIAgent, IDamageable
     [Tooltip("How long until I can attack again?")]
     public float reloadCooldown;
 
-
-    private List<AggroBubble> attackers; // so i can destroy references
+    // so i can destroy references
+    private List<AggroBubble> attackers; // enemies within range
 
     protected virtual void Awake()
     {
@@ -86,7 +79,15 @@ public abstract class HostileAgent : AIAgent, IDamageable
         aggro.Initialize(attackRange);
     }
 
+    /// <summary>
+    /// add a new attacker to the list
+    /// </summary>
+    /// <param name="bubble">the attackers assosciated aggro bubble</param>
     public void AddAttacker(AggroBubble bubble) { attackers.Add(bubble); }
+    /// <summary>
+    /// remove an attacker from the list
+    /// </summary>
+    /// <param name="bubble">the attackers assosciated aggro bubble</param>
     public void RemoveAttacker(AggroBubble bubble) { attackers.Remove(bubble); } // hopefully doesn't break stuff
 
     public void ResetHealth()
@@ -176,11 +177,17 @@ public abstract class HostileAgent : AIAgent, IDamageable
         brainDisplay = Color.magenta;
     }
 
+    /// <summary>
+    /// get the next target and assign it to relevant fields
+    /// </summary>
     public virtual void AssignNextTarget()
     {
         // abstract?
     }
 
+    /// <summary>
+    /// attack assigned target
+    /// </summary>
     public virtual void Attack() 
     { 
         brainDisplay = Color.red; 
@@ -225,17 +232,19 @@ public abstract class HostileAgent : AIAgent, IDamageable
 /// </summary>
 public abstract class OrganicAgent : HostileAgent
 {
-    protected FoundPath foundPath;       
-    // allowable dist to target
-    private static float targetEps = 0.1f;
-    // has target and within allowable distance
+    protected FoundPath foundPath; // path to goal     
+    private static float targetEps = 0.1f; // allowable dist to target
+
+    /// <summary>
+    /// returns has target and within allowable distance
+    /// </summary>
     public bool ReachedTarget
     {
         get => HasTarget &&
             Vector3.Distance(transform.position, target.transform.position) < targetEps;
     }
-    // get restedTime < moveCooldown
-    public bool ShouldRest { get => restedTime < moveCooldown; }
+    
+    public bool ShouldRest { get => restedTime < moveCooldown; } // get restedTime < moveCooldown
 
     [Tooltip("Movement speed")]
     public float moveSpeed;
@@ -282,6 +291,10 @@ public abstract class OrganicAgent : HostileAgent
         brainDisplay = Color.green;
     }
 
+    /// <summary>
+    /// assign a new path
+    /// </summary>
+    /// <param name="path">the new path to assign</param>
     public void AssignPath(FoundPath path)
     {
         foundPath = path;

@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// in-game pause
+/// </summary>
 public class PauseState : GameState
 {
-    private static PauseState instance;
-    public static PauseState Instance { get => instance; }
+    public static PauseState Instance { get; private set; } // singleton instance
 
-    public Button resumeButton;
-    private bool silentPaused; // game events stop
+    [Tooltip("push to resume play")] public Button resumeButton;
     private bool loudPaused; // ui is displayed
-    public bool Paused { get => silentPaused; }
+    public bool Paused { get; private set; } // get silent paused
 
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
     private void Start()
@@ -25,7 +26,7 @@ public class PauseState : GameState
         resumeButton.onClick.AddListener(
             () => PauseState.Instance.TogglePauseGame());
 
-        silentPaused = false;
+        Paused = false;
         loudPaused = false;
         gameObject.SetActive(false);
     }
@@ -39,23 +40,27 @@ public class PauseState : GameState
     public override void OnEnter()
     {
         if (loudPaused) { base.OnEnter(); } // show ui
-        silentPaused = true;
+        Paused = true;
         if (Debugger.Instance.StateChangeMessages) { Debug.Log(GamePlayState.CurrentLevel.WinCon ? "game win" : GoalTile.LoseCon ? "game lose" : "enter pause"); } // sorry
     }
 
     public override void OnExit()
     {
         base.OnExit();
-        silentPaused = loudPaused = false;
+        Paused = loudPaused = false;
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("exit pause"); }
     }
 
+    /// <summary>
+    /// pause gameplay
+    /// </summary>
+    /// <param name="silent">silent = game time stops, !silent = pause menu</param>
     public void PauseGame(bool silent = false)
     {       
         if (Paused && Debugger.Instance.DeveloperHaltMessages) { Debug.LogWarning("game silent paused"); }
         if (Paused && loudPaused) { Debug.LogWarning("game already paused"); }
 
-        silentPaused = true;
+        Paused = true;
         if (!silent) 
         { 
             loudPaused = true; 
@@ -65,18 +70,24 @@ public class PauseState : GameState
         if (Debugger.Instance.DeveloperHaltMessages) { Debug.Log("pause: " + (silent ? "silent" : "loud")); }
     }
 
+    /// <summary>
+    /// go back to game state, resume play
+    /// </summary>
     public void UnpauseGame()
     {
-        if (!silentPaused) { Debug.LogError("game not paused"); }
-        silentPaused = false;
+        if (!Paused) { Debug.LogError("game not paused"); }
+        Paused = false;
         if (Debugger.Instance.DeveloperHaltMessages) { Debug.Log("unpause"); }
 
         GameStateManager.Instance.GoBack();
     }
 
+    /// <summary>
+    /// pause if unpaused, unpause if paused
+    /// </summary>
     public void TogglePauseGame()
     {
-        if (silentPaused) { UnpauseGame(); }
+        if (Paused) { UnpauseGame(); }
         else { PauseGame(); }
     }
 }

@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// main menu, first interactable state
+/// </summary>
 public class MainMenuState : GameState
 {
-    private static MainMenuState instance;
-    public static MainMenuState Instance { get => instance; }
+    public static MainMenuState Instance { get; private set; } // sinhleton instance
+
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
-    public Button playButton;
-    public Button tutorialButton;
-    public Button settingsButton;
+    [Tooltip("push to start game")]     public Button playButton;
+    [Tooltip("push to start tutorial")] public Button tutorialButton;
+    [Tooltip("push to open settings")]  public Button settingsButton;
 
     private void Start()
     {

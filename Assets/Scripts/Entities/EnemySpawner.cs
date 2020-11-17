@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawner : AIAgent // give current path to goal to enemy on spawn
+/// <summary>
+/// creates enemies, and gives them the current path to the goal
+/// </summary>
+public class EnemySpawner : AIAgent
 {
-    public List<EnemyPack> enemySet;
+    [Tooltip("enemies to spawn")] public List<EnemyPack> enemySet;
+    [Tooltip("tile object")] public MapTile associatedTile;
+    [Tooltip("time to wait between enemy spawning")] public float spawnResetTime;  
+    [Tooltip("time since last enemyspawn")] public float spawnElapsedTime;
+    public bool CanSpawn { get => spawnElapsedTime > spawnResetTime && allEnemies.Count > 0; } // return if new enemy can be spawned
 
-    public MapTile associatedTile;
-    public float spawnResetTime;
-    public bool CanSpawn { get => spawnElapsedTime > spawnResetTime && allEnemies.Count > 0; }
-    public float spawnElapsedTime;
-
-    private FoundPath pathToGoal;
-    private List<OrganicAgent> allEnemies;
+    private FoundPath pathToGoal; // path from associated tile to goal tile
+    private List<OrganicAgent> allEnemies; // all enemies that are going to be/have been spawned
 
     private void Start()
     {
@@ -29,6 +31,9 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
         DefendState.Instance.openDefend -= GetPath;            
     }
 
+    /// <summary>
+    /// instantiate all enemies
+    /// </summary>
     private void LoadAllEnemies()
     {
         allEnemies = new List<OrganicAgent>();
@@ -46,6 +51,9 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
         }
     }
 
+    /// <summary>
+    /// get path from tile to goal
+    /// </summary>
     public void GetPath()
     {
         associatedTile = GetComponent<MapTile>(); // better system
@@ -56,6 +64,9 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
             PlaceState.Instance.Board.nodeMap);
     }
 
+    /// <summary>
+    /// create a new enemy, give it path to goal
+    /// </summary>
     public void SpawnEnemy()
     {
         spawnElapsedTime = 0;
@@ -69,12 +80,18 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
         if(allEnemies.Count == 0) { OnOutOfEnemies(); }
     }
 
+    /// <summary>
+    /// action when no more enemies to spawn
+    /// </summary>
     public void OnOutOfEnemies()
     {
         if (Debugger.Instance.EnemyMessages) { Debug.Log(name + " out of enemies"); }
     }
 
-    // BAD
+    // ToDo: BAD
+    /// <summary>
+    /// compile and return a list of all enemy packs in scene
+    /// </summary>
     public static List<EnemyPack> AllEnemyPacks()
     {
         List<EnemyPack> ret = new List<EnemyPack>();
@@ -88,6 +105,9 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
         return ret;
     }
 
+    /// <summary>
+    /// compile and return a list of all hostile agents (enemies) in scene
+    /// </summary
     public static List<HostileAgent> AllEnemies()
     {
         List<HostileAgent> ret = new List<HostileAgent>();
@@ -100,15 +120,35 @@ public class EnemySpawner : AIAgent // give current path to goal to enemy on spa
         }
         return ret;
     }
+
+    public override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+        if(null != pathToGoal.start)
+        {
+            Gizmos.color = Color.red;
+            foreach(PathNode n in pathToGoal.path)
+            {
+                GameObject g = GamePlayState.CurrentLevel.Board.FindAssociatedTile(n).gameObject;
+                Vector3 p = g.transform.position;
+                p.z -= 1;
+                Gizmos.DrawSphere(p, 0.2f);
+            }
+        }
+    }
 }
 
+/// <summary>
+/// driving state maching for enemy spawner
+/// </summary>
 public class EnemySpawnerBrain : DecisionTree
 {
-    BooleanDecision shouldSpawn;
+    BooleanDecision shouldSpawn; // should an enemy be spawned
 
-    Action spawnEnemy;
-    Action rechargeTimer;
+    Action spawnEnemy; // create a new enemy object
+    Action rechargeTimer; // recharge spawn timer
 
+    /// <param name="agent">the agent to act upon</param>
     public EnemySpawnerBrain(EnemySpawner agent)
     {
         spawnEnemy = new SpawnEnemy(agent);
@@ -125,6 +165,9 @@ public class EnemySpawnerBrain : DecisionTree
     }
 }
 
+/// <summary>
+/// spawn a new enemy
+/// </summary>
 public class SpawnEnemy : Action
 {
     public SpawnEnemy(EnemySpawner agent) : base(agent) { }
@@ -137,6 +180,9 @@ public class SpawnEnemy : Action
     }
 }
 
+/// <summary>
+/// recharge a timer with deltatime
+/// </summary>
 public class RechargeTimer : Action
 {
     public RechargeTimer(EnemySpawner agent) : base(agent) { }

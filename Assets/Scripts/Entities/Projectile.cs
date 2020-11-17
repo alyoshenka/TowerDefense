@@ -5,8 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
 {
-    public float speed;
-    public int damage;
+    [Tooltip("movement speed, scaled")] public float speed;
+    [Tooltip("damage upon impact")] public int damage;
 
     private void Update()
     {
@@ -23,6 +23,9 @@ public class Projectile : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// action upon impact
+    /// </summary>
     private void Explode()
     {
         // Debug.Log("explosion");

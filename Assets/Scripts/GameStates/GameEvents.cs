@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// cross-game events
+/// </summary>
 public class GameEvents : MonoBehaviour
 {
     // Start is called before the first frame update

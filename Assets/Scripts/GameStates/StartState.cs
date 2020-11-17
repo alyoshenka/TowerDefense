@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// get ready to start the game
+/// </summary>
 public class StartState : GamePlayState
 {
-    private static StartState instance;
-    public static StartState Instance { get { return instance; } private set { } }
+    public static StartState Instance { get; private set; } // singleton instance
 
-    public Button playButton;
+    [Tooltip("push to start game")] public Button playButton;
 
     private void Awake()
     {
-        if (null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if (null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
     private void Start()
@@ -25,6 +27,9 @@ public class StartState : GamePlayState
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// set up a new game, initialize player
+    /// </summary>
     private void SetupGame()
     {
         base.Initialize(); // first state

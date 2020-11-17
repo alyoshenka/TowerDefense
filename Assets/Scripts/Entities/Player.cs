@@ -4,15 +4,18 @@ using UnityEngine;
 
 // separate roles between player and goaltile/castle
 
-// manages the player values
+/// <summary>
+/// manages player state
+/// </summary>
 [System.Serializable]
 public class Player : IDamageable
 {
-    [SerializeField] private int money;
-    public int Gold { get { return money; } private set { } }
-    public int maxHealth;
-    [SerializeField] private int currentHealth;
-    public int CurrentHealth { get { return currentHealth; } private set { } }
+    [SerializeField] [Tooltip("money balance")] private int money;    
+    [Tooltip("maximum health")] public int maxHealth;
+    [SerializeField] [Tooltip("current health")] private int currentHealth;
+
+    public int Gold { get { return money; } private set { } } // get money
+    public int CurrentHealth { get { return currentHealth; } private set { } } // get current health
 
     public Player()
     {
@@ -20,6 +23,10 @@ public class Player : IDamageable
         ResetHealth();
     }
 
+    /// <summary>
+    /// increase the players money amount
+    /// </summary>
+    /// <param name="gold">amount to increase</param>
     public void GiveGold(int gold)
     {
         Debug.Assert(gold > 0); 
@@ -29,7 +36,12 @@ public class Player : IDamageable
         Debug.Log("got " + gold + " gold");
     }
 
-    // returns whether the gold could be taken
+    /// <summary>
+    /// decrease the players money amount
+    /// </summary>
+    /// <param name="gold">amount to take</param>
+    /// <param name="requireFunds">require balance to be sufficient</param>
+    /// <returns>whether amount could be taken</returns>
     public bool TakeGold(int gold, bool requireFunds)
     {
         // could be rewritten but this is okay
@@ -78,6 +90,9 @@ public class Player : IDamageable
         // gameover
     }
 
+    /// <summary>
+    /// save player data and destroy references
+    /// </summary>
     public void SaveAndDestroy()
     {
         Debug.Log("save player data and destroy references");

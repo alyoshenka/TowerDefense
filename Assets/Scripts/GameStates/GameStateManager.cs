@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// there has got to be a better way to change states
+// ToDo: there has got to be a better way to change states
 
+/// <summary>
+/// manages transitioning through game states
+/// </summary>
 public class GameStateManager : MonoBehaviour
 {
-    private static GameStateManager instance;
-    public static GameStateManager Instance { get => instance; }
+    // singleton instance
+    public static GameStateManager Instance { get; private set; }
 
     private void Awake()
     {
-        if(null == instance) { instance = this; }
-        else if (this != instance) { Destroy(this); }
+        if(null == Instance) { Instance = this; }
+        else if (this != Instance) { Destroy(this); }
     }
 
     private void Start()
@@ -26,9 +29,9 @@ public class GameStateManager : MonoBehaviour
         PauseState.Instance.PauseGame(true);
     }
 
-    private GameState previousState; // private
-    public GameState currentState;
-    Player player;
+    private GameState previousState; // previous game state
+    public GameState currentState; // current game state
+    Player player; // player object
 
     /// <summary>
     /// transitions from current state to new state
@@ -47,9 +50,18 @@ public class GameStateManager : MonoBehaviour
         else { Debug.LogWarning("cannot transition"); return false; }
     }
 
-    // take out
+    // ToDo: take out
+    /// <summary>
+    /// transition back to previous state
+    /// </summary>
+    /// <returns>returns whether transition was possible</returns>
     public bool GoBack() { return Transition(previousState); }
 
+    /// <summary>
+    /// transition to next logical state
+    /// </summary>
+    /// <param name="oldState">"current" state</param>
+    /// <returns>whether transition was successful</returns>
     public bool TransitionToNextState(GameState oldState)
     {
         if(null == oldState || null == oldState.NextLogicalState || !oldState.CanTransition())
@@ -64,44 +76,81 @@ public class GameStateManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// return to menu state
+    /// </summary>
+    /// <returns>whether transition was successful</returns>
     public bool ReturnToMenu() { return Transition(MainMenuState.Instance); }
 
-    // there's probably a better way and this isn't more efficient than before
+    // ToDo: there's probably a better way and this isn't more efficient than before
 
+    /// <summary>
+    /// transition to start state
+    /// </summary>
+    /// <returns>whather transition was successful</returns>
     public bool StartGame() { return Transition(StartState.Instance); }
+    /// <summary>
+    /// transition to tutorial state
+    /// </summary>
+    /// <returns>whather transition was successful</returns>
     public bool StartTutorial() { return Transition(TutorialState.Instance); }
+    /// <summary>
+    /// transition to settings state
+    /// </summary>
+    /// <returns>whather transition was successful</returns>
     public bool OpenSettings() { return Transition(SettingsState.Instance); }
+    /// <summary>
+    /// transition to gameover state
+    /// </summary>
+    /// <param name="gameWin">the game was won</param>
+    /// <returns>whather transition was successful</returns>
     public bool GameOver(bool gameWin) { return Transition(GameOverState.Instance); }
 }
 
-// todo: make all state instaces private
+// ToDo: make all state instaces private
 //  this will better encapsulate transitions
 
+/// <summary>
+/// a game state (kind of like a scene)
+/// </summary>
 public abstract class GameState : MonoBehaviour
 {
-    [SerializeField] private GameObject UIPanel;
+    [SerializeField] [Tooltip("state-specific UI object")] private GameObject UIPanel;
 
-    protected GameState nextLogicalState; // the state it makes most sense to go tonext (null allowed)
-    public GameState NextLogicalState { get => nextLogicalState; }
 
+    protected GameState nextLogicalState; // the state it makes most sense to go to next (null allowed)
+    public GameState NextLogicalState { get => nextLogicalState; } // get next logical state
+
+    /// <returns>whether the state can transition out</returns>
     public abstract bool CanTransition();
+    /// <summary>
+    /// setup on state enter
+    /// </summary>
     public virtual void OnEnter() { UIPanel.SetActive(true); }
+    /// <summary>
+    /// teardown on state exit
+    /// </summary>
     public virtual void OnExit() { UIPanel.SetActive(false); }
 
     // public abstract void GoToNextState();
 }
 
+/// <summary>
+/// game state dependent on game time
+/// </summary>
 public abstract class GamePlayState : GameState
 {
-    public delegate void EnterStateEvent();
+    public delegate void EnterStateEvent(); // enter state event
 
-    protected static Level currentLevel;
-    public static Level CurrentLevel { get => currentLevel; }
-    [SerializeField] private Level showLevel; // just here to view
+    protected static Level currentLevel; // current game level
+    public static Level CurrentLevel { get => currentLevel; } // get current level
+    [SerializeField] [Tooltip("just here for viewing")] private Level showLevel;
 
-    protected static Player player;
+    protected static Player player; // player instance
 
-
+    /// <summary>
+    /// setup gameplay state
+    /// </summary>
     protected void Initialize()
     {
         SetLevel(Level.CreateLevel(0));
