@@ -66,7 +66,7 @@ public class GameStateManager : MonoBehaviour
     {
         if(null == oldState || null == oldState.NextLogicalState || !oldState.CanTransition())
         {
-            Debug.LogError("cannot transition to next logical state");
+            Debug.LogWarning("cannot transition to next logical state");
             return false;
         }
         else

@@ -64,12 +64,14 @@ public class TilePlacement : MonoBehaviour
         if(null == DisplayTile.SelectedTile)
         {
             display.selectButton.image.color = Color.white;
+            display.selectButton.image.sprite = null;
             display.quantityText.text = "x 0";
             display.buildCostText.text = "0";
         }
         else
         {
             display.selectButton.image.color = DisplayTile.SelectedTile.defaultColor;
+            display.selectButton.image.sprite = DisplayTile.SelectedTile.displayImage;
             display.quantityText.text = DisplayTile.SelectedTile.quantityText.text;
             display.buildCostText.text = DisplayTile.SelectedTile.buildCostText.text;
         }

@@ -53,9 +53,9 @@ MonoBehaviour:
   canBeChanged: 0
   displayImage: {fileID: 0}
   showConnections: 0
-  tileStatus: 0
   placedByPlayer: 0
-  maxHealth: 50
+  tileStatus: 0
+  maxHealth: 1000
   currentHealth: 0
 --- !u!54 &3839303528476111642
 Rigidbody:

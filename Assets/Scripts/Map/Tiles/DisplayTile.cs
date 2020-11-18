@@ -22,7 +22,7 @@ public class DisplayTile : MapTile
     [Tooltip("selection animator")] public Animator animator;
 
     // ToDo: get rid of later
-    [HideInInspector] public Color defaultColor; // default tile color
+    [HideInInspector] public Color defaultColor = Color.white; // default tile color
     [HideInInspector] public Color displayColor; // tile display color
 
     public bool Available { get => null != allotment && allotment.count > 0; } // get if tile is available to place

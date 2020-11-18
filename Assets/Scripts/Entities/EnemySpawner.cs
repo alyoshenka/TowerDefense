@@ -56,7 +56,7 @@ public class EnemySpawner : AIAgent
     /// </summary>
     public void GetPath()
     {
-        associatedTile = GetComponent<MapTile>(); // better system
+        associatedTile = GetComponent<MapTile>(); // ToDo: better system
 
         pathToGoal = Pathfinder.DjikstrasPath(
             PlaceState.Instance.Board.FindAssociatedNode(associatedTile),

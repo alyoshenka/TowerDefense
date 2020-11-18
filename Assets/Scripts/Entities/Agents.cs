@@ -9,6 +9,7 @@ public abstract class AIAgent : MonoBehaviour
 {
     protected virtual void Update()
     {
+        if(null == stateMachine) { Debug.LogError("null state machine"); return; }
         stateMachine.Update(this);
         stateMachine.RunTree(this);
     }
@@ -106,6 +107,7 @@ public abstract class HostileAgent : AIAgent, IDamageable
     public virtual void OnDeath() 
     {
         foreach (AggroBubble bubble in attackers) { bubble.RemoveAgent(this); }
+        Destroy(gameObject); // something else must call this somewhere else
     }
 
     /// <summary>

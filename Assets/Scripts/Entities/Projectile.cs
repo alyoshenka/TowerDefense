@@ -30,6 +30,7 @@ public class Projectile : MonoBehaviour
     {
         // Debug.Log("explosion");
         Destroy(gameObject);
+        Destroy(this);
     }
 
     private void OnDrawGizmos()

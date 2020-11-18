@@ -53,8 +53,8 @@ MonoBehaviour:
   canBeChanged: 1
   displayImage: {fileID: 0}
   showConnections: 0
-  tileStatus: 0
   placedByPlayer: 0
+  tileStatus: 0
 --- !u!54 &5964025400637464216
 Rigidbody:
   m_ObjectHideFlags: 0

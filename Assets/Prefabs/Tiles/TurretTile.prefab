@@ -311,8 +311,8 @@ MonoBehaviour:
   canBeChanged: 0
   displayImage: {fileID: 0}
   showConnections: 0
-  tileStatus: 0
   placedByPlayer: 0
+  tileStatus: 0
 --- !u!114 &1644787782985119280
 MonoBehaviour:
   m_ObjectHideFlags: 0

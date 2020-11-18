@@ -54,8 +54,8 @@ MonoBehaviour:
   canBeChanged: 0
   displayImage: {fileID: 0}
   showConnections: 0
-  tileStatus: 0
   placedByPlayer: 0
+  tileStatus: 0
 --- !u!114 &1396720300631903825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,9 +70,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemySet:
   - enemy: {fileID: 3901912992367826147, guid: d3e6d1aca97e2264ba9c995d64857b42, type: 3}
-    count: 1
+    count: 3
   associatedTile: {fileID: 8236905536589452012}
-  spawnResetTime: 0
+  spawnResetTime: 2
   spawnElapsedTime: 0
 --- !u!54 &6295916424756706045
 Rigidbody:

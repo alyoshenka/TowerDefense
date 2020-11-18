@@ -9,7 +9,7 @@ using UnityEngine;
 public class BasicEnemy : OrganicAgent
 {
     public bool withinRangeOfGoal; // close enough to goal to attack
-    public bool yeet; // should be destroyed
+    public bool yeet; // should be destroyed (just for debugging i think)
 
     protected new void Awake()
     {

@@ -74,7 +74,7 @@ public class AggroBubble : MonoBehaviour
     public void RemoveAgent(HostileAgent agent) 
     { 
         withinRange.Remove(agent); 
-        agent.RemoveAttacker(this);
+        // agent.RemoveAttacker(this); // causes snum interation error
 
         agentExit?.Invoke();
 

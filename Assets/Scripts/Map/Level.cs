@@ -33,19 +33,19 @@ public class Level
     /// <param name="level">level number</param>
     public static Level CreateLevel(int level)
     {
-        Level ret = new Level();
-        DefendState.Instance.openDefend += (() => { ret.allEnemies = EnemySpawner.AllEnemies(); }); // cancer
-        ret.number = level;
+        Level lev = new Level();
+        DefendState.Instance.openDefend += (() => { lev.allEnemies = EnemySpawner.AllEnemies(); }); // cancer
+        lev.number = level;
 
-        if(level <= 0) { return ret; } // start
+        if(level <= 0) { return lev; } // start
 
-        ret.allottedTiles = new List<TileAllotment>();
-        ret.enemyHorde = new List<EnemyPack>();
+        lev.allottedTiles = new List<TileAllotment>();
+        lev.enemyHorde = new List<EnemyPack>();
 
-        ret.allottedTiles = AllotTiles(level);
-        ret.enemyHorde = AssignEnemies(level);
+        lev.allottedTiles = AllotTiles(level);
+        lev.enemyHorde = AssignEnemies(level);
 
-        return ret;
+        return lev;
     }
 
     // ToDo: BAD

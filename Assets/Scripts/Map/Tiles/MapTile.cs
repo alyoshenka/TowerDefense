@@ -137,7 +137,7 @@ public class MapTile : MonoBehaviour
     // ToDo: not quite optimal but ok
     [SerializeField] [Tooltip("this tile can be edited")] protected bool canBeChanged = true;
     // ToDo: find better place
-    [SerializeField] [Tooltip("tile UI display image")] private Sprite displayImage;
+    [SerializeField] [Tooltip("tile UI display image")] public Sprite displayImage;
     [Tooltip("show tile/node connetions")] public bool showConnections;
     [Tooltip("this tile has been placed by the player")] public bool placedByPlayer;
     public bool CanBeChanged { get { return canBeChanged || placedByPlayer; } private set { } } // get if tile can be change
