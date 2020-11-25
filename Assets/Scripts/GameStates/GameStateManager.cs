@@ -153,7 +153,7 @@ public abstract class GamePlayState : GameState
     /// </summary>
     protected void Initialize()
     {
-        SetLevel(Level.CreateLevel(0));
+        // SetLevel(Level.CreateLevel(0));
     }
 
     // just here so i can view level in inspector
@@ -161,7 +161,7 @@ public abstract class GamePlayState : GameState
     {
         currentLevel = newLevel;
         showLevel = currentLevel;
-        Debug.Log("Level set to " + currentLevel.Number);
+        // Debug.Log("Level set to " + currentLevel.Number);
     }
 
 

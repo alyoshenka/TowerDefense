@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// debug display
 /// </summary>
+[ExecuteInEditMode]
 public class Debugger : MonoBehaviour
 {
     public static Debugger Instance; // singleton instance
@@ -19,6 +20,7 @@ public class Debugger : MonoBehaviour
     [Tooltip("print ui assigned messages")] public bool UIAssigned; // if ui not fully assigned
     [Tooltip("print saggro trigger messages")] public bool AggroTriggers;
     [Tooltip("show aggro ranges")] public bool ShowAggroRanges;
+    [Tooltip("print file io messages")] public bool IOMessages;
 
     [Tooltip("bottom left debug")] public TMPro.TMP_Text BL;
     [Tooltip("bottom right debug")] public TMPro.TMP_Text BR;

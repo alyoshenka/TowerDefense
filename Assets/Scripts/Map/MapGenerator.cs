@@ -144,7 +144,7 @@ public class GameObjectTypeMap
 public class MapGenerator : MonoBehaviour
 {
     [Tooltip("list of tile object/type options")] public List<GameObjectTypeMap> tileToTypeMap;
-    private static List<GameObjectTypeMap> staticTileToTypeMap; // tile to type map
+    public static List<GameObjectTypeMap> staticTileToTypeMap; // tile to type map
 
     private void Awake()
     {
@@ -186,12 +186,19 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < size.x; x++)
             {
                 GameObject toCopy = staticTileToTypeMap.Find(
-                        go => go.type == nodeMap.NodeType((int)(y * size.y + x))).tile;
+                        go => go.type == nodeMap.NodeType((int)(y * size.x + x))).tile;
+
+                if(null == toCopy)
+                {
+                    Debug.LogError(
+                        "could not find node of type: " 
+                        + nodeMap.NodeType((int)(y * size.y + x)));
+                }
 
                 GameObject newTileObject = GameObject.Instantiate(
                     toCopy, 
                     new Vector3(x - (size.x / 2), -y + (size.y / 2), 0), 
-                    Quaternion.identity, PlaceState.Instance.tileParent);
+                    Quaternion.identity, null);
 
                 MapTile newTile = newTileObject.GetComponent<MapTile>();
                 int idx = y * Mathf.RoundToInt(size.x) + x;
@@ -209,6 +216,7 @@ public class MapGenerator : MonoBehaviour
     /// <summary>
     /// get data to save from a gameboard
     /// </summary>
+    /*
     public static SaveMap ExtractData(GameBoard gameBoard)
     {
         SaveMap map = new SaveMap();
@@ -225,6 +233,7 @@ public class MapGenerator : MonoBehaviour
 
         return map;
     }
+    */
 
     /// <summary>
     /// get associated object from static map given type
@@ -238,12 +247,14 @@ public class MapGenerator : MonoBehaviour
     /// <summary>
     /// load a given level, child to parent
     /// </summary>
+    /*
     public static GameBoard GenerateBoard(int level, Vector2 size, Transform parent)
     {
         NodeMap nodeMap =  MapEditor.LoadNodeMap(level.ToString());
         TileMap tileMap = GenerateTileMap(nodeMap, parent);
         return new GameBoard(nodeMap, tileMap);
     }
+    */
 
     /// <summary>
     /// connect the given node map

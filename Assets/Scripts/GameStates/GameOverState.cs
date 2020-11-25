@@ -39,7 +39,7 @@ public class GameOverState : GamePlayState
     {
         base.OnExit();
 
-        currentLevel.Destroy();
+        // currentLevel.Destroy();
         currentLevel = null;
         player.SaveAndDestroy();
         player = null;

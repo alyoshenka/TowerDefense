@@ -25,7 +25,7 @@ public class PathNode
     private TileData uniqueData; // tile type data
     public TileData Data { get => uniqueData; } // get unique data
     public TileType Type { get => uniqueData.Type; } // get tile type
-    public int Index { get => uniqueData.index; } // get tile index
+    public int Index { get => uniqueData.index; set => uniqueData.index = value; } // get tile index
     
     [HideInInspector] public float calculatedCost; // cost to get to this node
 
@@ -148,7 +148,7 @@ public class MapTile : MonoBehaviour
     protected virtual void Awake()
     {
         // ok this might be kinda bad
-        if (canBeChanged) 
+        if (PlaceState.Instance && canBeChanged) 
         { 
             PlaceState.Instance.openPlace += AddPlaceIndicators;
             DefendState.Instance.openDefend += RemovePlaceIndicators;
@@ -157,7 +157,8 @@ public class MapTile : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        if(null != PlaceState.Instance) { return; }
+        if(null == PlaceState.Instance) { return; }
+
         PlaceState.Instance.openPlace -= AddPlaceIndicators;
         DefendState.Instance.openDefend -= RemovePlaceIndicators;
     }

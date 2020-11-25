@@ -14,7 +14,8 @@ public class EnemySpawner : AIAgent
     public bool CanSpawn { get => spawnElapsedTime > spawnResetTime && allEnemies.Count > 0; } // return if new enemy can be spawned
 
     private FoundPath pathToGoal; // path from associated tile to goal tile
-    private List<OrganicAgent> allEnemies; // all enemies that are going to be/have been spawned
+    public List<OrganicAgent> allEnemies { get; private set; } // all enemies that are going to be/have been spawned
+
 
     private void Start()
     {
@@ -58,10 +59,12 @@ public class EnemySpawner : AIAgent
     {
         associatedTile = GetComponent<MapTile>(); // ToDo: better system
 
+        /*
         pathToGoal = Pathfinder.DjikstrasPath(
             PlaceState.Instance.Board.FindAssociatedNode(associatedTile),
             PlaceState.Instance.Board.GoalNode,
             PlaceState.Instance.Board.nodeMap);
+        */
     }
 
     /// <summary>

@@ -37,7 +37,7 @@ public class PlaceState : GamePlayState
         base.OnEnter();
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter place"); }
 
-        GenerateNextMap();
+        // GenerateNextMap();
 
         openPlace?.Invoke();
     }
@@ -55,7 +55,7 @@ public class PlaceState : GamePlayState
         if (Debugger.Instance.StateTransitionWarnings) { Debug.LogWarning("place transition condition"); }
         return currentLevel.Board.GoalAssigned;
     }
-
+    /*
     /// <summary>
     /// increment level, generate and assign new board
     /// </summary>
@@ -74,4 +74,5 @@ public class PlaceState : GamePlayState
 
         SetLevel(CurrentLevel);
     }
+    */
 }

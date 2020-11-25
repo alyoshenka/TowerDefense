@@ -2,50 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
-public class MapEditor : MonoBehaviour
+public class BoardEditor : MonoBehaviour
 {
-    public static MapEditor Instance { get; private set; } // singleton instance
+    public static BoardEditor Instance { get; private set; }
 
-    private void Awake()
-    {
-        if (null == Instance) { Instance = this; }
-        else if (this != Instance) { Destroy(this); }
-    }
+    public GameBoard board;
 
     [Tooltip("default placing tile")] public GameObject defaultTile;
-    [Tooltip("file to save level")] public string fileName = "basicLevel";
-    [SerializeField] [Tooltip("(width, height) of grid")] public Vector2 defaultGridSize;
-    [Tooltip("show grid of (w, h) size")] public bool visualizeGrid;
     [Tooltip("available tiles")] public List<TileData> tiles;
-
-    [Tooltip("save level to file")] public bool save;
-    [Tooltip("load level from file")] public bool load;
-
-    public GameBoard Board { get; private set; } // singleton board instance
 
     int tileIdx;
     TileData currentData;
-    public static Color color;
+    public static Color color = Color.gray;
+
+    private void Awake() { Instance = this; } 
 
     private void Start()
     {
         tiles = TileData.Presets;
-        List<TileData> defaultTiles = new List<TileData>();
-        for (int i = 0; i < defaultGridSize.x * defaultGridSize.y; i++)
-        {
-            defaultTiles.Add(TileData.Basic);
-        }
-        NodeMap nodeMap = MapGenerator.GenerateNodeMap(defaultTiles, defaultGridSize);
-        TileMap tileMap = MapGenerator.GenerateTileMap(nodeMap, transform);
-        Board = new GameBoard(nodeMap, tileMap);
         tileIdx = 0;
         currentData = tiles[tileIdx];        
     }
-
+    
     private void Update()
     {
         float delta = Input.mouseScrollDelta.y;
@@ -72,59 +51,7 @@ public class MapEditor : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && null != EditorTile.CurrentHover)
         {
             EditorTile.CurrentHover.AssignData(currentData, true);
-        }
-
-        if (save)
-        {
-            Debug.Log("save to " + fileName);
-            SaveBoard(Board, fileName);
-            save = false;
-        }
-
-        if (load)
-        {
-            Debug.Log("load from " + fileName);
-            LoadNewData(fileName);
-            load = false;
-        }
-        
-    }
-
-    /// <summary>
-    /// save board to file
-    /// </summary>
-    /// <param name="board">board to save</param>
-    /// <param name="fileName">filename to use</param>
-    public static void SaveBoard(GameBoard board, string fileName)
-    {
-        SaveMap toSave = MapGenerator.ExtractData(board);
-
-        fileName = "Assets/Maps/" + fileName + ".txt";
-        IFormatter formatter = new BinaryFormatter();
-        Stream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-        formatter.Serialize(stream, toSave);
-        stream.Close();
-    }
-
-    public static NodeMap LoadNodeMap(string fileName)
-    {
-        fileName = "Assets/Maps/" + fileName + ".txt";
-        IFormatter formatter = new BinaryFormatter();
-        Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-        SaveMap readData = (SaveMap)formatter.Deserialize(stream);
-        stream.Close();
-
-        NodeMap nodeMap = MapGenerator.GenerateNodeMap(readData.tileData, readData.size.ToVec2());
-
-        return nodeMap;
-    }
-
-    private void LoadNewData(string fileName)
-    {
-        Board.Destroy();
-        NodeMap newNodes = LoadNodeMap(fileName);
-        TileMap newTiles = MapGenerator.GenerateTileMap(newNodes, transform);
-        Board = new GameBoard(newNodes, newTiles);
+        }        
     }
 
     public void EditorTileClick(EditorTile tile)
@@ -133,27 +60,11 @@ public class MapEditor : MonoBehaviour
             || tile.Type == TileType.turret || currentData.Type == TileType.turret;
         if (currentData.Type == TileType.goal)
         {          
-            Board.AssignGoal(Board.FindAssociatedNode(tile));
+            board.AssignGoal(board.FindAssociatedNode(tile));
         }
-        Board.AssignNewData(tile, currentData, true); // this
-        if (isWall) { Board.nodeMap = MapGenerator.AddNodeConnections(Board.nodeMap); }  
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (visualizeGrid && !Application.isPlaying)
-        {
-            Gizmos.color = new Color(0, 0, 0, 0.1f);
-            for (int y = 0; y < defaultGridSize.y; y++)
-            {
-                for (int x = 0; x < defaultGridSize.x; x++)
-                {
-                    Gizmos.DrawCube(
-                        new Vector3(x - (defaultGridSize.x / 2), -y + (defaultGridSize.y / 2), 0), 
-                        new Vector3(0.8f, 0.8f, 0.8f));
-                }
-            }
-        }        
+        board.AssignNewData(tile, currentData, true); // this
+        
+        // if (isWall) { board.nodeMap = MapGenerator.AddNodeConnections(board.nodeMap); }  
     }
 }
 

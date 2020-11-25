@@ -17,6 +17,11 @@ public class EditorTile : MapTile
         tileClick += TileSelected;
     }
 
+    private void Start()
+    {
+        displayColor = TileData.FindByType(Type).DisplayColor;
+    }
+
     protected override void OnDestroy()
     {
         tileEnter -= HoverEnter;
@@ -36,25 +41,24 @@ public class EditorTile : MapTile
     }
     protected override void TileSelected()
     {
-        MapEditor.Instance.EditorTileClick(this);
-
+        BoardEditor.Instance.EditorTileClick(this);
         displayColor = TileData.FindByType(Type).DisplayColor;
     }
 
     protected override void OnDrawGizmos()
     { 
-        Gizmos.color = this == currentHover ? MapEditor.color : displayColor;
-        Gizmos.DrawCube(transform.position, this == currentHover 
-            ? Vector3.one : new Vector3(0.9f, 0.9f, 0.9f));
+        Gizmos.color = this == currentHover ? BoardEditor.color : displayColor;
+        Gizmos.DrawCube(transform.position, this == currentHover
+            ? Vector3.one * 1.1f : Vector3.one);
 
         if (showConnections)
         {
             Gizmos.color = Color.red;
             Vector3 origin = transform.position;
-            foreach(PathNode node in MapEditor.Instance.Board.FindAssociatedNode(this).connections)
+            foreach(PathNode node in BoardEditor.Instance.board.FindAssociatedNode(this).connections)
             {
-                Vector3 end = MapEditor.Instance.Board.FindAssociatedTile(node).transform.position;
-                Gizmos.DrawLine(origin, end);
+                Vector3 end = BoardEditor.Instance.board.FindAssociatedTile(node).transform.position;
+                Gizmos.DrawLine(origin - Vector3.forward, end - Vector3.forward);
             }
         }
     }

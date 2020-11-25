@@ -107,13 +107,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueData:
-    type: 6
-    buildCost: 0
+    type: 7
+    buildCost: 500
     index: -1
-    traversalCost: 0
-  canBeChanged: 1
+    traversalCost: 10000
+  canBeChanged: 0
   displayImage: {fileID: 0}
   showConnections: 0
-  tileStatus: 0
   placedByPlayer: 1
+  tileStatus: 0
   displayColor: {r: 0, g: 0, b: 0, a: 0}

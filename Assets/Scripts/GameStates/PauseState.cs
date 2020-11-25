@@ -41,7 +41,7 @@ public class PauseState : GameState
     {
         if (loudPaused) { base.OnEnter(); } // show ui
         Paused = true;
-        if (Debugger.Instance.StateChangeMessages) { Debug.Log(GamePlayState.CurrentLevel.WinCon ? "game win" : GoalTile.LoseCon ? "game lose" : "enter pause"); } // sorry
+        if (Debugger.Instance.StateChangeMessages) { Debug.Log(GamePlayState.CurrentLevel.LevelWin() ? "game win" : GoalTile.LoseCon ? "game lose" : "enter pause"); } // sorry
     }
 
     public override void OnExit()
