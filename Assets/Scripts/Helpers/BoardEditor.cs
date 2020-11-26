@@ -9,6 +9,8 @@ public class BoardEditor : MonoBehaviour
 
     public GameBoard board;
 
+    public string currentPlaceType = "default"; // ToDo: add UI
+
     [Tooltip("default placing tile")] public GameObject defaultTile;
     [Tooltip("available tiles")] public List<TileData> tiles;
 
@@ -22,7 +24,8 @@ public class BoardEditor : MonoBehaviour
     {
         tiles = TileData.Presets;
         tileIdx = 0;
-        currentData = tiles[tileIdx];        
+        currentData = tiles[tileIdx];
+        currentPlaceType = currentData.Type.ToString();
     }
     
     private void Update()
@@ -46,6 +49,7 @@ public class BoardEditor : MonoBehaviour
 
             currentData = tiles[tileIdx];
             color = currentData.DisplayColor;
+            currentPlaceType = currentData.Type.ToString();
         }
 
         if (Input.GetMouseButtonDown(0) && null != EditorTile.CurrentHover)

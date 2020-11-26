@@ -6,7 +6,7 @@ public class LevelBuilderEditor : Editor
 {
     private static int buttonWidth = 100;
 
-    private string levelName, boardName;
+    private string levelName = "level_name", boardName = "board_name";
 
     public override void OnInspectorGUI()
     {

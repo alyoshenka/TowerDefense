@@ -140,7 +140,7 @@ public class MapTile : MonoBehaviour
     [SerializeField] [Tooltip("tile UI display image")] public Sprite displayImage;
     [Tooltip("show tile/node connetions")] public bool showConnections;
     [Tooltip("this tile has been placed by the player")] public bool placedByPlayer;
-    public bool CanBeChanged { get { return canBeChanged || placedByPlayer; } private set { } } // get if tile can be change
+    public bool CanBeChanged { get => canBeChanged || placedByPlayer;  set => canBeChanged = value; } // get if tile can be change
     public bool HasCost { get => BuildCost > 0; } // get if tile has a build cost    
 
     [HideInInspector] public TileStatus tileStatus = TileStatus.none; // pathfinding status   

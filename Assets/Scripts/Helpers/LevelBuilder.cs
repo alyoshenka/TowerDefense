@@ -17,6 +17,7 @@ public class LevelBuilder : MonoBehaviour
     private void OnValidate()
     {
         if (boardEditor) { boardEditor.board = level.Board; }
+        // if(level.Board.Size != oldBoardSize) { level.Board.Resize(); }
     }
 
     public void SaveLevel()
@@ -69,9 +70,9 @@ public struct Level_Save
 public struct GameBoard_Save
 {
     public string name;
-    public Vector2_S size;
+    public Vector2 size;
     public TileType[] tiles;
-    public Vector2_S[] tilePositions;
+    public Vector3[] tilePositions;
     public List<int> constantTiles; // tiles that cannot be changed
 }
 

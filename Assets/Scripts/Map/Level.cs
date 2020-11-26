@@ -158,6 +158,7 @@ public class GameBoard : ISaveable<GameBoard_Save>
     public List<MapTile> tiles;
     public string name;
 
+    public Vector2 Size { get => size; private set; }
     public PathNode goalNode { get; private set; }
     public GoalTile goalTile { get => (GoalTile)FindAssociatedTile(goalNode); } // get goal tile
     public bool GoalAssigned { get => null != goalNode; } // get if goal is assigned
@@ -272,17 +273,15 @@ public class GameBoard : ISaveable<GameBoard_Save>
         GameBoard_Save gbs = new GameBoard_Save();
 
         gbs.name = name;
-        gbs.size = new Vector2_S(size);
+        gbs.size = size;
         gbs.tiles = new TileType[(int)(size.x * size.y)];
-        gbs.tilePositions = new Vector2_S[(int)(size.x * size.y)];
+        gbs.tilePositions = new Vector3[(int)(size.x * size.y)];
         gbs.constantTiles = new List<int>();
         for(int i = 0; i < tiles.Count; i++)
         {
             MapTile t = tiles[i];
             gbs.tiles[i] = t.Type;
-            gbs.tilePositions[i] = new Vector2_S(
-                new Vector2(t.transform.position.x, t.transform.position.y)
-            );
+            gbs.tilePositions[i] = t.transform.position;
             if (!t.CanBeChanged) { gbs.constantTiles.Add(i); }
         }
 
@@ -292,7 +291,7 @@ public class GameBoard : ISaveable<GameBoard_Save>
     public void FromLoad(GameBoard_Save data)
     {
         name = data.name;
-        size = data.size.ToVec2();
+        size = data.size;
         tiles = new List<MapTile>();
         // initialize tiles
         List<TileData> tileData = new List<TileData>();
@@ -301,6 +300,7 @@ public class GameBoard : ISaveable<GameBoard_Save>
         TileMap tileMap = MapGenerator.GenerateTileMap(nodeMap, null);
         nodes = nodeMap.Nodes;
         tiles = tileMap.Tiles;
+        foreach(int i in data.constantTiles) { tiles[i].CanBeChanged = false; }
     }
 
     public IEnumerator<GameBoard_Save> GetEnumerator() { throw new System.NotImplementedException(); }

@@ -205,6 +205,8 @@ public class MapGenerator : MonoBehaviour
                 newTile.Index = idx;
                 tileMap.AddTile(newTile);
                 newTile.AssignData(nodeMap.Nodes[idx].Data, true);
+                newTile.CanBeChanged = TileType.basic == newTile.Type;
+                newTile.placedByPlayer = false;
 
                 newTileObject.name = newTile.Index.ToString() + "-" + newTile.Type;
             }
