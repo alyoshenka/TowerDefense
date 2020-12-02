@@ -158,7 +158,7 @@ public class GameBoard : ISaveable<GameBoard_Save>
     public List<MapTile> tiles;
     public string name;
 
-    public Vector2 Size { get => size; private set; }
+    public Vector2 Size { get => size; set => size = value; }
     public PathNode goalNode { get; private set; }
     public GoalTile goalTile { get => (GoalTile)FindAssociatedTile(goalNode); } // get goal tile
     public bool GoalAssigned { get => null != goalNode; } // get if goal is assigned
