@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1813b852ff759564cb1dd08eca962bc3, type: 3}
-  m_Name: WaterTile
+  m_Name: WallTile
   m_EditorClassIdentifier: 
-  tileType: 0
-  prefab: {fileID: 0}
-  displayColor: {r: 0, g: 0, b: 0, a: 0}
+  tileType: 4
+  prefab: {fileID: 4170006953480210871, guid: 8860403cb35d44a4ea5fe647f0a23804, type: 3}
+  displayColor: {r: 0, g: 0, b: 0, a: 1}
   displayImage: {fileID: 0}
   traversalCost: 0
   buildCost: 0

@@ -19,7 +19,7 @@ public class EditorTile : MapTile
 
     private void Start()
     {
-        displayColor = TileData.FindByType(Type).DisplayColor;
+        displayColor = TileData.FindByType(Type).displayColor.ToColor();
     }
 
     protected override void OnDestroy()
@@ -42,12 +42,12 @@ public class EditorTile : MapTile
     protected override void TileSelected()
     {
         BoardEditor.Instance.EditorTileClick(this);
-        displayColor = TileData.FindByType(Type).DisplayColor;
+        displayColor = TileData.FindByType(Type).displayColor.ToColor();
     }
 
     protected override void OnDrawGizmos()
     { 
-        Gizmos.color = this == currentHover ? BoardEditor.color : displayColor;
+        Gizmos.color = this == currentHover ? BoardEditor.Instance.color : displayColor;
         Gizmos.DrawCube(transform.position, this == currentHover
             ? Vector3.one * 1.1f : Vector3.one);
 

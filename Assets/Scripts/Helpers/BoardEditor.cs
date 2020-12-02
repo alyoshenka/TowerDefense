@@ -10,24 +10,29 @@ public class BoardEditor : MonoBehaviour
     public GameBoard board;
 
     public string currentPlaceType = "default"; // ToDo: add UI
+    public Color color; // not sure
 
-    [Tooltip("default placing tile")] public GameObject defaultTile;
-    [Tooltip("available tiles")] public List<TileData> tiles;
+    public TileManagerSO availableTiles;
+    [SerializeField] private TileSO currentTile;
 
     int tileIdx;
-    TileData currentData;
-    public static Color color = Color.gray;
 
     private void Awake() { Instance = this; } 
 
     private void Start()
     {
-        tiles = TileData.Presets;
         tileIdx = 0;
-        currentData = tiles[tileIdx];
-        currentPlaceType = currentData.Type.ToString();
+        SetCurrentTile(tileIdx);
     }
-    
+
+    private void SetCurrentTile(int idx)
+    {
+        Debug.Assert(idx >= 0 && idx < availableTiles.Count);
+        currentTile = availableTiles.allTiles[idx];
+        color = currentTile.displayColor;
+        currentPlaceType = currentTile.tileType.ToString();
+    }
+
     private void Update()
     {
         float delta = Input.mouseScrollDelta.y;
@@ -36,7 +41,7 @@ public class BoardEditor : MonoBehaviour
             if(delta > 0)
             {
                 tileIdx++;
-                if(tileIdx > tiles.Count - 1)
+                if(tileIdx > availableTiles.Count - 1)
                 {
                     tileIdx = 0;
                 }
@@ -44,29 +49,28 @@ public class BoardEditor : MonoBehaviour
             else
             {
                 tileIdx--;
-                if(tileIdx < 0) { tileIdx = tiles.Count - 1; }
+                if(tileIdx < 0) { tileIdx = availableTiles.Count - 1; }
             }
 
-            currentData = tiles[tileIdx];
-            color = currentData.DisplayColor;
-            currentPlaceType = currentData.Type.ToString();
+            SetCurrentTile(tileIdx);
         }
 
         if (Input.GetMouseButtonDown(0) && null != EditorTile.CurrentHover)
         {
-            EditorTile.CurrentHover.AssignData(currentData, true);
+            TileData td = availableTiles.allTiles[tileIdx].GenerateTileData();
+            EditorTile.CurrentHover.AssignData(td, true);
         }        
     }
 
     public void EditorTileClick(EditorTile tile)
     {
-        bool isWall = tile.Type == TileType.wall || currentData.Type == TileType.wall 
-            || tile.Type == TileType.turret || currentData.Type == TileType.turret;
-        if (currentData.Type == TileType.goal)
+        bool isWall = tile.Type == TileType.wall || currentTile.tileType == TileType.wall 
+            || tile.Type == TileType.turret || currentTile.tileType == TileType.turret;
+        if (currentTile.tileType == TileType.goal)
         {          
             board.AssignGoal(board.FindAssociatedNode(tile));
         }
-        board.AssignNewData(tile, currentData, true); // this
+        board.AssignNewData(tile, currentTile.GenerateTileData(), true); // this
         
         // if (isWall) { board.nodeMap = MapGenerator.AddNodeConnections(board.nodeMap); }  
     }
@@ -110,13 +114,11 @@ public struct TileData
         }
     }
 
-    private Color_S displayColor; // color in display (map editor)
-    public Color DisplayColor { get => displayColor.ToColor(); set => displayColor = new Color_S(value); } // get serializable display color
+    public Color_S displayColor; // color in display (map editor)
 
-    [SerializeField] [Tooltip("tile type")] private TileType type;
+    [Tooltip("tile type")] public TileType type;
     public TileType Type { get => type; } // get tile type
-    [SerializeField] [Tooltip("cost to place this tile")] private int buildCost;
-    public int BuildCost { get => buildCost; } // get build cost
+    [Tooltip("cost to place this tile")] public int buildCost;
     public int index; // honestly kinda not sure? ToDo: write better comment
 
     [Range(1, 25)] [Tooltip("cost/speed to traverse")] public int traversalCost;

@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1813b852ff759564cb1dd08eca962bc3, type: 3}
-  m_Name: BasicTile
+  m_Script: {fileID: 11500000, guid: ba39d9ab27ec3e34384e2dfa8362cff4, type: 3}
+  m_Name: Player
   m_EditorClassIdentifier: 
-  tileType: 0
-  prefab: {fileID: 0}
-  displayColor: {r: 0, g: 0, b: 0, a: 0}
-  displayImage: {fileID: 0}
-  traversalCost: 0
-  buildCost: 0
+  playerName: 
+  playerHP: 0
+  playerEXP: 0

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1813b852ff759564cb1dd08eca962bc3, type: 3}
   m_Name: GrassTile
   m_EditorClassIdentifier: 
-  tileType: 0
-  prefab: {fileID: 0}
-  displayColor: {r: 0, g: 0, b: 0, a: 0}
-  displayImage: {fileID: 0}
+  tileType: 2
+  prefab: {fileID: 4170006953480210871, guid: fc6108a339057e54fbc15554831d9f1a, type: 3}
+  displayColor: {r: 0, g: 0.6603774, b: 0, a: 1}
+  displayImage: {fileID: 21300000, guid: af64031f98789a141a516cfd09153325, type: 3}
   traversalCost: 0
   buildCost: 0

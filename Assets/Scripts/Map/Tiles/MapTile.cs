@@ -118,9 +118,9 @@ public class MapTile : MonoBehaviour
     [SerializeField] [Tooltip("tile type data")] protected TileData uniqueData;
     public TileData Data { get => uniqueData; } // get unique data
     public TileType Type { get => uniqueData.Type; } // get tile type
-    public Color DisplayColor { get => uniqueData.DisplayColor; } // get display color
+    public Color DisplayColor { get => uniqueData.displayColor.ToColor(); } // get display color
     public int TraversalCost { get => uniqueData.traversalCost; } // get traversal cost
-    public int BuildCost { get { return uniqueData.BuildCost; } private set { } } // get build cost
+    public int BuildCost { get { return uniqueData.buildCost; } private set { } } // get build cost
     public int Index { get => uniqueData.index; set => uniqueData.index = value; } // get/set tile index
     
 
