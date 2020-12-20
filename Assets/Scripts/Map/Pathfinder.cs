@@ -7,31 +7,31 @@ public class Pathfinder
 
     // weight paths that are closer to as-the-crow-flies paths
 
-    public static FoundPath DjikstrasPath(PathNode _start, PathNode _goal, NodeMap nodeMap)
+    public static FoundPath DjikstrasPath(MapTile _start, MapTile _goal, List<MapTile> allTiles)
     {
-        return RunDjikstras(_start, _goal, nodeMap);
+        return RunDjikstras(_start, _goal, allTiles);
     }
 
     // make with board/tilemap
-    static FoundPath RunDjikstras(PathNode _start, PathNode _goal, NodeMap nodeMap)
+    static FoundPath RunDjikstras(MapTile _start, MapTile _goal, List<MapTile> allTiles)
     {
         // setup
-        PathNode currentNode = _start;
+        MapTile currentNode = _start;
         currentNode.calculatedCost = 0;
-        List<PathNode> unvisitedNodes = new List<PathNode>(nodeMap.Nodes);
+        List<MapTile> unvisitedNodes = new List<MapTile>(allTiles);
 
         while (unvisitedNodes.Count > 0 && currentNode != _goal)
         {
             unvisitedNodes.Remove(currentNode);
 
-            Debug.Assert(currentNode.connections.Count <= 4); // take out later
+            Debug.Assert(currentNode.Connections.Count <= 4); // take out later
 
             // all neighbors
-            foreach (PathNode neighbor in currentNode.connections)
+            foreach (MapTile neighbor in currentNode.Connections)
             {
                 if(neighbor.calculatedCost > 1000000)
                 {
-                    float newCost = currentNode.calculatedCost + neighbor.TraversalCost;
+                    int newCost = currentNode.calculatedCost + neighbor.Data.traversalCost;
                     if (newCost < neighbor.calculatedCost)
                     {
                         neighbor.calculatedCost = newCost;
@@ -42,7 +42,7 @@ public class Pathfinder
 
             // next current
             currentNode = unvisitedNodes[0];
-            foreach (PathNode currentCheck in unvisitedNodes)
+            foreach (MapTile currentCheck in unvisitedNodes)
             {
                 if (currentCheck.calculatedCost < currentNode.calculatedCost)
                 {
@@ -51,7 +51,7 @@ public class Pathfinder
             }
         }
 
-        List<PathNode> _path = GeneratePath(_start, _goal, false);
+        List<MapTile> _path = GeneratePath(_start, _goal, false);
         FoundPath toReturn = new FoundPath
         {
             start = _start,
@@ -60,16 +60,16 @@ public class Pathfinder
         };
 
         // cleanup
-        nodeMap.ResetNodes();
+        foreach(MapTile tile in allTiles) { tile.ResetPathfinding(); }
 
         return toReturn;
     }
 
-    static List<PathNode> GeneratePath(PathNode _start, PathNode _goal, bool addStart = true)
+    static List<MapTile> GeneratePath(MapTile _start, MapTile _goal, bool addStart = true)
     {
-        PathNode currentNode = _goal; // check
+        MapTile currentNode = _goal; // check
 
-        List<PathNode> path = new List<PathNode>();
+        List<MapTile> path = new List<MapTile>();
         do
         {
             path.Insert(0, currentNode);

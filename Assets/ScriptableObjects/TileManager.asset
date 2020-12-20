@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6642a283f1455b1499511c2082a4cbdf, type: 3}
-  m_Name: _TileManager
+  m_Name: TileManager
   m_EditorClassIdentifier: 
   allTiles:
   - {fileID: 11400000, guid: 92c6676da2b74fe45a7452978788813e, type: 2}

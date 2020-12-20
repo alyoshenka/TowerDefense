@@ -1,10 +1,1 @@
-{
-    "data": {
-        "number": 1,
-        "name": "level_name",
-        "winCon": 0,
-        "expOnWin": 100,
-        "goldOnwin": 0
-    },
-    "boardName": "board_name"
-}
+{"data":{"number":1,"name":"level_name","winCon":0,"expOnWin":100,"goldOnwin":0},"boardName":"board_name"}

@@ -12,4 +12,6 @@ public class PlayerSO : ScriptableObject
     public string PlayerName { get => playerName; }
     public int PlayerHP { get => playerHP; }
     public int PlayerEXP { get => playerEXP; }
+    public void ResetHealth() { throw new System.NotImplementedException(); }
+    public void SaveAndDestroy() { throw new System.NotImplementedException(); }
 }

@@ -11,8 +11,9 @@ public class DisplayTile : MapTile
 {
     public static DisplayTile SelectedTile { get; private set; } // currently selected tile
 
-    [SerializeField] [Tooltip("how many of this tile that are allowed")] private TileAllotment allotment;
-    public MapTile Tile { get => allotment.tile; } // get associated tile
+    [SerializeField] [Tooltip("how many of this tile that are allowed")] 
+    private TileAllotment allotment;
+    public TileSO Tile { get => allotment.tile; } // get associated tile
     public TileAllotment Allottment { get => allotment; } // get tile allotment
 
     [Tooltip("push to select this tile")] public Button selectButton;
@@ -54,8 +55,6 @@ public class DisplayTile : MapTile
         SelectedTile = null;
 
         UpdateDisplay();
-
-        uniqueData = allotment.tile.Data;
     }
 
     /// <summary>
@@ -104,10 +103,10 @@ public class DisplayTile : MapTile
     {
         allotment = allot;
 
-        defaultColor = allot.tile.DisplayColor;
+        defaultColor = allot.tile.displayColor;
         displayColor = defaultColor;
         quantityText.text = "x " + allot.count.ToString();
-        buildCostText.text = allot.tile.BuildCost.ToString();
+        buildCostText.text = allot.tile.buildCost.ToString();
     }
 
     /// <summary>

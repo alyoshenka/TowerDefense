@@ -28,12 +28,14 @@ public class StartState : GamePlayState
     }
 
     /// <summary>
-    /// set up a new game, initialize player
+    /// set up a new game
     /// </summary>
     private void SetupGame()
     {
         base.Initialize(); // first state
-        player = new Player(); // here too?
+        Debug.Assert(null != player);
+
+       
     }
 
     public override bool CanTransition()

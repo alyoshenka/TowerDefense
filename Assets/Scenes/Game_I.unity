@@ -211,6 +211,19 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5578519, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: playerObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 9ea13c4e8aa50c24681f40beb7f2db94,
+        type: 2}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: StateChangeMessages
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: StateTransitionWarnings
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 795939571, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
       propertyPath: m_fontAsset
       value: 

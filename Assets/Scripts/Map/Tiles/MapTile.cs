@@ -20,6 +20,7 @@ public enum TileType
 /// <summary>
 /// a node with a type and connections
 /// </summary>
+/*
 public class PathNode
 {
     private TileData uniqueData; // tile type data
@@ -108,6 +109,7 @@ public class PathNode
         connections.Clear();
     }
 }
+*/
 
 /// <summary>
 /// a tile in the map, gameobject
@@ -115,15 +117,6 @@ public class PathNode
 [System.Serializable]
 public class MapTile : MonoBehaviour
 {
-    [SerializeField] [Tooltip("tile type data")] protected TileData uniqueData;
-    public TileData Data { get => uniqueData; } // get unique data
-    public TileType Type { get => uniqueData.Type; } // get tile type
-    public Color DisplayColor { get => uniqueData.displayColor.ToColor(); } // get display color
-    public int TraversalCost { get => uniqueData.traversalCost; } // get traversal cost
-    public int BuildCost { get { return uniqueData.buildCost; } private set { } } // get build cost
-    public int Index { get => uniqueData.index; set => uniqueData.index = value; } // get/set tile index
-    
-
     public delegate void TileEnteredEvent();
     public event TileEnteredEvent tileEnter; // invoke on mouse hover enter
     public delegate void TileExitedEvent();
@@ -132,18 +125,31 @@ public class MapTile : MonoBehaviour
     public event TileClickedEvent tileClick; // invoke on tile click
     public static MapTile currentHover; // the current tile being hovered over
 
-    public bool GoalTile { get => uniqueData.Type == TileType.goal; } // get whether this is the goal tile
-
+    [Tooltip("individual tile data")]
+    private TileSO data;
+    [Tooltip("pathfinding connections")]
+    [SerializeField] protected List<MapTile> connections;
     // ToDo: not quite optimal but ok
-    [SerializeField] [Tooltip("this tile can be edited")] protected bool canBeChanged = true;
-    // ToDo: find better place
-    [SerializeField] [Tooltip("tile UI display image")] public Sprite displayImage;
-    [Tooltip("show tile/node connetions")] public bool showConnections;
-    [Tooltip("this tile has been placed by the player")] public bool placedByPlayer;
-    public bool CanBeChanged { get => canBeChanged || placedByPlayer;  set => canBeChanged = value; } // get if tile can be change
-    public bool HasCost { get => BuildCost > 0; } // get if tile has a build cost    
+    [SerializeField] [Tooltip("this tile can be edited")] 
+    protected bool canBeChanged = true;
+    [Tooltip("show tile/node connetions")] 
+    public bool showConnections;
+    [Tooltip("this tile has been placed by the player")] 
+    public bool placedByPlayer;
+    [HideInInspector] 
+    public TileStatus tileStatus = TileStatus.none; // pathfinding status  
 
-    [HideInInspector] public TileStatus tileStatus = TileStatus.none; // pathfinding status   
+    #region Pathfinding Data
+    public int calculatedCost;
+    public MapTile previousNode;
+    #endregion
+
+    public TileSO Data { get => data; }
+    public List<MapTile> Connections { get => connections; }
+    public bool CanBeChanged { get => canBeChanged || placedByPlayer;  set => canBeChanged = value; } // get if tile can be change
+    public bool HasCost { get => data.buildCost > 0; } // get if tile has a build cost    
+    public bool GoalTile { get => data.tileType == TileType.goal; } // get whether this is the goal tile
+     
 
     protected virtual void Awake()
     {
@@ -153,6 +159,9 @@ public class MapTile : MonoBehaviour
             PlaceState.Instance.openPlace += AddPlaceIndicators;
             DefendState.Instance.openDefend += RemovePlaceIndicators;
         }
+
+        connections = new List<MapTile>();
+        ResetPathfinding();
     }
 
     protected virtual void OnDestroy()
@@ -161,6 +170,20 @@ public class MapTile : MonoBehaviour
 
         PlaceState.Instance.openPlace -= AddPlaceIndicators;
         DefendState.Instance.openDefend -= RemovePlaceIndicators;
+    }
+
+    public void AddConnection(MapTile tile)
+    {
+        Debug.Assert(null != connections);
+        Debug.Assert(tile != this);
+
+        connections.Add(tile);
+    }
+
+    public void ResetPathfinding()
+    {
+        calculatedCost = System.Int32.MaxValue;
+        previousNode = null;
     }
 
     #region Placement
@@ -212,12 +235,12 @@ public class MapTile : MonoBehaviour
     /// </summary>
     /// <param name="tileModel">tile model to copy</param>
     /// <returns>newly created map tile</returns>
-    public MapTile InstantiateInPlace(MapTile tileModel)
+    public MapTile ChangeTileData(TileSO newData)
     {
         GameObject copy = Instantiate(
-            tileModel.gameObject, transform.position, transform.rotation, transform.parent);
+            newData.prefab, transform.position, transform.rotation, transform.parent);
         MapTile newTile = copy.GetComponent<MapTile>();
-        newTile.AssignData(uniqueData, false); // use my data
+        newTile.AssignData(newData, connections); // use my data
 
         return newTile;
     }
@@ -300,25 +323,12 @@ public class MapTile : MonoBehaviour
     private void OnMouseDown() { tileClick?.Invoke(); }
 
     /// <summary>
-    /// assign new tile data
+    /// assigns new tile data and connection list to the object
     /// </summary>
-    /// <param name="preserveIndex">keep current index?</param>
-    public void AssignData(TileData newData, bool preserveIndex)
+    public void AssignData(TileSO newData, List<MapTile> newConnections = null)
     {
-        if (preserveIndex) { newData.index = uniqueData.index; }
-        uniqueData = newData;
-
-        name = uniqueData.index + "-" + uniqueData.Type;
-
-        if(Type != TileType.basic) { canBeChanged = false; } // maybe??
-    }
-
-    /// <summary>
-    /// copy data from another tile
-    /// </summary>
-    public void AssignDataTile(MapTile otherTile)
-    {
-        uniqueData = otherTile.uniqueData;
+        data = newData;
+        if (null != newConnections) { connections = newConnections; }
     }
 }
 

@@ -11,17 +11,4 @@ public class TileSO : ScriptableObject
     public Sprite displayImage;
     public int traversalCost;
     public int buildCost;
-
-    public TileData GenerateTileData()
-    {
-        TileData td = new TileData
-        {
-            displayColor = new Color_S(displayColor),
-            type = tileType,
-            buildCost = buildCost,
-            traversalCost = traversalCost
-        };
-
-        return td;
-    }
 }

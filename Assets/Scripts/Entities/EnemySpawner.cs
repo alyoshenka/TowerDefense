@@ -130,9 +130,9 @@ public class EnemySpawner : AIAgent
         if(null != pathToGoal.start)
         {
             Gizmos.color = Color.red;
-            foreach(PathNode n in pathToGoal.path)
+            foreach(MapTile t in pathToGoal.path)
             {
-                GameObject g = GamePlayState.CurrentLevel.Board.FindAssociatedTile(n).gameObject;
+                GameObject g = t.gameObject;
                 Vector3 p = g.transform.position;
                 p.z -= 1;
                 Gizmos.DrawSphere(p, 0.2f);

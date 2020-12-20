@@ -71,7 +71,7 @@ public class TilePlacement : MonoBehaviour
         else
         {
             display.selectButton.image.color = DisplayTile.SelectedTile.defaultColor;
-            display.selectButton.image.sprite = DisplayTile.SelectedTile.displayImage;
+            display.selectButton.image.sprite = DisplayTile.SelectedTile.Data.displayImage;
             display.quantityText.text = DisplayTile.SelectedTile.quantityText.text;
             display.buildCostText.text = DisplayTile.SelectedTile.buildCostText.text;
         }
@@ -107,9 +107,8 @@ public class TilePlacement : MonoBehaviour
 
         // make new tile
         DisplayTile.SelectedTile.TakeTile();
-        MapTile newTile = PlaceState.Instance.Board.AssignNewTile(clickedTile, DisplayTile.SelectedTile.Tile);
-        newTile.AddPlaceIndicators();
-        newTile.placedByPlayer = true;
+        clickedTile.AssignData(DisplayTile.SelectedTile.Tile);
+        clickedTile.placedByPlayer = true;
 
         if (clickedTile.placedByPlayer) { ReturnTile(clickedTile); }
 
@@ -126,11 +125,11 @@ public class TilePlacement : MonoBehaviour
     private void ReturnTile(MapTile returningTile)
     {
         TileAllotment returnedAllot = 
-            availableTiles.Find(allot => allot.tile.Type == returningTile.Type);
+            availableTiles.Find(allot => allot.tile.tileType == returningTile.Data.tileType);
 
         returnedAllot.count++;
 
-        DisplayTile availableSlot = tileSlots.Find(slot => slot.Allottment.tile.Type == returningTile.Type);  // gross
+        DisplayTile availableSlot = tileSlots.Find(slot => slot.Allottment.tile.tileType == returningTile.Data.tileType);  // gross
         availableSlot.SetAvailable();
         availableSlot.UpdateDisplay();
 

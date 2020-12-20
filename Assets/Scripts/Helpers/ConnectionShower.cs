@@ -40,11 +40,11 @@ public class ConnectionShower : MonoBehaviour
 
         if(null == MapTile.currentHover) { return; }
 
-        foreach(PathNode neighbor in board.FindAssociatedNode(MapTile.currentHover).connections)
+        foreach(MapTile neighbor in MapTile.currentHover.Connections)
         {
             Gizmos.DrawLine(
-                    MapTile.currentHover.transform.position, 
-                    board.FindAssociatedTile(neighbor).transform.position);
+                    MapTile.currentHover.transform.position,
+                    neighbor.transform.position);
         }
     }
 }

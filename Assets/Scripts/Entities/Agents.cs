@@ -286,8 +286,11 @@ public abstract class OrganicAgent : HostileAgent
         else
         {
             // bad
+            // ToDo: wtf?
+            /*
             target = PlaceState.Instance.Board.FindAssociatedTile(
             foundPath.path[targetIdx]).gameObject;
+            */
         }
 
         brainDisplay = Color.green;

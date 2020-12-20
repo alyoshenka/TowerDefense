@@ -38,7 +38,7 @@ public class DefendState : GamePlayState
         base.OnEnter();
 
         openDefend?.Invoke();
-        currentLevel.Board.goalTile.CastleHealth = castleHealth;
+        // ToDo: currentLevel.Board.goalTile.CastleHealth = castleHealth;
 
         StartCoroutine("StartDelay");
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter defend"); }

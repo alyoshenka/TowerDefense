@@ -19,7 +19,7 @@ public class EditorTile : MapTile
 
     private void Start()
     {
-        displayColor = TileData.FindByType(Type).displayColor.ToColor();
+        displayColor = BoardEditor.Instance.CurrentTile.displayColor;
     }
 
     protected override void OnDestroy()
@@ -42,22 +42,22 @@ public class EditorTile : MapTile
     protected override void TileSelected()
     {
         BoardEditor.Instance.EditorTileClick(this);
-        displayColor = TileData.FindByType(Type).displayColor.ToColor();
+        displayColor = BoardEditor.Instance.CurrentTile.displayColor;
     }
 
     protected override void OnDrawGizmos()
     { 
         Gizmos.color = this == currentHover ? BoardEditor.Instance.color : displayColor;
         Gizmos.DrawCube(transform.position, this == currentHover
-            ? Vector3.one * 1.1f : Vector3.one);
+            ? Vector3.one * 1.1f : Vector3.one * 0.95f);
 
         if (showConnections)
         {
             Gizmos.color = Color.red;
             Vector3 origin = transform.position;
-            foreach(PathNode node in BoardEditor.Instance.board.FindAssociatedNode(this).connections)
+            foreach(MapTile t in connections)
             {
-                Vector3 end = BoardEditor.Instance.board.FindAssociatedTile(node).transform.position;
+                Vector3 end = t.transform.position;
                 Gizmos.DrawLine(origin - Vector3.forward, end - Vector3.forward);
             }
         }

@@ -67,13 +67,16 @@ public struct Level_Save
 /// <summary>
 /// data needed to store and regenerate a gameboard
 /// </summary>
+[System.Serializable]
 public struct GameBoard_Save
 {
+
     public string name;
     public Vector2 size;
     public TileType[] tiles;
     public Vector3[] tilePositions;
     public List<int> constantTiles; // tiles that cannot be changed
+    public List<int[]> tileConnections;
 }
 
 /// <summary>

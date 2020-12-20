@@ -37,7 +37,9 @@ public class BasicEnemy : OrganicAgent
     {
         withinRangeOfGoal = true;
         targetIdx = foundPath.path.Count - 1;
-        target = PlaceState.Instance.Board.FindAssociatedTile(foundPath.path[targetIdx]).gameObject; // bad
+
+        // ToDo: wtf???
+        // target = PlaceState.Instance.Board.FindAssociatedTile(foundPath.path[targetIdx]).gameObject; // bad
     }
 }
 

@@ -67,6 +67,7 @@ public class GameStateManager : MonoBehaviour
         if(null == oldState || null == oldState.NextLogicalState || !oldState.CanTransition())
         {
             Debug.LogWarning("cannot transition to next logical state");
+            if (!oldState.CanTransition()) { Debug.Log("State: " + oldState.GetType().ToString() + " cannot transition"); }
             return false;
         }
         else
@@ -117,6 +118,8 @@ public abstract class GameState : MonoBehaviour
 {
     [SerializeField] [Tooltip("state-specific UI object")] private GameObject UIPanel;
 
+    protected static PlayerSO player;
+
 
     protected GameState nextLogicalState; // the state it makes most sense to go to next (null allowed)
     public GameState NextLogicalState { get => nextLogicalState; } // get next logical state
@@ -145,8 +148,6 @@ public abstract class GamePlayState : GameState
     protected static Level currentLevel; // current game level
     public static Level CurrentLevel { get => currentLevel; } // get current level
     [SerializeField] [Tooltip("just here for viewing")] private Level showLevel;
-
-    protected static Player player; // player instance
 
     /// <summary>
     /// setup gameplay state
