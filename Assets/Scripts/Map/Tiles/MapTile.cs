@@ -176,9 +176,11 @@ public class MapTile : MonoBehaviour
     {
         Debug.Assert(null != connections);
         Debug.Assert(tile != this);
-
-        connections.Add(tile);
+        if (connections.Contains(tile)) { Debug.Log(name + " connections already contains " + tile.name); }
+        else { connections.Add(tile); }       
     }
+
+    public void ClearConnections() { connections.Clear(); }
 
     public void ResetPathfinding()
     {

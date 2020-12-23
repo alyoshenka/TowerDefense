@@ -207,7 +207,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 439970779}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: -2.401526, y: 1.3886104, z: -2.2794323}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -290,7 +290,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 515281644}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -309,6 +309,7 @@ GameObject:
   - component: {fileID: 637797212}
   - component: {fileID: 637797210}
   - component: {fileID: 637797213}
+  - component: {fileID: 637797215}
   m_Layer: 0
   m_Name: LevelBuilder
   m_TagString: Untagged
@@ -385,7 +386,7 @@ MonoBehaviour:
   UIAssigned: 0
   AggroTriggers: 0
   ShowAggroRanges: 0
-  IOMessages: 1
+  IOMessages: 0
   BL: {fileID: 0}
   BR: {fileID: 0}
 --- !u!114 &637797214
@@ -401,10 +402,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardEditor: {fileID: 637797212}
+  connectionShower: {fileID: 637797215}
   level:
     levelData:
       number: 1
-      name: 1
+      name: level_name
       winCon: 0
       expOnWin: 100
       goldOnwin: 0
@@ -414,3 +416,20 @@ MonoBehaviour:
       tiles: []
     allottedTiles: []
     allEnemies: []
+--- !u!114 &637797215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 637797209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1717fef315d9a054baeb73095163737c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board:
+    size: {x: 10, y: 9}
+    name: board_name
+    tiles: []
+  showConnections: 1

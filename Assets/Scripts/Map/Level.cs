@@ -207,15 +207,16 @@ public class GameBoard : ISaveable<GameBoard_Save>
             gbs.tiles[i] = t.Data.tileType;
             gbs.tilePositions[i] = t.transform.position;
 
-            gbs.tileConnections.Add(new int[t.Connections.Count]);
+            int[] connectionList = new int[t.Connections.Count];
             if (t.Connections.Count > 0)
-            {              
+            {
                 for (int j = 0; j < t.Connections.Count; j++)
                 {
-                    gbs.tileConnections[i][j] = tiles.IndexOf(t.Connections[i]);
+                    connectionList[j] = tiles.IndexOf(t.Connections[j]);
                 }
                 if (!t.CanBeChanged) { gbs.constantTiles.Add(i); }
             }
+            gbs.tileConnections.Add(connectionList);
         }
 
         if (0 == tiles.Count) // initialize array if no tiles yet
@@ -230,7 +231,6 @@ public class GameBoard : ISaveable<GameBoard_Save>
             }
         }
 
-        Debug.Log("tiles with connections: " + gbs.tileConnections.Count);
         return gbs;
     }
 
@@ -264,5 +264,76 @@ public class GameBoard : ISaveable<GameBoard_Save>
         // return JsonUtility.FromJson<GameBoard_Save>(System.IO.File.ReadAllText(@fileName));
         return JsonConvert.DeserializeObject<GameBoard_Save>(System.IO.File.ReadAllText(@fileName));
 
+    }
+
+    /// <summary>
+    /// connect all tiles in a grid pattern (u, d, l, r)
+    /// </summary>
+    public void AddGridConnections()
+    {
+        for(int i = 0; i < tiles.Count; i++)
+        {
+            MapTile tile = tiles[i];
+
+            int u = i - (int)size.x;
+            int d = i + (int)size.x;
+            int l = i - 1;
+            int r = i + 1;
+            if(u >= 0)
+            {
+                MapTile connection = tiles[u];
+                tile.AddConnection(connection);
+            }
+            if(d < tiles.Count)
+            {
+                MapTile connection = tiles[d];
+                tile.AddConnection(connection);
+            }
+            if(i % (int)size.x != 0)
+            {
+                MapTile connection = tiles[l];
+                tile.AddConnection(connection);
+            }
+            if((i + 1) % (int)size.x != 0)
+            {
+                MapTile connection = tiles[r];
+                tile.AddConnection(connection);
+            }
+        }
+    }
+
+    public void ClearAllConnections()
+    {
+        foreach(MapTile tile in tiles) { tile.ClearConnections(); }
+    }
+
+    /// <summary>
+    /// assert that all connections are two-way
+    /// </summary>
+    public void AssertTwoWayConnections()
+    {
+        foreach(MapTile tile in tiles)
+        {
+            foreach(MapTile connection in tile.Connections)
+            {
+                if (!connection.Connections.Contains(tile))
+                {
+                    Debug.LogWarning(connection.name + " connections does not contain " + tile.name);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// clear tiles, reset to blank using given size
+    /// </summary>
+    public void GenerateNewTiles()
+    {
+        foreach(MapTile tile in tiles)
+        {            
+            GameObject.Destroy(tile.gameObject);
+        }
+        tiles.Clear();
+        tiles = MapGenerator.GenerateNewBlankTiles(size, null);
     }
 }

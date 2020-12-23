@@ -6,17 +6,22 @@ using UnityEngine;
 /// allows contruction and saving of new levels
 /// </summary>
 [RequireComponent(typeof(BoardEditor))]
+[RequireComponent(typeof(MapGenerator))]
+[RequireComponent(typeof(ConnectionShower))]
 public class LevelBuilder : MonoBehaviour
 {
     public static readonly string saveDir = "Assets/Levels/";
 
     public BoardEditor boardEditor;
+    public ConnectionShower connectionShower;
     [SerializeField]
     public Level level;
 
     private void OnValidate()
     {
         if (boardEditor) { boardEditor.board = level.Board; }
+        if (connectionShower) { connectionShower.board = level.Board; }
+
         // if(level.Board.Size != oldBoardSize) { level.Board.Resize(); }
     }
 
@@ -30,6 +35,8 @@ public class LevelBuilder : MonoBehaviour
 
     public void SaveBoard()
     {
+        level.Board.AssertTwoWayConnections();
+
         string path = saveDir + level.Board.name + GameBoard.ext;
         if (Debugger.Instance && Debugger.Instance.IOMessages) { Debug.Log("save board: " + path); }
         level.Board.Save(path, level.Board.ToSave());
@@ -43,6 +50,7 @@ public class LevelBuilder : MonoBehaviour
         if (Debugger.Instance && Debugger.Instance.IOMessages) { Debug.Log("load level: " + fn); }
         level.FromLoad(level.Load(fn));
         // board is loaded within level
+        OnValidate();
     }
 
     public void LoadBoard()

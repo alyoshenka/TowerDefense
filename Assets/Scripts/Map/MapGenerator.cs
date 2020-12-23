@@ -90,38 +90,47 @@ public class MapGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// get data to save from a gameboard
+    /// generate (size.x * size.y) blank map tiles
     /// </summary>
-    /*
-    public static SaveMap ExtractData(GameBoard gameBoard)
+    public static List<MapTile> GenerateNewBlankTiles(Vector2 size, Transform parent)
     {
-        SaveMap map = new SaveMap();
+        List<MapTile> tiles = new List<MapTile>();
 
-        map.size = new Vector2_S(gameBoard.nodeMap.Size);
-
-        List<TileData> tiles = new List<TileData>();
-        foreach(PathNode node in gameBoard.nodeMap.Nodes)
+        for (int y = 0; y < size.y; y++)
         {
-            tiles.Add(node.Data);
-            Debug.Log(node.Type);
+            for (int x = 0; x < size.x; x++)
+            {
+                int idx = (int)(size.x * y + x);
+
+                TileSO tileData = tileManager.allTiles.Find(
+                        tile => tile.tileType == TileType.basic);
+                GameObject toCopy = tileData.prefab;
+
+                if (null == toCopy)
+                {
+                    Debug.LogError("could not find tile of type: " + TileType.basic.ToString());
+                }
+
+                Vector3 pos = new Vector3(x - size.x / 2, -(y + size.y / 2), 0);
+                GameObject newTileObject = GameObject.Instantiate(
+                    toCopy,
+                    pos,
+                    Quaternion.identity,
+                    parent
+                );
+
+                MapTile newTile = newTileObject.GetComponent<MapTile>();
+                newTile.AssignData(tileData, new List<MapTile>());
+                newTile.CanBeChanged = TileType.basic == newTile.Data.tileType;
+                newTile.placedByPlayer = false;
+
+                newTileObject.name = idx + "-" + newTile.Data.tileType.ToString();
+
+                tiles.Add(newTile);
+            }
         }
-        map.tileData = tiles;
 
-        return map;
+        return tiles;
     }
-    */
-
-    // ToDo: basic, needs filename/randomness
-    /// <summary>
-    /// load a given level, child to parent
-    /// </summary>
-    /*
-    public static GameBoard GenerateBoard(int level, Vector2 size, Transform parent)
-    {
-        NodeMap nodeMap =  MapEditor.LoadNodeMap(level.ToString());
-        TileMap tileMap = GenerateTileMap(nodeMap, parent);
-        return new GameBoard(nodeMap, tileMap);
-    }
-    */
 
 }

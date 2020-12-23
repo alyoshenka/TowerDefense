@@ -4,10 +4,10 @@ using UnityEngine;
 
 
 public class BoardEditor : MonoBehaviour
-{
+{ 
     public static BoardEditor Instance { get; private set; }
 
-    public GameBoard board;
+    [HideInInspector] public GameBoard board;
 
     public string currentPlaceType = "default"; // ToDo: add UI
     public Color color; // not sure
@@ -19,7 +19,11 @@ public class BoardEditor : MonoBehaviour
 
     public TileSO CurrentTile { get => currentTile; }
 
-    private void Awake() { Instance = this; } 
+    private void Awake()
+    {
+        if(null != Instance) { Destroy(Instance); }
+        Instance = this;
+    }
 
     private void Start()
     {
