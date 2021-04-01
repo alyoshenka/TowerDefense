@@ -14,7 +14,8 @@ public enum TileType
     wall,
     goal,
     enemy,
-    turret
+    turret,
+    editor
 }
 
 /// <summary>
@@ -125,7 +126,7 @@ public class MapTile : MonoBehaviour
     public event TileClickedEvent tileClick; // invoke on tile click
     public static MapTile currentHover; // the current tile being hovered over
 
-    [Tooltip("individual tile data")]
+    [Tooltip("individual tile data")][SerializeField]
     private TileSO data;
     [Tooltip("pathfinding connections")]
     [SerializeField] protected List<MapTile> connections;
@@ -312,7 +313,9 @@ public class MapTile : MonoBehaviour
         if (placedByPlayer)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(transform.position, new Vector3(1,1,1));
+            Gizmos.DrawWireCube(transform.position, Vector3.one * 0.5f);
+            Gizmos.color = Data.displayColor;
+            Gizmos.DrawWireCube(transform.position, Vector3.one * 0.8f);
         }
     }
 
@@ -329,6 +332,7 @@ public class MapTile : MonoBehaviour
     /// </summary>
     public void AssignData(TileSO newData, List<MapTile> newConnections = null)
     {
+        Debug.Assert(null != newData);
         data = newData;
         if (null != newConnections) { connections = newConnections; }
     }

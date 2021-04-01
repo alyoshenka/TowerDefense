@@ -58,6 +58,7 @@ public class DefendState : GamePlayState
     public override void OnExit()
     {
         base.OnExit();
+        
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("exit defend"); }
 
         // save state

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+using UnityEngine.SceneManagement;
+
 
 /// <summary>
 /// path from start to goal
@@ -32,6 +34,9 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public static void InitializeBoardTiles(GameBoard board, GameBoard_Save gbs, Transform parent)
     {
+        // check and see if editor scene
+        bool editor = SceneManager.GetActiveScene().name == "LevelBuilder"; // bad
+
         Vector2 size = board.Size;
 
         for (int y = 0; y < size.y; y++)
@@ -42,7 +47,7 @@ public class MapGenerator : MonoBehaviour
                 TileType tt = gbs.tiles[idx];
                 
                 TileSO tileData = tileManager.allTiles.Find(
-                        tile => tile.tileType == tt);
+                        tile => tile.tileType == (editor ? TileType.editor : tt));
                 GameObject toCopy = tileData.prefab;
 
                 if(null == toCopy)
@@ -61,6 +66,12 @@ public class MapGenerator : MonoBehaviour
                 newTile.AssignData(tileData, new List<MapTile>());
                 newTile.CanBeChanged = TileType.basic == newTile.Data.tileType;
                 newTile.placedByPlayer = false;
+                if(editor)
+                {
+                    EditorTile ed = (EditorTile)newTile;
+                    ed.setData = tileManager.allTiles.Find(
+                        tile => tile.tileType == tt);
+                }
 
                 newTileObject.name = idx + "-" + newTile.Data.tileType.ToString();
 
@@ -92,7 +103,7 @@ public class MapGenerator : MonoBehaviour
     /// <summary>
     /// generate (size.x * size.y) blank map tiles
     /// </summary>
-    public static List<MapTile> GenerateNewBlankTiles(Vector2 size, Transform parent)
+    public static List<MapTile> GenerateNewBlankTiles(Vector2 size, Transform parent, bool editor=false)
     {
         List<MapTile> tiles = new List<MapTile>();
 
@@ -103,7 +114,7 @@ public class MapGenerator : MonoBehaviour
                 int idx = (int)(size.x * y + x);
 
                 TileSO tileData = tileManager.allTiles.Find(
-                        tile => tile.tileType == TileType.basic);
+                        tile => tile.tileType == (editor ? TileType.editor : TileType.basic));
                 GameObject toCopy = tileData.prefab;
 
                 if (null == toCopy)

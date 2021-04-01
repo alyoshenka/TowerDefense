@@ -14,9 +14,16 @@ public class TilePlacement : MonoBehaviour
     {
         if (null == Instance) { Instance = this; }
         else if (this != Instance) { Destroy(this); }
+
+        GameStateManager.Instance.cleanupGameplay += (() => 
+        { 
+            DisplayTile.SelectedTile?.DeselectTile();
+            display?.DeselectTile();
+            UpdateDisplay();
+        });
     }
 
-    public bool AllUsed { get => tileSlots.FindAll(t => t.Available).Count == 0; } // all the tiles have been used
+    public bool AllUsed { get => availableTiles.FindAll(t => t.count > 0).Count == 0; } // all the tiles have been used
 
     [Tooltip("currently selected tile display")] public DisplayTile display;
     // ToDo: make dynamic later
@@ -26,14 +33,16 @@ public class TilePlacement : MonoBehaviour
 
     [Tooltip("object to parent new tiles to")] public GameObject tileParent;
     // ToDo(?): set old goal
-    [Tooltip("honestly not sure")] public MapTile defaultTile; 
+    [Tooltip("base tile object to revert to")] public TileSO defaultTile;
 
     private void Start()
     {
-        availableTiles = new List<TileAllotment>();
-        for(int i = 0; i < tileSlots.Count; i++)
+        // for now, manual connection of display tiles and tile allotments
+        Debug.Assert(tileSlots.Count == availableTiles.Count);
+        for (int i = 0; i < tileSlots.Count; i++)
         {
-            availableTiles.Add(tileSlots[i].Allottment); // this needs to be changed to reset on game over
+            tileSlots[i].AssignData(availableTiles[i].tile);
+            tileSlots[i].Allotment = availableTiles[i].count;
         }
     }
 
@@ -88,10 +97,11 @@ public class TilePlacement : MonoBehaviour
         {
             Debug.Log("no tile selected");
             // other stuff maybe
+            // eventually reset to default, right now not so important
             return;
         }
 
-        if(!DisplayTile.SelectedTile.Available)
+        if(!Available(DisplayTile.SelectedTile.Data))
         {
             Debug.Log("tile not available");
             return;
@@ -103,20 +113,36 @@ public class TilePlacement : MonoBehaviour
             return;
         }       
 
-        if (clickedTile.HasCost) { } // buy      
+        if (clickedTile.HasCost) { } // buy             
 
-        // make new tile
-        DisplayTile.SelectedTile.TakeTile();
-        clickedTile.AssignData(DisplayTile.SelectedTile.Tile);
-        clickedTile.placedByPlayer = true;
-
+        // return old tile, then assign new tile
         if (clickedTile.placedByPlayer) { ReturnTile(clickedTile); }
+
+        Debug.Assert(null != DisplayTile.SelectedTile.Tile);
+        if (Debugger.Instance.TileMessages) { Debug.Log("setting tile to " + DisplayTile.SelectedTile.Tile.name); }
+
+        // assign new tile if different, reset to default  if same
+        if(clickedTile.Data == DisplayTile.SelectedTile.Tile)
+        {
+            clickedTile.AssignData(defaultTile);
+            clickedTile.placedByPlayer = false;
+        }
+        else
+        {
+            // make new tile
+            availableTiles.Find(tile => tile.tile == DisplayTile.SelectedTile.Data).Decr();
+            DisplayTile.SelectedTile.TakeTile();
+
+            clickedTile.AssignData(DisplayTile.SelectedTile.Tile);
+            clickedTile.placedByPlayer = true;
+        }
 
         if (!DisplayTile.SelectedTile.Available) { DisplayTile.ClearSelection(); } // inelegant but whatever
 
         UpdateDisplay();
 
-        clickedTile.Destroy();
+        // don't destroy, data is not transferred instead
+        // clickedTile.Destroy();
     }
 
     /// <summary>
@@ -124,12 +150,16 @@ public class TilePlacement : MonoBehaviour
     /// </summary>
     private void ReturnTile(MapTile returningTile)
     {
+        if (Debugger.Instance.TileMessages) { Debug.Log("returning " + returningTile.Data.tileType.ToString()); }
+
         TileAllotment returnedAllot = 
-            availableTiles.Find(allot => allot.tile.tileType == returningTile.Data.tileType);
+            availableTiles.Find(tile => tile.tile == returningTile.Data);
 
         returnedAllot.count++;
+        Debug.Log(returningTile.Data.tileType.ToString() + ": " + returnedAllot.count);
 
-        DisplayTile availableSlot = tileSlots.Find(slot => slot.Allottment.tile.tileType == returningTile.Data.tileType);  // gross
+        DisplayTile availableSlot = tileSlots.Find(slot => slot.Tile.tileType == returningTile.Data.tileType);  // gross
+        availableSlot.Allotment = returnedAllot.count; // not the best design
         availableSlot.SetAvailable();
         availableSlot.UpdateDisplay();
 
@@ -139,7 +169,21 @@ public class TilePlacement : MonoBehaviour
     }
 
     /// <summary>
+    /// check (by tile so) if tile is available
+    /// </summary>
+    private bool Available(TileSO tileSO)
+    {
+        return availableTiles.Find(tile => tile.tile == tileSO).count > 0;
+    }
+
+    /// <summary>
     /// visualize unused tiles
     /// </summary>
-    public void IndicateUnused() { foreach(DisplayTile tile in tileSlots.FindAll(t => t.Available)) { tile.IndicateUnused(); } }
+    public void IndicateUnused() 
+    { 
+        foreach(DisplayTile tile in tileSlots)
+        {
+            if (Available(tile.Data)) { tile.IndicateUnused(); }
+        }
+    }
 }

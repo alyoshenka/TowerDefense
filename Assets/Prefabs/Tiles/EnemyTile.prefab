@@ -46,16 +46,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc5ad7600efca284da12d15b25547314, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueData:
-    type: 6
-    buildCost: 0
-    index: -1
-    traversalCost: 0
+  connections: []
   canBeChanged: 0
-  displayImage: {fileID: 0}
   showConnections: 0
   placedByPlayer: 0
   tileStatus: 0
+  calculatedCost: 0
+  previousNode: {fileID: 0}
 --- !u!114 &1396720300631903825
 MonoBehaviour:
   m_ObjectHideFlags: 0

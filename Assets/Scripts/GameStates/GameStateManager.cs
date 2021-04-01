@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 // ToDo: there has got to be a better way to change states
 
@@ -10,6 +11,10 @@ using UnityEngine.UI;
 /// </summary>
 public class GameStateManager : MonoBehaviour
 {
+    public delegate void ExitGameplayEvent();
+   // invoked upon returning to menu from gameplay state
+    public event ExitGameplayEvent cleanupGameplay;
+
     // singleton instance
     public static GameStateManager Instance { get; private set; }
 
@@ -81,7 +86,14 @@ public class GameStateManager : MonoBehaviour
     /// return to menu state
     /// </summary>
     /// <returns>whether transition was successful</returns>
-    public bool ReturnToMenu() { return Transition(MainMenuState.Instance); }
+    public bool ReturnToMenu() 
+    {
+        // grosssss
+        // fix this
+        if (currentState.GetType().IsSubclassOf(typeof(GamePlayState))) { Debug.Log("cleanup gameplay"); cleanupGameplay?.Invoke(); }
+
+        return Transition(MainMenuState.Instance); 
+    }
 
     // ToDo: there's probably a better way and this isn't more efficient than before
 
@@ -154,7 +166,19 @@ public abstract class GamePlayState : GameState
     /// </summary>
     protected void Initialize()
     {
-        // SetLevel(Level.CreateLevel(0));
+        SetLevel(new Level(Level.Load_s(LevelBuilder.saveDir + "1" + Level.ext))); // load initial level
+        GameStateManager.Instance.cleanupGameplay += Clear;
+    }
+
+    /// <summary>
+    /// clears the current level
+    /// </summary>
+    public void Clear()
+    {
+        currentLevel.Clear();
+        currentLevel = null;
+
+        GameStateManager.Instance.cleanupGameplay -= Clear; // ?
     }
 
     // just here so i can view level in inspector
@@ -162,7 +186,7 @@ public abstract class GamePlayState : GameState
     {
         currentLevel = newLevel;
         showLevel = currentLevel;
-        // Debug.Log("Level set to " + currentLevel.Number);
+        if (Debugger.Instance.LevelNumber) { Debug.Log("Level set to " + currentLevel.Number); }
     }
 
 

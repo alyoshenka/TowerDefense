@@ -45,6 +45,7 @@ public class PlaceState : GamePlayState
     public override void OnExit()
     {
         base.OnExit();
+        DisplayTile.ClearSelection();
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("exit place"); }
     }
 

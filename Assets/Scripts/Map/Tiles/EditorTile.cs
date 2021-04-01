@@ -8,18 +8,15 @@ using UnityEngine;
 public class EditorTile : MapTile
 {
     public static EditorTile CurrentHover { get => (EditorTile)currentHover; } // current hovered tile
-    [Tooltip("color to display this tile")] public Color displayColor;
+    [Tooltip("data this tile will represent")] public TileSO setData;
+
+    public Color DisplayColor { get => null == setData ? Color.gray : setData.displayColor; }
 
     protected override void Awake()
     {
         tileEnter += HoverEnter;
         tileExit += HoverExit;
         tileClick += TileSelected;
-    }
-
-    private void Start()
-    {
-        displayColor = BoardEditor.Instance.CurrentTile.displayColor;
     }
 
     protected override void OnDestroy()
@@ -33,21 +30,27 @@ public class EditorTile : MapTile
     {
         showConnections = true;
         currentHover = this;
+        if (Debugger.Instance.TileHover) { Debug.Log("hover enter: " + name); }
     }
     protected override void HoverExit()
     {
         showConnections = false;
         if (this == currentHover) { currentHover = null; }
+        if (Debugger.Instance.TileHover) { Debug.Log("hover exit: " + name); }
+
     }
     protected override void TileSelected()
     {
         BoardEditor.Instance.EditorTileClick(this);
-        displayColor = BoardEditor.Instance.CurrentTile.displayColor;
+        setData = BoardEditor.Instance.CurrentTile;
+        gameObject.name = gameObject.name.Substring(0, gameObject.name.IndexOf("-") + 1) + setData.tileType.ToString();
+        if (Debugger.Instance.TileSelect) { Debug.Log("select: " + name); }
+
     }
 
     protected override void OnDrawGizmos()
     { 
-        Gizmos.color = this == currentHover ? BoardEditor.Instance.color : displayColor;
+        Gizmos.color = this == currentHover ? BoardEditor.Instance.color : DisplayColor;
         Gizmos.DrawCube(transform.position, this == currentHover
             ? Vector3.one * 1.1f : Vector3.one * 0.95f);
 

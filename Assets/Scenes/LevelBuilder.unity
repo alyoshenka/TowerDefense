@@ -376,17 +376,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c9b92f96c58e4741b27ccc135d0eae6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StateChangeMessages: 0
-  StateTransitionWarnings: 0
-  TileMessages: 0
-  AgentMessages: 0
-  EnemyMessages: 0
-  AgentBrainMessages: 0
-  DeveloperHaltMessages: 0
-  UIAssigned: 0
-  AggroTriggers: 0
-  ShowAggroRanges: 0
-  IOMessages: 0
+  StateChangeMessages: 1
+  StateTransitionWarnings: 1
+  TileMessages: 1
+  AgentMessages: 1
+  EnemyMessages: 1
+  AgentBrainMessages: 1
+  DeveloperHaltMessages: 1
+  UIAssigned: 1
+  AggroTriggers: 1
+  ShowAggroRanges: 1
+  IOMessages: 1
+  TileHover: 0
+  TileSelect: 0
+  LevelNumber: 0
   BL: {fileID: 0}
   BR: {fileID: 0}
 --- !u!114 &637797214
@@ -433,3 +436,4 @@ MonoBehaviour:
     name: board_name
     tiles: []
   showConnections: 1
+  showOneWays: 0

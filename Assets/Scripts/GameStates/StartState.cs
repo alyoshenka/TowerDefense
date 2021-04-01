@@ -40,7 +40,8 @@ public class StartState : GamePlayState
 
     public override bool CanTransition()
     {
-        return null != currentLevel;
+        //return null != currentLevel;
+        return true;
     }
 
     public override void OnEnter()

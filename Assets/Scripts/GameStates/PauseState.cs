@@ -6,11 +6,13 @@ using UnityEngine.UI;
 /// <summary>
 /// in-game pause
 /// </summary>
-public class PauseState : GameState
+public class PauseState : GamePlayState
 {
     public static PauseState Instance { get; private set; } // singleton instance
 
     [Tooltip("push to resume play")] public Button resumeButton;
+    [Tooltip("push to return to menu, deleting all progress")] public Button menuButton;
+
     private bool loudPaused; // ui is displayed
     public bool Paused { get; private set; } // get silent paused
 
@@ -25,6 +27,7 @@ public class PauseState : GameState
         nextLogicalState = this; // kinda weird
         resumeButton.onClick.AddListener(
             () => PauseState.Instance.TogglePauseGame());
+        menuButton.onClick.AddListener(() => GameStateManager.Instance.ReturnToMenu());
 
         Paused = false;
         loudPaused = false;
@@ -41,7 +44,7 @@ public class PauseState : GameState
     {
         if (loudPaused) { base.OnEnter(); } // show ui
         Paused = true;
-        if (Debugger.Instance.StateChangeMessages) { Debug.Log(GamePlayState.CurrentLevel.LevelWin() ? "game win" : GoalTile.LoseCon ? "game lose" : "enter pause"); } // sorry
+        if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter pause"); } // sorry
     }
 
     public override void OnExit()

@@ -11,10 +11,7 @@ public class DisplayTile : MapTile
 {
     public static DisplayTile SelectedTile { get; private set; } // currently selected tile
 
-    [SerializeField] [Tooltip("how many of this tile that are allowed")] 
-    private TileAllotment allotment;
-    public TileSO Tile { get => allotment.tile; } // get associated tile
-    public TileAllotment Allottment { get => allotment; } // get tile allotment
+    public TileSO Tile { get => Data; } // get associated tile
 
     [Tooltip("push to select this tile")] public Button selectButton;
     [Tooltip("display image holder")] public Image showImage;
@@ -26,7 +23,16 @@ public class DisplayTile : MapTile
     [HideInInspector] public Color defaultColor = Color.white; // default tile color
     [HideInInspector] public Color displayColor; // tile display color
 
-    public bool Available { get => null != allotment && allotment.count > 0; } // get if tile is available to place
+    private int allotment;
+    public int Allotment
+    {
+        set
+        {
+            allotment = value;
+            UpdateDisplay(); ;
+        }
+    }
+    public bool Available { get => allotment > 0; } // do we want this?
 
     /// <summary>
     /// clear tile selection
@@ -62,12 +68,6 @@ public class DisplayTile : MapTile
     /// </summary>
     public void SelectTile()
     {
-        if (!Available)
-        {
-            SelectedTile = null;
-            return;
-        } // something else??
-
         // check for bad logic
         // I think it's okay
 
@@ -80,6 +80,7 @@ public class DisplayTile : MapTile
         {
             SelectedTile = this;
             displayColor = Color.yellow;
+            if (null != Debugger.Instance && Debugger.Instance.TileSelect) { Debug.Log("selecting " + Data.name); }
         }
 
         animator.SetTrigger("ClickDisplayTile");
@@ -90,23 +91,11 @@ public class DisplayTile : MapTile
     /// <summary>
     /// deseelct tile for placing
     /// </summary>
-    public void DeselectTile()
+    public void DeselectTile(bool grayOut = false)
     {
-        displayColor = Available ? defaultColor : Color.gray;
+        displayColor = grayOut ? Color.gray : defaultColor;
         UpdateDisplay();
-    }
-
-    /// <summary>
-    /// set tile allotmet for associated tile
-    /// </summary>
-    public void SetAssociatedTile(TileAllotment allot)
-    {
-        allotment = allot;
-
-        defaultColor = allot.tile.displayColor;
-        displayColor = defaultColor;
-        quantityText.text = "x " + allot.count.ToString();
-        buildCostText.text = allot.tile.buildCost.ToString();
+        if (null != Debugger.Instance && Debugger.Instance.TileSelect) { Debug.Log("deselecting " + Data.name); }
     }
 
     /// <summary>
@@ -114,9 +103,11 @@ public class DisplayTile : MapTile
     /// </summary>
     public void TakeTile()
     {
-        allotment.count--;
-        if(!Available) { SetUnavailable(); }
+        allotment--;
+        if(allotment == 0) { SetUnavailable(); }
         UpdateDisplay();
+
+        if (Debugger.Instance.TileMessages) { Debug.Log(Data.tileType.ToString() + ": " + allotment); }
     }
 
     /// <summary>
@@ -124,7 +115,7 @@ public class DisplayTile : MapTile
     /// </summary>
     public void UpdateDisplay()
     {
-        quantityText.text = "x " + allotment?.count.ToString();
+        quantityText.text = "x " + allotment.ToString();
         showImage.color = displayColor;
         // other things
     }

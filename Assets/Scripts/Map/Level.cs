@@ -17,6 +17,8 @@ public class LevelData
     public WinCondition winCon = WinCondition.defeatAllEnemies;
     public int expOnWin = 0;
     public int goldOnwin = 0;
+
+    public List<TileAllotment_Save> tileAllotment;
 }
 
 /// <summary>
@@ -51,6 +53,7 @@ public class Level : ISaveable<Level_Save>
     public GameBoard Board { get => board; }
     public List<TileAllotment> AllottedTiles { get => allottedTiles; } 
     public string Name { get => levelData.name; set => levelData.name = value; }
+    public int Number { get => levelData.number; }
 
     // public void InitializeLevel(int level) {} ??
     // where to put algorithm???
@@ -67,6 +70,26 @@ public class Level : ISaveable<Level_Save>
         {
             allEnemies = board.GetAllEnemies();
         });
+
+        allEnemies = new List<HostileAgent>(); // initialize empty
+
+    }
+
+    public Level(Level_Save _levelSave)
+    {
+        FromLoad(_levelSave);
+
+        Debug.Assert(null != board);
+
+        DefendState.Instance.openDefend += InitializeEnemies;
+    }
+
+    private void InitializeEnemies()
+    {
+        Debug.Assert(null != board);
+
+        if (null == board) { Debug.LogWarning("board not initialized"); }
+        else { allEnemies = board.GetAllEnemies(); }
     }
 
     /// <summary>
@@ -86,6 +109,17 @@ public class Level : ISaveable<Level_Save>
         }
     }
 
+    /// <summary>
+    /// clear all tiles
+    /// </summary>
+    public void Clear()
+    {
+        DefendState.Instance.openDefend -= InitializeEnemies;
+
+        board.Clear();
+        board = null;
+    }
+
     /// <returns>if the win condition(s) have been met</returns>
     public bool LevelWin()
     {
@@ -93,35 +127,51 @@ public class Level : ISaveable<Level_Save>
     }
 
     public Level_Save ToSave()
-    {
-        return new Level_Save
+    {       
+        Level_Save ret = new Level_Save
         {
             data = levelData,
             boardName = board.name
         };
+
+        List<TileAllotment_Save> tas = new List<TileAllotment_Save>();
+        foreach(TileAllotment ta in allottedTiles) { tas.Add(new TileAllotment_Save { type = ta.tile.tileType, count = ta.count }); }
+        ret.data.tileAllotment = tas;
+
+        return ret;
     }
 
     public void FromLoad(Level_Save data)
     {
         levelData = data.data;
         board = GameBoard.LoadBoard(LevelBuilder.saveDir + data.boardName + GameBoard.ext);
+
+        Debug.Assert(null != board);
     }
 
     public bool Save(string fileName, Level_Save data)
     {
+        return Save_s(fileName, data);
+    }
+
+    // get around static restriction
+    public static bool Save_s(string fileName, Level_Save data)
+    {
         if (Debugger.Instance && Debugger.Instance.IOMessages) { Debug.Log("saving level to: " + fileName); }
-        // System.IO.File.WriteAllText(@fileName, JsonSerializer.Serialize(data));
         System.IO.File.WriteAllText(@fileName, JsonConvert.SerializeObject(data));
         return true;
     }
 
     public Level_Save Load(string fileName)
     {
-        if (Debugger.Instance && Debugger.Instance.IOMessages) { Debug.Log("loading level data from: " + fileName); }
-        // return JsonSerializer.Deserialize<Level_Save>(System.IO.File.ReadAllText(@fileName));
-        // return JsonUtility.FromJson<Level_Save>(System.IO.File.ReadAllText(@fileName));
-        return JsonConvert.DeserializeObject<Level_Save>(System.IO.File.ReadAllText(@fileName));
+        return Load_s(fileName);
+    }
 
+    // get around static restriciton
+    public static Level_Save Load_s(string fileName)
+    {
+        if (Debugger.Instance && Debugger.Instance.IOMessages) { Debug.Log("loading level data from: " + fileName); }
+        return JsonConvert.DeserializeObject<Level_Save>(System.IO.File.ReadAllText(@fileName));
     }
 
     public IEnumerator<Level_Save> GetEnumerator() { throw new System.NotImplementedException(); }
@@ -137,6 +187,19 @@ public class TileAllotment
 {
     [Tooltip("tile object")] public TileSO tile; 
     [Tooltip("number of given tiles allowed")] public int count;
+
+    public TileAllotment(TileSO _tile, int _count) { tile = _tile; count = _count; }
+
+    public void Decr() { count--; }
+}
+
+/// <summary>
+/// basic data of tile allotment
+/// </summary>
+public class TileAllotment_Save
+{
+    public TileType type;
+    public int count;
 }
 
 /// <summary>
@@ -177,6 +240,14 @@ public class GameBoard : ISaveable<GameBoard_Save>
         return board;
     }
 
+    /// <summary>
+    /// delete all tiles
+    /// </summary>
+    public void Clear()
+    {
+        foreach(MapTile tile in tiles) { GameObject.Destroy(tile.gameObject); }
+    }
+
     /// <returns>list of all enemies in the board</returns>
     public List<HostileAgent> GetAllEnemies()
     {
@@ -204,7 +275,7 @@ public class GameBoard : ISaveable<GameBoard_Save>
         for(int i = 0; i < tiles.Count; i++)
         {
             MapTile t = tiles[i];
-            gbs.tiles[i] = t.Data.tileType;
+            gbs.tiles[i] = (t.Data.tileType == TileType.editor ? TileType.basic : t.Data.tileType);
             gbs.tilePositions[i] = t.transform.position;
 
             int[] connectionList = new int[t.Connections.Count];
@@ -334,6 +405,6 @@ public class GameBoard : ISaveable<GameBoard_Save>
             GameObject.Destroy(tile.gameObject);
         }
         tiles.Clear();
-        tiles = MapGenerator.GenerateNewBlankTiles(size, null);
+        tiles = MapGenerator.GenerateNewBlankTiles(size, null, true);
     }
 }
