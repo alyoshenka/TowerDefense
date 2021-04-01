@@ -11,7 +11,8 @@ Assets/JsonDotNet/
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
-[Pa]ckages/
+
+Packages/
 
 /TextMesh*
 Assets/TextMesh*
