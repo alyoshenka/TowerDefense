@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// An entity that can make decisions
 /// </summary>
-public abstract class AIAgent : MonoBehaviour
+public abstract class AIAgent : MonoBehaviour, IRecyclable
 {
     protected virtual void Update()
     {
@@ -26,6 +26,11 @@ public abstract class AIAgent : MonoBehaviour
             Gizmos.color = brainDisplay;
             Gizmos.DrawWireSphere(transform.position, 0.55f);
         }
+    }
+
+    public void Recycle()
+    {
+        throw new System.NotImplementedException();
     }
 }
 

@@ -5,10 +5,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerSO", menuName = "ScriptableObjects/PlayerSO")]
 public class PlayerSO : ScriptableObject
 {
-    [SerializeField] private string playerName;
-    [SerializeField] private int playerHP;
-    [SerializeField] private int playerHPMax;
-    [SerializeField] private int playerEXP;
+    [SerializeField] private string playerName = "default player";
+    [SerializeField] private int playerHP = 0;
+    [SerializeField] private int playerHPMax = 100;
+    [SerializeField] private int playerEXP  = 0;
 
     public string PlayerName { get => playerName; }
     public int PlayerHP { get => playerHP; }

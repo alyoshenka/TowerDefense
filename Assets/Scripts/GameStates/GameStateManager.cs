@@ -72,7 +72,7 @@ public class GameStateManager : MonoBehaviour
         if(null == oldState || null == oldState.NextLogicalState || !oldState.CanTransition())
         {
             Debug.LogWarning("cannot transition to next logical state");
-            if (!oldState.CanTransition()) { Debug.Log("State: " + oldState.GetType().ToString() + " cannot transition"); }
+            if (!oldState.CanTransition() && Debugger.Instance.StateTransitionWarnings) { Debug.Log("State: " + oldState.GetType().ToString() + " cannot transition"); }
             return false;
         }
         else
@@ -167,18 +167,18 @@ public abstract class GamePlayState : GameState
     protected void Initialize()
     {
         SetLevel(new Level(Level.Load_s(LevelBuilder.saveDir + "1" + Level.ext))); // load initial level
-        GameStateManager.Instance.cleanupGameplay += Clear;
+        GameStateManager.Instance.cleanupGameplay += Recycle;
     }
 
     /// <summary>
     /// clears the current level
     /// </summary>
-    public void Clear()
+    public void Recycle()
     {
-        currentLevel.Clear();
+        currentLevel.Recycle();
         currentLevel = null;
 
-        GameStateManager.Instance.cleanupGameplay -= Clear; // ?
+        GameStateManager.Instance.cleanupGameplay -= Recycle; // ?
     }
 
     // just here so i can view level in inspector
@@ -186,7 +186,7 @@ public abstract class GamePlayState : GameState
     {
         currentLevel = newLevel;
         showLevel = currentLevel;
-        if (Debugger.Instance.LevelNumber) { Debug.Log("Level set to " + currentLevel.Number); }
+        if (Debugger.Instance.LevelNumber) { Debug.Log("Level " + currentLevel.Number + " loaded"); }
     }
 
 

@@ -37,7 +37,7 @@ public enum WinCondition
 /// a game level
 /// </summary>
 [System.Serializable]
-public class Level : ISaveable<Level_Save>
+public class Level : ISaveable<Level_Save>, IRecyclable
 {
     public static readonly string ext = ".level";
 
@@ -112,11 +112,11 @@ public class Level : ISaveable<Level_Save>
     /// <summary>
     /// clear all tiles
     /// </summary>
-    public void Clear()
+    public void Recycle()
     {
         DefendState.Instance.openDefend -= InitializeEnemies;
 
-        board.Clear();
+        board.Recycle();
         board = null;
     }
 
@@ -145,6 +145,16 @@ public class Level : ISaveable<Level_Save>
     {
         levelData = data.data;
         board = GameBoard.LoadBoard(LevelBuilder.saveDir + data.boardName + GameBoard.ext);
+
+        List<TileAllotment> ta = new List<TileAllotment>();
+        foreach(TileAllotment_Save tas in data.data.tileAllotment)
+        {
+            ta.Add(new TileAllotment(
+                MapGenerator.tileManager.allTiles.Find(tile => tile.tileType == tas.type), 
+                tas.count));
+        }
+        allottedTiles = ta;
+        TilePlacement.Instance?.AllotTiles(allottedTiles);
 
         Debug.Assert(null != board);
     }
@@ -216,7 +226,7 @@ public class EnemyPack
 /// tile board
 /// </summary>
 [System.Serializable]
-public class GameBoard : ISaveable<GameBoard_Save>
+public class GameBoard : ISaveable<GameBoard_Save>, IRecyclable
 {
     public static readonly string ext = ".board";
 
@@ -243,9 +253,9 @@ public class GameBoard : ISaveable<GameBoard_Save>
     /// <summary>
     /// delete all tiles
     /// </summary>
-    public void Clear()
+    public void Recycle()
     {
-        foreach(MapTile tile in tiles) { GameObject.Destroy(tile.gameObject); }
+        foreach(MapTile tile in tiles) { tile.Recycle(); }
     }
 
     /// <returns>list of all enemies in the board</returns>
@@ -401,8 +411,8 @@ public class GameBoard : ISaveable<GameBoard_Save>
     public void GenerateNewTiles()
     {
         foreach(MapTile tile in tiles)
-        {            
-            GameObject.Destroy(tile.gameObject);
+        {
+            tile.Recycle();
         }
         tiles.Clear();
         tiles = MapGenerator.GenerateNewBlankTiles(size, null, true);

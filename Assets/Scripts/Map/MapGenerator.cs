@@ -22,7 +22,7 @@ public struct FoundPath
 public class MapGenerator : MonoBehaviour
 {
     public TileManagerSO tileManagerObject;
-    private static TileManagerSO tileManager;
+    public static TileManagerSO tileManager { get; private set; }
 
     private void Awake()
     {
@@ -71,6 +71,7 @@ public class MapGenerator : MonoBehaviour
                     EditorTile ed = (EditorTile)newTile;
                     ed.setData = tileManager.allTiles.Find(
                         tile => tile.tileType == tt);
+                    ed.idx = idx;
                 }
 
                 newTileObject.name = idx + "-" + newTile.Data.tileType.ToString();

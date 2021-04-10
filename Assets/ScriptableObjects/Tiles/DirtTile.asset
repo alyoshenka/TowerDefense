@@ -15,6 +15,6 @@ MonoBehaviour:
   tileType: 1
   prefab: {fileID: 4170006953480210871, guid: d430f68b93fee3f4cbe1517bd8b95e5c, type: 3}
   displayColor: {r: 0.5283019, g: 0.33589563, b: 0, a: 1}
-  displayImage: {fileID: 0}
+  displayImage: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   traversalCost: 0
   buildCost: 0

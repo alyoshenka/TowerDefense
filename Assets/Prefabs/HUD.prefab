@@ -3081,7 +3081,8 @@ MonoBehaviour:
   IOMessages: 0
   TileHover: 0
   TileSelect: 0
-  LevelNumber: 0
+  LevelNumber: 1
+  LevelSteps: 1
   BL: {fileID: 7425207613616458417}
   BR: {fileID: 5601116071621138607}
 --- !u!114 &5578519
@@ -3996,8 +3997,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 4ed147199882ee04a820aff5a2dbe0ee,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 2025843391116631451, guid: 6af640107b34f9549b168ebfd8d94939,
         type: 3}
       propertyPath: m_fontAsset
@@ -4037,8 +4037,7 @@ PrefabInstance:
         type: 3}
       propertyPath: data
       value: 
-      objectReference: {fileID: 11400000, guid: c421461a31d9c7d44b0083fe0e4898fa,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 3093242396860102898, guid: 6af640107b34f9549b168ebfd8d94939,
         type: 3}
       propertyPath: allotment.tile
@@ -4054,8 +4053,7 @@ PrefabInstance:
         type: 3}
       propertyPath: data
       value: 
-      objectReference: {fileID: 11400000, guid: 96404d8237e0488489ab9b14b7fa01ff,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 3395289231007350576, guid: 6af640107b34f9549b168ebfd8d94939,
         type: 3}
       propertyPath: availableTiles.Array.size
@@ -4126,8 +4124,7 @@ PrefabInstance:
         type: 3}
       propertyPath: data
       value: 
-      objectReference: {fileID: 11400000, guid: 781cdf27fb1405f48b8b2f9cb1d639f6,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 4344095679350617105, guid: 6af640107b34f9549b168ebfd8d94939,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -4289,8 +4286,7 @@ PrefabInstance:
         type: 3}
       propertyPath: data
       value: 
-      objectReference: {fileID: 11400000, guid: 28cec09c6f4607f4e9aa9f23dc4e7dac,
-        type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7280354557467807158, guid: 6af640107b34f9549b168ebfd8d94939,
         type: 3}
       propertyPath: m_fontAsset
@@ -4311,8 +4307,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 7cbc3c4490a488248bf2fe1702c802ee,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 7280354557990536953, guid: 6af640107b34f9549b168ebfd8d94939,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4365,8 +4360,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: af64031f98789a141a516cfd09153325,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 8724666759472739571, guid: 6af640107b34f9549b168ebfd8d94939,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4401,8 +4395,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 643f33be9f238254a8f560e3214a4ca8,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 8839738592270408871, guid: 6af640107b34f9549b168ebfd8d94939,
         type: 3}
       propertyPath: m_AnchoredPosition.y

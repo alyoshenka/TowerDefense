@@ -112,5 +112,19 @@ public interface ISaveable<T> : System.Collections.Generic.IEnumerable<T>
     T Load(string fileName);
 }
 
+/// <summary>
+/// saveable data for enemy tiles
+/// </summary>
+[System.Serializable]
+public struct EnemyTileData
+{
+    [Tooltip("index of associated enemy tile")]
+    public int tileIdx;
+    [Tooltip("enemy type")]
+    public EnemyType enemyType;
+    [Tooltip("enemy allotment")]
+    public int count;
+}
+
 // https://stackoverflow.com/questions/980766/how-do-i-declare-a-nested-enum
 

@@ -35,7 +35,7 @@ public class StartState : GamePlayState
         base.Initialize(); // first state
         Debug.Assert(null != player);
 
-       
+        if (Debugger.Instance.LevelSteps) { Debug.Log("game setup"); }
     }
 
     public override bool CanTransition()

@@ -52,7 +52,7 @@ public class PlaceState : GamePlayState
     public override bool CanTransition()
     {
         if (!tilePlacement.AllUsed) { tilePlacement.IndicateUnused(); }
-        if (!currentLevel.Board.GoalAssigned) { Debug.Log("goal not assigned"); }
+        if (!currentLevel.Board.GoalAssigned && Debugger.Instance.StateTransitionWarnings) { Debug.Log("goal not assigned"); }
         if (Debugger.Instance.StateTransitionWarnings) { Debug.LogWarning("place transition condition"); }
         return currentLevel.Board.GoalAssigned;
     }

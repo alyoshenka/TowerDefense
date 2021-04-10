@@ -10,6 +10,8 @@ public class EditorTile : MapTile
     public static EditorTile CurrentHover { get => (EditorTile)currentHover; } // current hovered tile
     [Tooltip("data this tile will represent")] public TileSO setData;
 
+    public int idx = -1;
+
     public Color DisplayColor { get => null == setData ? Color.gray : setData.displayColor; }
 
     protected override void Awake()

@@ -18,6 +18,13 @@ public enum TileType
     editor
 }
 
+// move somewhere else
+public enum EnemyType
+{
+    basic,
+    other
+}
+
 /// <summary>
 /// a node with a type and connections
 /// </summary>
@@ -116,7 +123,7 @@ public class PathNode
 /// a tile in the map, gameobject
 /// </summary>
 [System.Serializable]
-public class MapTile : MonoBehaviour
+public class MapTile : MonoBehaviour, IRecyclable
 {
     public delegate void TileEnteredEvent();
     public event TileEnteredEvent tileEnter; // invoke on mouse hover enter
@@ -251,7 +258,7 @@ public class MapTile : MonoBehaviour
     /// <summary>
     /// properly dispose of tile
     /// </summary>
-    public void Destroy()
+    public void Recycle()
     {
         currentHover = null;
         if (Debugger.Instance.TileMessages) { Debug.Log("destroy " + name); }
@@ -330,7 +337,7 @@ public class MapTile : MonoBehaviour
     /// <summary>
     /// assigns new tile data and connection list to the object
     /// </summary>
-    public void AssignData(TileSO newData, List<MapTile> newConnections = null)
+    public virtual void AssignData(TileSO newData, List<MapTile> newConnections = null)
     {
         Debug.Assert(null != newData);
         data = newData;

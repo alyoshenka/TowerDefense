@@ -51,6 +51,12 @@ public class TilePlacement : MonoBehaviour
     /// </summary>
     public void SelectTile(DisplayTile newTile)
     {
+        if(availableTiles.Find(tile => tile.tile.tileType == newTile.Data.tileType).count == 0)
+        {
+            Debug.LogWarning("tile not available");
+            return;
+        }
+
         DisplayTile.SelectedTile?.DeselectTile();
         newTile?.SelectTile();
         UpdateDisplay();
@@ -59,10 +65,23 @@ public class TilePlacement : MonoBehaviour
     /// <summary>
     /// disperse a given tile allotment
     /// </summary>
-    public void GiveTiles(List<TileAllotment> tiles)
+    public void AllotTiles(List<TileAllotment> tiles)
     {
+        if(null == tiles) { Debug.LogWarning("tile allotment null"); return; }
+
+        // initially there are a set amount of tile slots
+        // eventually this will be dynamically allocated
+        Debug.Assert(tiles.Count <= tileSlots.Count);
+
+
         availableTiles = tiles;
-        // BadUpdateDisplay(tiles);
+        for(int i = 0; i < tiles.Count; i++)
+        {
+            DisplayTile dt = tileSlots[i];
+            TileSO tso = tiles[i].tile;
+            dt.Allotment = tiles[i].count;
+            dt.AssignData(tso);           
+        }
     }
 
     /// <summary>

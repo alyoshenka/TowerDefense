@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Projectile : MonoBehaviour
+public class Projectile : MonoBehaviour, IRecyclable
 {
     [Tooltip("movement speed, scaled")] public float speed;
     [Tooltip("damage upon impact")] public int damage;
@@ -29,6 +29,13 @@ public class Projectile : MonoBehaviour
     private void Explode()
     {
         // Debug.Log("explosion");
+        Recycle();
+    }
+
+    public void Recycle()
+    {
+        throw new System.NotImplementedException();
+
         Destroy(gameObject);
         Destroy(this);
     }

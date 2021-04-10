@@ -39,7 +39,9 @@ public class GameOverState : GamePlayState
     {
         base.OnExit();
 
-        // currentLevel.Destroy();
+        if (Debugger.Instance.LevelSteps) { Debug.Log("Level recycled"); }
+
+        //currentLevel.Destroy();
         currentLevel = null;
         player.SaveAndDestroy();
         player = null;

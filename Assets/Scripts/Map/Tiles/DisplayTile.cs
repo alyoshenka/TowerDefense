@@ -53,13 +53,21 @@ public class DisplayTile : MapTile
         colorVars.highlightedColor = Color.gray;
         selectButton.colors = colorVars;
 
-        defaultColor = showImage.color;
+        defaultColor = Color.white;
         displayColor = defaultColor;
 
         DeselectTile();
 
         SelectedTile = null;
 
+        UpdateDisplay();
+    }
+
+    public override void AssignData(TileSO newData, List<MapTile> newConnections = null)
+    {
+        base.AssignData(newData, newConnections);
+
+        showImage.sprite = newData.displayImage;
         UpdateDisplay();
     }
 

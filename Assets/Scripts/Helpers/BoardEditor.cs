@@ -14,6 +14,7 @@ public class BoardEditor : MonoBehaviour
 
     public TileManagerSO availableTiles;
     [SerializeField] private TileSO currentTile;
+    public List<EnemyTileData> enemyTileData;
 
     int tileIdx;
 
@@ -69,6 +70,21 @@ public class BoardEditor : MonoBehaviour
 
     public void EditorTileClick(EditorTile tile)
     {
+        // if tile originally enemy tile
+        if(tile.Data.tileType == TileType.enemy)
+        {
+            // remove associated enemy allotment from list
+            enemyTileData.Remove(enemyTileData.Find(dat => dat.tileIdx == tile.idx));
+        }
+
+
+        if(currentTile.tileType == TileType.enemy)
+        {
+            EnemyTileData dat = new EnemyTileData{ tileIdx=tile.idx, enemyType=EnemyType.basic, count=0 };
+            enemyTileData.Add(dat);
+        }
+
+
         // ToDo: add connections
         // board.AssignNewData(tile, currentTile.GenerateTileData(), true); // this
         
