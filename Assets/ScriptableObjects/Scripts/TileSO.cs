@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName ="TileSO", menuName ="ScriptableObjects/TileSO")]
-public class TileSO : ScriptableObject
+public class TileSO : ScriptableObject, ICollectionObject
 {
     public TileType tileType;
     public GameObject prefab;

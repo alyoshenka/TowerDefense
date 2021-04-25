@@ -5,24 +5,26 @@ using UnityEngine;
 /// <summary>
 /// creates enemies, and gives them the current path to the goal
 /// </summary>
-public class EnemySpawner : AIAgent
+public class EnemySpawner : MonoBehaviour
 {
-    [Tooltip("enemies to spawn")] public List<EnemyPack> enemySet;
-    [Tooltip("tile object")] public MapTile associatedTile;
-    [Tooltip("time to wait between enemy spawning")] public float spawnResetTime;  
-    [Tooltip("time since last enemyspawn")] public float spawnElapsedTime;
-    public bool CanSpawn { get => spawnElapsedTime > spawnResetTime && allEnemies.Count > 0; } // return if new enemy can be spawned
+    [Tooltip("enemies to spawn")] 
+    public List<EnemyPack> enemySet;
+    [Tooltip("tile object")] 
+    public MapTile associatedTile;
+
+    [SerializeField]
+    [Tooltip("time since last enemyspawn")] 
+    private float spawnElapsedTime;
+
 
     private FoundPath pathToGoal; // path from associated tile to goal tile
-    public List<OrganicAgent> allEnemies { get; private set; } // all enemies that are going to be/have been spawned
 
 
     private void Start()
     {
-        stateMachine = new EnemySpawnerBrain(this);
-
         DefendState.Instance.openDefend += GetPath;
-        LoadAllEnemies();
+        DefendState.Instance.openDefend += (() => { StartCoroutine(EnemySpawnLoop()); });
+        // stop coroutine on exit??
         
         spawnElapsedTime = 0;
     }
@@ -30,26 +32,6 @@ public class EnemySpawner : AIAgent
     private void OnDestroy()
     {
         DefendState.Instance.openDefend -= GetPath;            
-    }
-
-    /// <summary>
-    /// instantiate all enemies
-    /// </summary>
-    private void LoadAllEnemies()
-    {
-        allEnemies = new List<OrganicAgent>();
-
-        foreach(EnemyPack pack in enemySet)
-        {
-            for(int i = 0; i < pack.count; i++)
-            {
-                OrganicAgent agent = Instantiate(
-                    pack.enemy, transform.position, Quaternion.identity, transform)
-                    .GetComponent<OrganicAgent>();
-                allEnemies.Add(agent);
-                agent.gameObject.SetActive(false);
-            }
-        }
     }
 
     /// <summary>
@@ -68,19 +50,44 @@ public class EnemySpawner : AIAgent
     }
 
     /// <summary>
-    /// create a new enemy, give it path to goal
+    /// spawns the enemy at the beginning of the set, 
+    /// adds it to the current level
     /// </summary>
-    public void SpawnEnemy()
+    private void SpawnEnemy()
     {
-        spawnElapsedTime = 0;
+        EnemySO eso = 
+            (EnemySO)
+            ((ICollectionManager<EnemyType>)DefendState.Instance.enemyManager)
+            .Get(enemySet[0].enemy);
 
-        OrganicAgent agent = allEnemies[0];
-        agent.gameObject.SetActive(true);
-        agent.AssignPath(pathToGoal);
-        allEnemies.RemoveAt(0);
-        if (Debugger.Instance.EnemyMessages) { Debug.Log(agent.name + " spawned"); }
+        GameObject prefab = eso.prefab;
 
-        if(allEnemies.Count == 0) { OnOutOfEnemies(); }
+        HostileAgent ho = Instantiate(
+            prefab, 
+            transform.position, 
+            Quaternion.identity, 
+            DefendState.Instance.enemyParent)
+        .GetComponent<HostileAgent>();
+
+        // assign enemy path
+
+        DefendState.CurrentLevel.AddEnemy(ho);
+    }
+
+    /// <summary>
+    /// spawns enemies from set at given time
+    /// </summary>
+    private IEnumerator EnemySpawnLoop()
+    {
+        yield return new WaitForSeconds(enemySet[0].buildupTime);
+        SpawnEnemy();
+
+        enemySet[0].count--;
+        if(enemySet[0].count <= 0) 
+        { 
+            enemySet.RemoveAt(0); 
+            if(enemySet.Count == 0) { OnOutOfEnemies(); }
+        }
     }
 
     /// <summary>
@@ -91,42 +98,8 @@ public class EnemySpawner : AIAgent
         if (Debugger.Instance.EnemyMessages) { Debug.Log(name + " out of enemies"); }
     }
 
-    // ToDo: BAD
-    /// <summary>
-    /// compile and return a list of all enemy packs in scene
-    /// </summary>
-    public static List<EnemyPack> AllEnemyPacks()
+    public void OnDrawGizmos()
     {
-        List<EnemyPack> ret = new List<EnemyPack>();
-        foreach(EnemySpawner spawner in FindObjectsOfType<EnemySpawner>())
-        {
-            foreach(EnemyPack pack in spawner.enemySet)
-            {
-                ret.Add(pack);
-            }
-        }
-        return ret;
-    }
-
-    /// <summary>
-    /// compile and return a list of all hostile agents (enemies) in scene
-    /// </summary
-    public static List<HostileAgent> AllEnemies()
-    {
-        List<HostileAgent> ret = new List<HostileAgent>();
-        foreach(EnemySpawner spawner in FindObjectsOfType<EnemySpawner>())
-        {
-            foreach(HostileAgent agent in spawner.allEnemies)
-            {
-                ret.Add(agent);
-            }
-        }
-        return ret;
-    }
-
-    public override void OnDrawGizmos()
-    {
-        base.OnDrawGizmos();
         if(null != pathToGoal.start)
         {
             Gizmos.color = Color.red;
@@ -144,6 +117,7 @@ public class EnemySpawner : AIAgent
 /// <summary>
 /// driving state maching for enemy spawner
 /// </summary>
+/*
 public class EnemySpawnerBrain : DecisionTree
 {
     BooleanDecision shouldSpawn; // should an enemy be spawned
@@ -167,10 +141,12 @@ public class EnemySpawnerBrain : DecisionTree
         shouldSpawn.Value = ((EnemySpawner)agent).CanSpawn;
     }
 }
+*/
 
 /// <summary>
 /// spawn a new enemy
 /// </summary>
+/*
 public class SpawnEnemy : Action
 {
     public SpawnEnemy(EnemySpawner agent) : base(agent) { }
@@ -182,10 +158,12 @@ public class SpawnEnemy : Action
         return null;
     }
 }
+*/
 
 /// <summary>
 /// recharge a timer with deltatime
 /// </summary>
+/*
 public class RechargeTimer : Action
 {
     public RechargeTimer(EnemySpawner agent) : base(agent) { }
@@ -197,3 +175,4 @@ public class RechargeTimer : Action
         return null;
     }
 }
+*/

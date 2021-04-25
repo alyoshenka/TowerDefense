@@ -66,13 +66,7 @@ public class Level : ISaveable<Level_Save>, IRecyclable
         levelData = _levelData;
         board = _board;
 
-        DefendState.Instance.openDefend += (() =>
-        {
-            allEnemies = board.GetAllEnemies();
-        });
-
         allEnemies = new List<HostileAgent>(); // initialize empty
-
     }
 
     public Level(Level_Save _levelSave)
@@ -80,16 +74,17 @@ public class Level : ISaveable<Level_Save>, IRecyclable
         FromLoad(_levelSave);
 
         Debug.Assert(null != board);
-
-        DefendState.Instance.openDefend += InitializeEnemies;
     }
 
-    private void InitializeEnemies()
+    /// <summary>
+    /// adds enemy to list
+    /// </summary>
+    /// <returns>whether enemy successfully added</returns>
+    public bool AddEnemy(HostileAgent agent)
     {
-        Debug.Assert(null != board);
-
-        if (null == board) { Debug.LogWarning("board not initialized"); }
-        else { allEnemies = board.GetAllEnemies(); }
+        if (allEnemies.Contains(agent)) { Debug.Assert(false); }
+        allEnemies.Add(agent);
+        return true;
     }
 
     /// <summary>
@@ -114,8 +109,6 @@ public class Level : ISaveable<Level_Save>, IRecyclable
     /// </summary>
     public void Recycle()
     {
-        DefendState.Instance.openDefend -= InitializeEnemies;
-
         board.Recycle();
         board = null;
     }
@@ -126,6 +119,7 @@ public class Level : ISaveable<Level_Save>, IRecyclable
         return WinCondition.defeatAllEnemies == levelData.winCon && allEnemies.Count == 0; // ToDo: implement support for different win conditions
     }
 
+    #region IO
     public Level_Save ToSave()
     {       
         Level_Save ret = new Level_Save
@@ -149,13 +143,15 @@ public class Level : ISaveable<Level_Save>, IRecyclable
         List<TileAllotment> ta = new List<TileAllotment>();
         foreach(TileAllotment_Save tas in data.data.tileAllotment)
         {
+         
             ta.Add(new TileAllotment(
-                MapGenerator.tileManager.allTiles.Find(tile => tile.tileType == tas.type), 
+                (TileSO)((ICollectionManager<TileType>)MapGenerator.tileManager).Get(tas.type), 
                 tas.count));
         }
         allottedTiles = ta;
         TilePlacement.Instance?.AllotTiles(allottedTiles);
 
+        allEnemies = new List<HostileAgent>();
         Debug.Assert(null != board);
     }
 
@@ -187,6 +183,8 @@ public class Level : ISaveable<Level_Save>, IRecyclable
     public IEnumerator<Level_Save> GetEnumerator() { throw new System.NotImplementedException(); }
 
     IEnumerator IEnumerable.GetEnumerator() { throw new System.NotImplementedException(); }
+
+    #endregion
 }
 
 /// <summary>
@@ -218,8 +216,9 @@ public class TileAllotment_Save
 [System.Serializable]
 public class EnemyPack
 {
-    [Tooltip("enemy object")] public HostileAgent enemy;
+    [Tooltip("enemy object")] public EnemyType enemy;
     [Tooltip("number allotted")] public int count;
+    [Tooltip("spawn reset time (s)")] public float buildupTime;
 }
 
 /// <summary>
@@ -258,18 +257,7 @@ public class GameBoard : ISaveable<GameBoard_Save>, IRecyclable
         foreach(MapTile tile in tiles) { tile.Recycle(); }
     }
 
-    /// <returns>list of all enemies in the board</returns>
-    public List<HostileAgent> GetAllEnemies()
-    {
-        List<HostileAgent> ret = new List<HostileAgent>();
-        foreach(MapTile t in tiles)
-        {
-            EnemySpawner es = t.GetComponent<EnemySpawner>(); // ToDo: rewrite
-            if (es) { ret.AddRange(es.allEnemies); }
-        }
-        return ret;
-    }
-
+    #region IO
     public GameBoard_Save ToSave()
     {
         GameBoard_Save gbs = new GameBoard_Save();
@@ -346,6 +334,8 @@ public class GameBoard : ISaveable<GameBoard_Save>, IRecyclable
         return JsonConvert.DeserializeObject<GameBoard_Save>(System.IO.File.ReadAllText(@fileName));
 
     }
+
+    #endregion
 
     /// <summary>
     /// connect all tiles in a grid pattern (u, d, l, r)

@@ -35,7 +35,7 @@ public class BoardEditor : MonoBehaviour
     private void SetCurrentTile(int idx)
     {
         Debug.Assert(idx >= 0 && idx < availableTiles.Count);
-        currentTile = availableTiles.allTiles[idx];
+        currentTile = availableTiles.At(idx);
         color = currentTile.displayColor;
         currentPlaceType = currentTile.tileType.ToString();
     }

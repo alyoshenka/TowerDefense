@@ -25,6 +25,7 @@ public class LevelBuilder : MonoBehaviour
         // if(level.Board.Size != oldBoardSize) { level.Board.Resize(); }
     }
 
+    #region IO
     public void SaveLevel()
     {
         string path = saveDir + level.Name + Level.ext;
@@ -61,8 +62,11 @@ public class LevelBuilder : MonoBehaviour
         if (Debugger.Instance && Debugger.Instance.IOMessages) { Debug.Log("load board: " + fn); }
         level.Board.FromLoad(level.Board.Load(fn));
     }
+
+    #endregion
 }
 
+#region _Save
 /// <summary>
 /// data needed to store and regenerate a level
 /// </summary>
@@ -78,7 +82,6 @@ public struct Level_Save
 [System.Serializable]
 public struct GameBoard_Save
 {
-
     public string name;
     public Vector2 size;
     public TileType[] tiles;
@@ -111,6 +114,7 @@ public interface ISaveable<T> : System.Collections.Generic.IEnumerable<T>
     /// </summary>
     T Load(string fileName);
 }
+#endregion
 
 /// <summary>
 /// saveable data for enemy tiles
@@ -120,9 +124,9 @@ public struct EnemyTileData
 {
     [Tooltip("index of associated enemy tile")]
     public int tileIdx;
-    [Tooltip("enemy type")]
+    [Tooltip("enemy pack data")]
     public EnemyType enemyType;
-    [Tooltip("enemy allotment")]
+    [Tooltip("number of enemies to spawn")]
     public int count;
 }
 

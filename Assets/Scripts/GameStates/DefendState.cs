@@ -12,10 +12,17 @@ public class DefendState : GamePlayState
     public event EnterStateEvent openDefend; // invoked upon entering state
     public static DefendState Instance { get; private set; } // singleton instance
 
+    [SerializeField]
+    [Tooltip("enemy management object")]
+    private EnemyManagerSO enemyManagerSO;
+
     [Tooltip("player/castle health display")] public TMP_Text castleHealth;
     [Tooltip("push to pause game")] public Button pauseButton;
     [Tooltip("delay start for number to seconds")] public int startDelay;
     [Tooltip("pause (silent) upon entering")] public bool pauseOnEnter;
+
+    [Tooltip("enemy parent")] public Transform enemyParent;
+    [Tooltip("available enemy tiles")] public EnemyManagerSO enemyManager;
 
     private void Awake()
     {

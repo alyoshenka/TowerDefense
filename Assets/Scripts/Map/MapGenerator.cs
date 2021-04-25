@@ -45,9 +45,8 @@ public class MapGenerator : MonoBehaviour
             {
                 int idx = (int)(size.x * y + x);
                 TileType tt = gbs.tiles[idx];
-                
-                TileSO tileData = tileManager.allTiles.Find(
-                        tile => tile.tileType == (editor ? TileType.editor : tt));
+
+                TileSO tileData = (TileSO)((ICollectionManager<TileType>)MapGenerator.tileManager).Get(editor ? TileType.editor : tt);
                 GameObject toCopy = tileData.prefab;
 
                 if(null == toCopy)
@@ -69,8 +68,7 @@ public class MapGenerator : MonoBehaviour
                 if(editor)
                 {
                     EditorTile ed = (EditorTile)newTile;
-                    ed.setData = tileManager.allTiles.Find(
-                        tile => tile.tileType == tt);
+                    ed.setData = (TileSO)((ICollectionManager<TileType>)MapGenerator.tileManager).Get(tt);
                     ed.idx = idx;
                 }
 
@@ -114,8 +112,7 @@ public class MapGenerator : MonoBehaviour
             {
                 int idx = (int)(size.x * y + x);
 
-                TileSO tileData = tileManager.allTiles.Find(
-                        tile => tile.tileType == (editor ? TileType.editor : TileType.basic));
+                TileSO tileData = (TileSO)((ICollectionManager<TileType>)MapGenerator.tileManager).Get(editor ? TileType.editor : TileType.basic);
                 GameObject toCopy = tileData.prefab;
 
                 if (null == toCopy)
