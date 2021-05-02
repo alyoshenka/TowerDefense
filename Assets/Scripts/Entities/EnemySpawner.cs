@@ -11,10 +11,13 @@ public class EnemySpawner : MonoBehaviour
     public List<EnemyPack> enemySet;
     [Tooltip("tile object")] 
     public MapTile associatedTile;
+    [Tooltip("Pathfinding object")]
+    public PathShower pathShower;
 
     [SerializeField]
     [Tooltip("time since last enemyspawn")] 
     private float spawnElapsedTime;
+
 
 
     private FoundPath pathToGoal; // path from associated tile to goal tile
@@ -22,10 +25,22 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
+        if(null == pathShower) 
+        { 
+            Debug.LogWarning("set path shower field");
+            pathShower = Resources.FindObjectsOfTypeAll<PathShower>()[0]; // BAD
+        }
+        Debug.Assert(null != pathShower);
+
         DefendState.Instance.openDefend += GetPath;
-        DefendState.Instance.openDefend += (() => { StartCoroutine(EnemySpawnLoop()); });
+        pathShower.pathFound += OnPathToGoalFound;
+
         // stop coroutine on exit??
-        
+
+        if(null == associatedTile)
+        {
+            associatedTile = GetComponent<MapTile>(); // ToDo: better system
+        }
         spawnElapsedTime = 0;
     }
 
@@ -39,14 +54,36 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     public void GetPath()
     {
-        associatedTile = GetComponent<MapTile>(); // ToDo: better system
+
 
         /*
         pathToGoal = Pathfinder.DjikstrasPath(
-            PlaceState.Instance.Board.FindAssociatedNode(associatedTile),
-            PlaceState.Instance.Board.GoalNode,
-            PlaceState.Instance.Board.nodeMap);
+            associatedTile,
+            PlaceState.Instance.Board.goalTile,
+            PlaceState.Instance.Board.tiles
+        );
         */
+
+       
+        pathShower.VisualizePathfinding(
+            associatedTile,
+            PlaceState.Instance.Board.GoalTile,
+            PlaceState.Instance.Board.tiles
+        );
+
+       
+    }
+
+    /// <summary>
+    /// called when path from here to goal is found
+    /// </summary>
+    private void OnPathToGoalFound()
+    {
+        pathToGoal = pathShower.pathSave;
+
+        // placing this here makes it so that enemy spawn
+        // loop only begins after path is found
+        StartCoroutine(EnemySpawnLoop());
     }
 
     /// <summary>
@@ -70,8 +107,9 @@ public class EnemySpawner : MonoBehaviour
         .GetComponent<HostileAgent>();
 
         // assign enemy path
+        ((OrganicAgent)ho).AssignPath(pathToGoal);
 
-        DefendState.CurrentLevel.AddEnemy(ho);
+        DefendState.CurrentLevel.AddEnemy(ho); // To Do: lots of casting bad
     }
 
     /// <summary>

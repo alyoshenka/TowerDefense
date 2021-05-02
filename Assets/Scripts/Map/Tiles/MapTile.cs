@@ -144,12 +144,14 @@ public class MapTile : MonoBehaviour, IRecyclable
     public bool showConnections;
     [Tooltip("this tile has been placed by the player")] 
     public bool placedByPlayer;
-    [HideInInspector] 
-    public TileStatus tileStatus = TileStatus.none; // pathfinding status  
+      
 
     #region Pathfinding Data
     public int calculatedCost;
-    public MapTile previousNode;
+    public MapTile previousTile;
+
+    [HideInInspector]
+    public TileStatus tileStatus = TileStatus.none; // pathfinding status
     #endregion
 
     public TileSO Data { get => data; }
@@ -188,12 +190,26 @@ public class MapTile : MonoBehaviour, IRecyclable
         else { connections.Add(tile); }       
     }
 
+    public void RemoveConnection(MapTile tile)
+    {
+        connections.Remove(tile);
+    }
+
+    /// <summary>
+    /// removes all connections, and all that have a connection with this
+    /// </summary>
+    public void RemoveAllConnections()
+    {
+        foreach(MapTile con in connections) { con.RemoveConnection(this); }
+        ClearConnections();
+    }
+
     public void ClearConnections() { connections.Clear(); }
 
     public void ResetPathfinding()
     {
         calculatedCost = System.Int32.MaxValue;
-        previousNode = null;
+        previousTile = null;
     }
 
     #region Placement
@@ -310,7 +326,11 @@ public class MapTile : MonoBehaviour, IRecyclable
                 Gizmos.DrawCube(transform.position, size);
                 break;
             case TileStatus.clear:
-                Gizmos.color = Color.white;
+                Gizmos.color = Color.blue;
+                Gizmos.DrawCube(transform.position, size);
+                break;
+            case TileStatus.debug1:
+                Gizmos.color = Color.magenta;
                 Gizmos.DrawCube(transform.position, size);
                 break;
             default:
@@ -342,6 +362,9 @@ public class MapTile : MonoBehaviour, IRecyclable
         Debug.Assert(null != newData);
         data = newData;
         if (null != newConnections) { connections = newConnections; }
+
+        Debug.LogWarning("deal with wall stuff");
+        if(newData.tileType == TileType.wall) { RemoveAllConnections(); }
     }
 }
 
@@ -353,7 +376,9 @@ public enum TileStatus
     none, // no status
     current, // current pathfinding node
     next, // next pathfinding node
-    clear // cleared pathfinding node
+    clear, // cleared pathfinding node
+
+    debug1 // not sure, just want a color
 }
 
 

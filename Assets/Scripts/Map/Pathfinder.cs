@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class Pathfinder
 {
+    public float waitTime = 0.1f;
 
     // weight paths that are closer to as-the-crow-flies paths
 
     public static FoundPath DjikstrasPath(MapTile _start, MapTile _goal, List<MapTile> allTiles)
     {
-        return RunDjikstras(_start, _goal, allTiles);
+        // something should happen here???
+
+        return RunDjikstras(_start, _goal, allTiles); 
     }
 
     // make with board/tilemap
@@ -35,7 +38,7 @@ public class Pathfinder
                     if (newCost < neighbor.calculatedCost)
                     {
                         neighbor.calculatedCost = newCost;
-                        neighbor.previousNode = currentNode;
+                        neighbor.previousTile = currentNode;
                     }
                 }               
             }
@@ -63,9 +66,9 @@ public class Pathfinder
         foreach(MapTile tile in allTiles) { tile.ResetPathfinding(); }
 
         return toReturn;
-    }
+    } 
 
-    static List<MapTile> GeneratePath(MapTile _start, MapTile _goal, bool addStart = true)
+    public static List<MapTile> GeneratePath(MapTile _start, MapTile _goal, bool addStart = true)
     {
         MapTile currentNode = _goal; // check
 
@@ -73,8 +76,8 @@ public class Pathfinder
         do
         {
             path.Insert(0, currentNode);
-            Debug.Assert(currentNode.previousNode != null);
-            currentNode = currentNode.previousNode;
+            Debug.Assert(currentNode.previousTile != null);
+            currentNode = currentNode.previousTile;
         } while (currentNode != _start);
         if (addStart) { path.Add(currentNode); }
 
@@ -82,3 +85,5 @@ public class Pathfinder
         return path;
     } 
 }
+
+

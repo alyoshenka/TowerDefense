@@ -32,7 +32,7 @@ public class MapGenerator : MonoBehaviour
     /// <summary>
     /// generate a tile map from node map, childed to parent
     /// </summary>
-    public static void InitializeBoardTiles(GameBoard board, GameBoard_Save gbs, Transform parent)
+    public static void InitializeBoardTiles(Board board, GameBoard_Save gbs, Transform parent)
     {
         // check and see if editor scene
         bool editor = SceneManager.GetActiveScene().name == "LevelBuilder"; // bad
@@ -93,6 +93,7 @@ public class MapGenerator : MonoBehaviour
                 int[] connectionList = gbs.tileConnections[i];
                 for (int j = 0; j < connectionList.Length; j++)
                 {
+                    Debug.Assert(board.tiles.IndexOf(baseTile) != connectionList[j]);
                     baseTile.AddConnection(board.tiles[connectionList[j]]);
                 }
             }

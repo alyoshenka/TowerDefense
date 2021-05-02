@@ -9,7 +9,7 @@ public class ConnectionShower : MonoBehaviour
 {
     private static float offset = 0.1f;
 
-    [Tooltip("current board")] public GameBoard board;
+    [Tooltip("current board")] public Board board;
     [Tooltip("show board connections")] public bool showConnections = true;
     [Tooltip("show one way connections")] public bool showOneWays = false;
 

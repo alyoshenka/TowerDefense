@@ -28,6 +28,7 @@ public class Debugger : MonoBehaviour
     [Tooltip("name tile hover select/deselect")] public bool TileSelect;
     [Tooltip("display level number")] public bool LevelNumber;
     [Tooltip("level loading steps")] public bool LevelSteps;
+    [Tooltip("pathfinding visualization")] public bool VisualizePathfinding;
 
 
     [Tooltip("bottom left debug")] public TMPro.TMP_Text BL;

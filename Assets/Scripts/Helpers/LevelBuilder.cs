@@ -38,7 +38,7 @@ public class LevelBuilder : MonoBehaviour
     {
         level.Board.AssertTwoWayConnections();
 
-        string path = saveDir + level.Board.name + GameBoard.ext;
+        string path = saveDir + level.Board.name + Board.ext;
         if (Debugger.Instance && Debugger.Instance.IOMessages) { Debug.Log("save board: " + path); }
         level.Board.Save(path, level.Board.ToSave());
     }
@@ -58,7 +58,7 @@ public class LevelBuilder : MonoBehaviour
     {
         if (level.Board.name == string.Empty) { Debug.LogWarning("no board specified"); return; }
 
-        string fn = LevelBuilder.saveDir + level.Board.name + GameBoard.ext;
+        string fn = LevelBuilder.saveDir + level.Board.name + Board.ext;
         if (Debugger.Instance && Debugger.Instance.IOMessages) { Debug.Log("load board: " + fn); }
         level.Board.FromLoad(level.Board.Load(fn));
     }

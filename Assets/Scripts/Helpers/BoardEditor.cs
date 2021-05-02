@@ -7,7 +7,7 @@ public class BoardEditor : MonoBehaviour
 { 
     public static BoardEditor Instance { get; private set; }
 
-    [HideInInspector] public GameBoard board;
+    [HideInInspector] public Board board;
 
     public string currentPlaceType = "default"; // ToDo: add UI
     public Color color; // not sure
@@ -83,6 +83,8 @@ public class BoardEditor : MonoBehaviour
             EnemyTileData dat = new EnemyTileData{ tileIdx=tile.idx, enemyType=EnemyType.basic, count=0 };
             enemyTileData.Add(dat);
         }
+
+        if(currentTile.tileType == TileType.wall) { tile.RemoveAllConnections(); }
 
 
         // ToDo: add connections

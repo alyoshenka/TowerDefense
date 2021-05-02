@@ -11,7 +11,7 @@ public class PlaceState : GamePlayState
 
     public bool GoalPlaced { get => currentLevel.Board.GoalAssigned; } // get whether goal is assigned
     // ToDo: bad design!
-    public GameBoard Board { get => currentLevel.Board; } // get current board
+    public Board Board { get => currentLevel.Board; } // get current board
 
     [Tooltip("parent transform for tiles")] public Transform tileParent;
     [Tooltip("push to 'start' game")] public Button playButton;

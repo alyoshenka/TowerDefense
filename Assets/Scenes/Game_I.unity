@@ -211,6 +211,58 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: StateChangeMessages
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: StateTransitionWarnings
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: EnemyMessages
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: AgentMessages
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: TileMessages
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: AgentBrainMessages
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: DeveloperHaltMessages
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: ShowAggroRanges
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: AggroTriggers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: UIAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: IOMessages
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: TileSelect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 756598959, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+      propertyPath: VisualizePathfinding
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3358873722801202860, guid: c60876b865daff7449e96bb21679ba8d,
         type: 3}
       propertyPath: tileParent
@@ -333,6 +385,25 @@ PrefabInstance:
       objectReference: {fileID: 1241388506}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c60876b865daff7449e96bb21679ba8d, type: 3}
+--- !u!1 &795939570 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3358873722323275002, guid: c60876b865daff7449e96bb21679ba8d,
+    type: 3}
+  m_PrefabInstance: {fileID: 795939569}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &795939571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795939570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0a9f0243395f2f47807da680d44d87a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waitTime: 0.1
 --- !u!1 &1241388506
 GameObject:
   m_ObjectHideFlags: 0

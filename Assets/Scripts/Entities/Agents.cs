@@ -296,6 +296,8 @@ public abstract class OrganicAgent : HostileAgent
             target = PlaceState.Instance.Board.FindAssociatedTile(
             foundPath.path[targetIdx]).gameObject;
             */
+
+            target = foundPath.path[targetIdx].gameObject; // maybe?
         }
 
         brainDisplay = Color.green;

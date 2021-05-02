@@ -47,10 +47,14 @@ public class DefendState : GamePlayState
         openDefend?.Invoke();
         // ToDo: currentLevel.Board.goalTile.CastleHealth = castleHealth;
 
-        StartCoroutine("StartDelay");
+        // StartCoroutine("StartDelay");
+        // wait until found path
+        PathShower ps = FindObjectOfType<PathShower>();
+        ps.pathFound += (() => PauseState.Instance.OnExit()); // THIS IS BAD
+
         if (Debugger.Instance.StateChangeMessages) { Debug.Log("enter defend"); }
 
-        if (pauseOnEnter) { PauseState.Instance.PauseGame(); }
+        if (pauseOnEnter) { PauseState.Instance.PauseGame(true); }
     }
 
     /// <summary>
